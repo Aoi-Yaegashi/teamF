@@ -105,6 +105,14 @@ erDiagram
         string role "権限区分"
     }
 
+    SALE_PRICE {
+    int sale_price_id PK "セール価格ID"
+    int product_id FK "対象商品ID"
+    decimal discounted_price "割引価格"
+    datetime start_date "セール開始日"
+    datetime end_date "セール終了日"
+    }
+
     CATEGORY ||--o{ PRODUCT : includes
     PRODUCT ||--o{ ORDER_ITEM : included_in
     ORDER ||--o{ ORDER_ITEM : contains
@@ -114,6 +122,7 @@ erDiagram
     CUSTOMER ||--o{ ORDER : places
     PRODUCT ||--o{ CART_ITEM : added_to
     CART ||--o{ CART_ITEM : contains
+    PRODUCT ||--o{ SALE_PRICE : has_discounted_price
 
 </div>
  
