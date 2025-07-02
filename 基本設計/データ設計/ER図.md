@@ -130,58 +130,64 @@ erDiagram
 
 #### エンティティ
 
-| エンティティ名          | 役割                      | 説明                                                                 |
-|---------------------------|---------------------------|----------------------------------------------------------------------|
-| `CATEGORY`                | 商品カテゴリ              | 商品をカテゴリごとに分類するための情報（名前・説明）を管理。     |
-| `PRODUCT`                 | 商品情報                  | 商品名、価格、説明、画像、在庫数など、ユーザーに表示される商品情報。 |
-| `CUSTOMER`                | 購入者情報                | 注文に紐づく購入者の氏名、連絡先などの基本情報を保持。          |
-| `ORDER`                   | 注文情報                  | 顧客による注文の合計情報（注文番号、合計金額、注文日時など）を保持。 |
-| `ORDER_ITEM`              | 注文の商品明細            | 注文に含まれる商品単位の情報（数量、単価など）を記録。           |
-| `SHIPPING_INFO`           | 配送情報                  | 注文に対しての配送先情報（住所、氏名、電話番号など）を管理。     |
-| `PAYMENT_INFO`            | 支払情報                  | 支払方法、支払状態、支払日時などの決済関連情報を記録。           |
-| `ORDER_STATUS_HISTORY`    | 注文ステータス履歴        | 注文のステータス遷移（例: 受付→出荷）の履歴を記録。              |
-| `CART`                    | カートセッション          | 購入前に商品を一時保存するセッション単位のカート情報。              |
-| `CART_ITEM`               | カート商品明細            | カートに追加された各商品の明細（数量、商品IDなど）を記録。        |
-| `CONTACT`                 | お問い合わせ情報          | 購入者からの問い合わせ内容（氏名、メール、メッセージ等）を保持。   |
-| `PAGE_CONTENT`            | 静的コンテンツページ      | 利用規約、特商法表記、プライバシーポリシーなどの静的ページ情報を管理。 |
-| `ADMIN_USER`              | 管理ユーザー              | 管理者のログイン情報（ユーザー名、パスワードハッシュ、権限）を管理。 |
 
-#### リレーション一覧
+| エンティティ名         | 役割               | 説明                                                                 |
+|------------------------|--------------------|----------------------------------------------------------------------|
+| `CATEGORY`             | 商品カテゴリ       | 商品をカテゴリごとに分類するための情報（名前・説明）を管理。         |
+| `PRODUCT`              | 商品情報           | 商品名、価格、説明、画像、在庫数など、ユーザーに表示される商品情報。 |
+| `SALE_PRICE`           | セール価格         | 商品ごとに設定可能なセール価格（割引価格、開始日時、終了日時など）を管理。 |
+| `CUSTOMER`             | 購入者情報         | 注文に紐づく購入者の氏名、連絡先などの基本情報を保持。              |
+| `ORDER`                | 注文情報           | 顧客による注文の合計情報（注文番号、合計金額、注文日時など）を保持。 |
+| `ORDER_ITEM`           | 注文の商品明細     | 注文に含まれる商品単位の情報（数量、単価など）を記録。               |
+| `SHIPPING_INFO`        | 配送情報           | 注文に対しての配送先情報（住所、氏名、電話番号など）を管理。         |
+| `PAYMENT_INFO`         | 支払情報           | 支払方法、支払状態、支払日時などの決済関連情報を記録。               |
+| `ORDER_STATUS_HISTORY` | 注文ステータス履歴 | 注文のステータス遷移（例: 受付→出荷）の履歴を記録。                  |
+| `CART`                 | カートセッション   | 購入前に商品を一時保存するセッション単位のカート情報。                |
+| `CART_ITEM`            | カート商品明細     | カートに追加された各商品の明細（数量、商品IDなど）を記録。            |
+| `CONTACT`              | お問い合わせ情報   | 購入者からの問い合わせ内容（氏名、メール、メッセージ等）を保持。     |
+| `PAGE_CONTENT`         | 静的コンテンツページ | 利用規約、特商法表記、プライバシーポリシーなどの静的ページ情報を管理。 |
+| `ADMIN_USER`           | 管理ユーザー       | 管理者のログイン情報（ユーザー名、パスワードハッシュ、権限）を管理。 |
 
-#### リレーション一覧
+---
 
-- **CATEGORY** と **PRODUCT** の関係  
-  1つのカテゴリ（CATEGORY）は複数の商品（PRODUCT）を含む（1対多）。  
-  ``CATEGORY ||--o{ PRODUCT : includes``
+#### リレーション
 
-- **CUSTOMER** と **ORDER** の関係  
-  1人の顧客（CUSTOMER）は複数の注文（ORDER）を行う（1対多）。  
-  ``CUSTOMER ||--o{ ORDER : places``
+- `CATEGORY` と `PRODUCT` の関係  
+  → 1つのカテゴリは複数の商品を含む（1対多）  
+  `CATEGORY ||--o{ PRODUCT : includes`
 
-- **ORDER** と **ORDER_ITEM** の関係  
-  1つの注文（ORDER）は複数の注文商品（ORDER_ITEM）を含む（1対多）。  
-  ``ORDER ||--o{ ORDER_ITEM : contains``
+- `PRODUCT` と `SALE_PRICE` の関係  
+  → 1つの商品には複数のセール価格設定が可能（1対多）  
+  `PRODUCT ||--o{ SALE_PRICE : has_discounted_price`
 
-- **PRODUCT** と **ORDER_ITEM** の関係  
-  1つの商品（PRODUCT）は複数の注文商品（ORDER_ITEM）に含む（1対多）。  
-  ``PRODUCT ||--o{ ORDER_ITEM : included_in``
+- `CUSTOMER` と `ORDER` の関係  
+  → 1人の顧客は複数の注文を行う（1対多）  
+  `CUSTOMER ||--o{ ORDER : places`
 
-- **ORDER** と **SHIPPING_INFO** の関係  
-  1つの注文（ORDER）は1つの配送情報（SHIPPING_INFO）を持つ（1対1）。  
-  ``ORDER ||--|| SHIPPING_INFO : has``
+- `ORDER` と `ORDER_ITEM` の関係  
+  → 1つの注文は複数の注文商品を含む（1対多）  
+  `ORDER ||--o{ ORDER_ITEM : contains`
 
-- **ORDER** と **PAYMENT_INFO** の関係  
-  1つの注文（ORDER）は1つの支払情報（PAYMENT_INFO）を持つ（1対1）。  
-  ``ORDER ||--|| PAYMENT_INFO : has``
+- `PRODUCT` と `ORDER_ITEM` の関係  
+  → 1つの商品は複数の注文商品に含まれる（1対多）  
+  `PRODUCT ||--o{ ORDER_ITEM : included_in`
 
-- **ORDER** と **ORDER_STATUS_HISTORY** の関係  
-  1つの注文（ORDER）は複数の注文ステータス履歴（ORDER_STATUS_HISTORY）を持つ（1対多）。  
-  ``ORDER ||--o{ ORDER_STATUS_HISTORY : status_tracked_by``
+- `ORDER` と `SHIPPING_INFO` の関係  
+  → 1つの注文は1つの配送情報を持つ（1対1）  
+  `ORDER ||--|| SHIPPING_INFO : has`
 
-- **CART** と **CART_ITEM** の関係  
-  1つのカート（CART）は複数のカート商品（CART_ITEM）を含む（1対多）。  
-  ``CART ||--o{ CART_ITEM : contains``
+- `ORDER` と `PAYMENT_INFO` の関係  
+  → 1つの注文は1つの支払情報を持つ（1対1）  
+  `ORDER ||--|| PAYMENT_INFO : has`
 
-- **PRODUCT** と **CART_ITEM** の関係  
-  1つの商品（PRODUCT）は複数のカート商品（CART_ITEM）に含む（1対多）。  
-  ``PRODUCT ||--o{ CART_ITEM : added_to``
+- `ORDER` と `ORDER_STATUS_HISTORY` の関係  
+  → 1つの注文は複数の注文ステータス履歴を持つ（1対多）  
+  `ORDER ||--o{ ORDER_STATUS_HISTORY : status_tracked_by`
+
+- `CART` と `CART_ITEM` の関係  
+  → 1つのカートは複数のカート商品を含む（1対多）  
+  `CART ||--o{ CART_ITEM : contains`
+
+- `PRODUCT` と `CART_ITEM` の関係  
+  → 1つの商品は複数のカート商品に含まれる（1対多）  
+  `PRODUCT ||--o{ CART_ITEM : added_to`
