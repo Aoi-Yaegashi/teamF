@@ -926,11 +926,6 @@ file: CSV ファイル
 
 ---
 
-以上で 6～30 番までを同一フォーマットで記載しました。
-`# definitions` の共通オブジェクト（`CartItem`、`Address`、`CustomerInfo`、`Pagination` など）は先のスキーマ定義と併せてご参照ください。
-
-
-
 ### 31. 管理者登録・編集
 
 #### `POST/api/admin/users`
