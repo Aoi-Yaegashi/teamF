@@ -124,9 +124,113 @@ WHERE customer_id = 1;
 ### ORDERSテーブル
 
 #### Create
+・新規注文の登録
+```sql
+INSERT INTO orders (
+  customer_id,
+  order_number,
+  order_date,
+  status,
+  total_amount,
+  payment_method,
+  payment_status,
+  payment_date
+) VALUES (
+  1,
+  'ORD-20250704-0001',
+  '2025-07-04 10:15:00',
+  '支払待ち',
+  3960.00,
+  'クレジットカード',
+  '未',
+  NULL
+);
+```
 
 #### Read
+・`customer_id = 1`の注文履歴を取得
+```sql
+SELECT
+  order_id,
+  order_number,
+  order_date,
+  status,
+  total_amount,
+  payment_status
+FROM
+  orders
+WHERE
+  customer_id = 1
+ORDER BY
+  order_date DESC;
+```
 
 #### Update
+・注文ステータスの更新
+```sql
+UPDATE orders
+SET
+  status = '発送済',
+  payment_status = '済',
+  payment_date = '2025-07-04 11:45:00'
+WHERE
+  order_id = 1;
+```
 
 #### Delete
+```sql
+・注文データの削除
+DELETE FROM orders
+WHERE order_id = 1;
+```
+
+### ORDER_ITEMSテーブル
+
+#### Create
+・新規注文の登録
+```sql
+INSERT INTO order_items (
+  order_id,
+  product_id,
+  quantity,
+  unit_price
+) VALUES
+  (1, 1, 2, 1980.00),
+  (1, 2, 1, 3000.00);
+```
+
+#### Read
+・`order_id = 1`の注文明細の取得
+```sql
+SELECT
+  order_items.order_item_id,
+  order_items.order_id,
+  products.name AS product_name,
+  order_items.quantity,
+  order_items.unit_price,
+  (order_items.quantity * order_items.unit_price) AS subtotal
+FROM
+  order_items
+  INNER JOIN products ON order_items.product_id = products.product_id
+WHERE
+  order_items.order_id = 1;
+
+```
+
+#### Update
+・注文情報の更新（単価と注文数の変更）
+```sql
+UPDATE order_items
+SET
+  quantity = 3,
+  unit_price = 1800.00
+WHERE
+  order_item_id = 1;
+```
+
+#### Delete
+・`order_item_id = 1`の注文明細の削除
+```sql
+DELETE FROM order_items
+WHERE order_item_id = 1;
+```
