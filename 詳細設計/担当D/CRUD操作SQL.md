@@ -39,6 +39,7 @@ WHERE name LIKE '%花瓶%';
 
 #### Update
 
+・セールの設定変更
 ```sql
 UPDATE products
 SET
@@ -51,17 +52,74 @@ WHERE
 ```
 
 #### Delete
-
+・`product_id = 1`の商品の削除
+```sql
+DELETE FROM products
+WHERE product_id = 1;
+```
 
 ### CUSTOMERSテーブル
 
 #### Create
+・顧客登録
+```sql
+INSERT INTO customers (
+  name, email, phone_number, postal_code, address, password_hash, created_at
+) VALUES (
+  '山田 太郎',
+  'taro.yamada@example.com',
+  '090-1234-5678',
+  '150-0001',
+  '東京都渋谷区神宮前1-1-1',
+  'abcdefghij',
+  CURRENT_TIMESTAMP
+);
+```
 
 #### Read
+・全顧客リストの取得
+```sql
+SELECT
+  customer_id,
+  name,
+  email,
+  phone_number,
+  postal_code,
+  address,
+  created_at
+FROM
+  customers
+ORDER BY
+  created_at DESC;
+```
 
 #### Update
 
+・パスワードの変更
+```sql
+UPDATE customers
+SET 
+  password_hash = 'klmnopqrst'
+WHERE 
+  customer_id = 1;
+```
+
+・住所変更
+```sql
+UPDATE customers
+SET
+  postal_code = '160-0022',
+  address = '東京都新宿区新宿2-2-2'
+WHERE
+  customer_id = 1;
+```
+
 #### Delete
+・`customer_id = 1`の顧客データの削除
+```sql
+DELETE FROM customers
+WHERE customer_id = 1;
+```
 
 ### ORDERSテーブル
 
