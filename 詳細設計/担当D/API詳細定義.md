@@ -1,7 +1,7 @@
 
 ### 1. トップページ表示（カテゴリ一覧取得）
 
-#### `GET/api/top-page`
+#### `GET /api/top-page`
 
 ・レスポンス（200 OK）スキーマ
 
@@ -31,10 +31,10 @@
       "items": {
         "type": "object",
         "properties": {
-          "imageUrl": { "type": "string", "format": "uri" },
+          "image_url": { "type": "string", "format": "uri" },
           "link":     { "type": "string", "format": "uri" }
         },
-        "required": ["imageUrl"]
+        "required": ["image_url"]
       }
     }
   },
@@ -97,7 +97,7 @@
 
 ### 3. 商品詳細ページ表示（商品詳細取得）
 
-#### `GET     /api/products/{product_id}`
+#### `GET /api/products/{product_id}`
 
 ・レスポンス（200 OK）スキーマ
 
@@ -183,7 +183,7 @@
 
 ### 5. カートページ表示
 
-#### `POST /api/cart`
+#### `GET /api/cart`
 
 ・リクエスト（クエリパラメータ）
 
@@ -292,7 +292,7 @@
 
 ### 8. 購入手続きページ表示
 
-#### `GET /api/cart/checkout`
+#### `POST /api/cart/checkout`
 
 ・リクエスト（クエリパラメータ）
 
@@ -443,14 +443,14 @@ order_id={integer}
 
 ### 12. お問い合わせ送信
 
-#### `POST /api/contacts`
+#### `POST /api/inquiries`
 
 ・リクエストボディスキーマ
 
 ```json
 {
   "$schema":"http://json-schema.org/draft-07/schema#",
-  "title":"ContactCreateRequest",
+  "title":"InquiryCreateRequest",
   "type":"object",
   "properties":{
     "name":   { "type":"string" },
@@ -466,12 +466,12 @@ order_id={integer}
 ```json
 {
   "$schema":"http://json-schema.org/draft-07/schema#",
-  "title":"ContactCreateResponse",
+  "title":"InquiryCreateResponse",
   "type":"object",
   "properties":{
-    "contact_id":{ "type":"integer" }
+    "inquiry_id":{ "type":"integer" }
   },
-  "required":["contact_id"]
+  "required":["inquiry_id"]
 }
 ```
 
@@ -619,7 +619,7 @@ order_id={integer}
 
 ### 17. 商品編集
 
-#### `PUT /api/admin/products/{id}`
+#### `PUT /api/admin/products/{product_id}`
 
 ・リクエストボディスキーマ
 
@@ -708,7 +708,7 @@ order_id={integer}
 
 ### 21. 注文詳細取得（管理画面）
 
-#### `GET /api/admin/orders/{id}`
+#### `GET /api/admin/orders/{order_id}`
 
 ・リクエスト（クエリパラメータ）
 
@@ -726,7 +726,7 @@ order_id={integer}
 
 ### 22. 注文ステータス更新
 
-#### `PUT /api/admin/orders/{id}`
+#### `PUT /api/admin/orders/{order_id}`
 
 ・リクエストボディスキーマ
 
@@ -868,7 +868,7 @@ file: CSV ファイル
 
 ### 27. お問い合わせ一覧取得（管理画面）
 
-#### `GET /api/admin/contacts`
+#### `GET /api/admin/inquiries`
 
 ・リクエスト（クエリパラメータ）
 
@@ -879,14 +879,14 @@ file: CSV ファイル
 ・レスポンス（200 OK）スキーマ
 
 ```json
-# AdminProductListResponse の products→contacts, ProductSummary→ContactSummary に置換
+# AdminProductListResponse の products→inquiries, ProductSummary→InquirySummary に置換
 ```
 
 ---
 
 ### 28. お問い合わせ詳細取得（管理画面）
 
-#### `GET /api/admin/contacts/{id}`
+#### `GET /api/admin/inquiries/{inquiry_id}`
 
 ・リクエスト（クエリパラメータ）
 
@@ -897,7 +897,7 @@ file: CSV ファイル
 ・レスポンス（200 OK）スキーマ
 
 ```json
-# OrderDetailResponse の order→contact に置換
+# OrderDetailResponse の order→inquiry に置換
 ```
 
 ---
@@ -922,7 +922,7 @@ file: CSV ファイル
 
 ### 30. 管理者登録・編集
 
-#### `POST/api/admin/users`
+#### `POST /api/admin/users`
 
 ・リクエストボディスキーマ
 
@@ -957,7 +957,7 @@ file: CSV ファイル
 
 ### 31. エラーログ一覧取得
 
-#### `GET/api/admin/error-logs`
+#### `GET /api/admin/error-logs`
 
 ・リクエスト（クエリパラメータ）
 
