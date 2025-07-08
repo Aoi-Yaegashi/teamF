@@ -1,14 +1,14 @@
 
 ### 1. トップページ表示（カテゴリ一覧取得）
 
-#### `GET/api/categories`
+#### `GET/api/top-page`
 
 ・レスポンス（200 OK）スキーマ
 
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "CategoryListResponse",
+  "title": "TopPageResponse",
   "type": "object",
   "properties": {
     "categories": {
@@ -21,48 +21,44 @@
         },
         "required": ["category_id","name"]
       }
-    }
-  },
-  "required": ["categories"]
-}
-```
-
----
-
-### 2. トップページ表示（ピックアップ商品取得）
-
-#### `GET/api/products/pickup`
-・レスポンス（200 OK）スキーマ
-
-```json
-{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "ProductPickupListResponse",
-  "type": "object",
-  "properties": {
-    "pickup_products": {
+    },
+    "new_arrivals": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/ProductSummary" }
+    },
+    "banners": {
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
-          "product_id": { "type": "integer" },
-          "name":       { "type": "string" },
-          "price":      { "type": "number" },
-          "image_url":  { "type": "string", "format": "uri" }
+          "imageUrl": { "type": "string", "format": "uri" },
+          "link":     { "type": "string", "format": "uri" }
         },
-        "required": ["product_id","name","price","image_url"]
+        "required": ["imageUrl"]
       }
     }
   },
-  "required": ["pickup_products"]
+  "required": ["categories"],
+  "definitions": {
+    "ProductSummary": {
+      "type": "object",
+      "properties": {
+        "product_id": { "type": "integer" },
+        "name":       { "type": "string" },
+        "price":      { "type": "number" },
+        "image_url":  { "type": "string", "format": "uri" }
+      },
+      "required": ["product_id","name","price","image_url"]
+    }
+  }
 }
 ```
 
 ---
 
-### 3. 商品一覧ページ表示（商品一覧取得）
+### 2. 商品一覧ページ表示（商品一覧取得）
 
-#### `GET/api/products`
+#### `GET /api/products`
 
 ・リクエスト（クエリパラメータ）
 
@@ -99,9 +95,9 @@
 
 ---
 
-### 4. 商品詳細ページ表示（商品詳細取得）
+### 3. 商品詳細ページ表示（商品詳細取得）
 
-#### `GET/api/products/{product_id}`
+#### `GET     /api/products/{product_id}`
 
 ・レスポンス（200 OK）スキーマ
 
@@ -137,7 +133,7 @@
 
 ---
 
-### 5. カートに商品追加
+### 4. カートに商品追加
 
 #### `POST /api/cart/add`
 
@@ -185,15 +181,14 @@
 
 ---
 
-### 6. カートページ表示
+### 5. カートページ表示
 
-#### `GET /api/cart`
+#### `POST /api/cart`
 
 ・リクエスト（クエリパラメータ）
 
 ```none
-# セッションID or user_id をヘッダー or クッキーで管理
-# ペイロードなし
+# セッションID は自動的に Cookie 経由で送信
 ```
 
 ・レスポンス（200 OK）スキーマ
@@ -226,9 +221,9 @@
 
 ---
 
-### 7. カート商品数量変更
+### 6. カート商品数量変更
 
-#### `POST /api/cart/update`
+#### `PUT /api/cart/update`
 
 ・リクエストボディスキーマ
 
@@ -261,9 +256,9 @@
 
 ---
 
-### 8. カート商品削除
+### 7. カート商品削除
 
-#### `POST /api/cart/remove`
+#### `DELETE /api/cart`
 
 ・リクエストボディスキーマ
 
@@ -295,15 +290,14 @@
 
 ---
 
-### 9. 購入手続きページ表示
+### 8. 購入手続きページ表示
 
-#### `POST /api/cart/checkout`
+#### `GET /api/cart/checkout`
 
 ・リクエスト（クエリパラメータ）
 
 ```none
-# セッションID or user_id をヘッダー or クッキーで管理
-# ペイロードなし
+# セッションID は自動的に Cookie 経由で送信
 ```
 
 ・レスポンス（200 OK）スキーマ
@@ -335,7 +329,7 @@
 
 ---
 
-### 10. 注文確認画面表示
+### 9. 注文確認画面表示
 
 #### `POST /api/orders/preview`
 
@@ -381,7 +375,7 @@
 
 ---
 
-### 11. 注文確定
+### 10. 注文確定
 
 #### `POST /api/orders`
 
@@ -420,7 +414,7 @@
 
 ---
 
-### 12. 注文完了ページ表示
+### 11. 注文完了ページ表示
 
 #### `GET /api/orders/{order_id}`
 
@@ -447,7 +441,7 @@ order_id={integer}
 
 ---
 
-### 13. お問い合わせ送信
+### 12. お問い合わせ送信
 
 #### `POST /api/contacts`
 
@@ -483,7 +477,7 @@ order_id={integer}
 
 ---
 
-### 14. 管理者ログイン
+### 13. 管理者ログイン
 
 #### `POST /api/admin/login`
 
@@ -519,7 +513,7 @@ order_id={integer}
 
 ---
 
-### 15. ダッシュボード表示
+### 14. ダッシュボード表示
 
 #### `GET /api/admin/dashboard`
 
@@ -554,7 +548,7 @@ order_id={integer}
 
 ---
 
-### 16. 商品一覧取得（管理画面）
+### 15. 商品一覧取得（管理画面）
 
 #### `GET /api/admin/products`
 
@@ -584,7 +578,7 @@ order_id={integer}
 
 ---
 
-### 17. 商品登録
+### 16. 商品登録
 
 #### `POST /api/admin/products`
 
@@ -623,7 +617,7 @@ order_id={integer}
 
 ---
 
-### 18. 商品編集
+### 17. 商品編集
 
 #### `PUT /api/admin/products/{id}`
 
@@ -641,7 +635,7 @@ order_id={integer}
 
 ---
 
-### 19. カテゴリ一覧取得（管理画面）
+### 18. カテゴリ一覧取得（管理画面）
 
 #### `GET /api/admin/categories`
 
@@ -659,7 +653,7 @@ order_id={integer}
 
 ---
 
-### 20. カテゴリ登録・編集
+### 19. カテゴリ登録・編集
 
 #### `POST /api/admin/categories`
 
@@ -694,7 +688,7 @@ order_id={integer}
 
 ---
 
-### 21. 注文一覧取得（管理画面）
+### 20. 注文一覧取得（管理画面）
 
 #### `GET /api/admin/orders`
 
@@ -712,7 +706,7 @@ order_id={integer}
 
 ---
 
-### 22. 注文詳細取得（管理画面）
+### 21. 注文詳細取得（管理画面）
 
 #### `GET /api/admin/orders/{id}`
 
@@ -730,7 +724,7 @@ order_id={integer}
 
 ---
 
-### 23. 注文ステータス更新
+### 22. 注文ステータス更新
 
 #### `PUT /api/admin/orders/{id}`
 
@@ -757,7 +751,7 @@ order_id={integer}
 
 ---
 
-### 24. 在庫一覧取得（管理画面）
+### 23. 在庫一覧取得（管理画面）
 
 #### `GET /api/admin/inventory`
 
@@ -775,7 +769,7 @@ order_id={integer}
 
 ---
 
-### 25. 在庫一括更新
+### 24. 在庫一括更新
 
 #### `POST /api/admin/inventory/update`
 
@@ -819,7 +813,7 @@ order_id={integer}
 
 ---
 
-### 26. CSVデータダウンロード
+### 25. CSVデータダウンロード
 
 #### `GET /api/admin/export/orders`
 
@@ -845,7 +839,7 @@ order_id={integer}
 
 ---
 
-### 27. CSVデータアップロード
+### 26. CSVデータアップロード
 
 #### `POST /api/admin/import/products`
 
@@ -872,7 +866,7 @@ file: CSV ファイル
 
 ---
 
-### 28. お問い合わせ一覧取得（管理画面）
+### 27. お問い合わせ一覧取得（管理画面）
 
 #### `GET /api/admin/contacts`
 
@@ -890,7 +884,7 @@ file: CSV ファイル
 
 ---
 
-### 29. お問い合わせ詳細取得（管理画面）
+### 28. お問い合わせ詳細取得（管理画面）
 
 #### `GET /api/admin/contacts/{id}`
 
@@ -908,7 +902,7 @@ file: CSV ファイル
 
 ---
 
-### 30. 管理者一覧取得
+### 29. 管理者一覧取得
 
 #### `GET /api/admin/users`
 
@@ -926,7 +920,7 @@ file: CSV ファイル
 
 ---
 
-### 31. 管理者登録・編集
+### 30. 管理者登録・編集
 
 #### `POST/api/admin/users`
 
@@ -961,7 +955,7 @@ file: CSV ファイル
 ```
 
 
-### 32. エラーログ一覧取得
+### 31. エラーログ一覧取得
 
 #### `GET/api/admin/error-logs`
 
