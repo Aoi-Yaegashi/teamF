@@ -71,7 +71,7 @@
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "ProductListResponse",
+  "title":  "ProductListResponse",
   "type": "object",
   "properties": {
     "products": {
@@ -80,12 +80,11 @@
         "type": "object",
         "properties": {
           "product_id": { "type": "integer" },
-          "name":       { "type": "string" },
-          "price":      { "type": "number" },
-          "stock":      { "type": "integer" },
+          "name":      { "type": "string" },
+          "price":     { "type": "number" },
           "image_url":  { "type": "string", "format": "uri" }
         },
-        "required": ["product_id","name","price","stock","image_url"]
+        "required": ["product_id","name","price","image_url"]
       }
     }
   },
@@ -110,12 +109,12 @@
     "product": {
       "type": "object",
       "properties": {
-        "product_id":    { "type": "integer" },
+        "product_id":     { "type": "integer" },
         "name":          { "type": "string" },
         "description":   { "type": "string" },
         "price":         { "type": "number" },
         "stock":         { "type": "integer" },
-        "image_url":     { "type": "string", "format": "uri" },
+        "image_url":      { "type": "string", "format": "uri" },
         "specifications": {
           "type": "object",
           "properties": {
@@ -129,6 +128,7 @@
   },
   "required": ["product"]
 }
+
 ```
 
 ---
@@ -209,13 +209,15 @@
           "product_id":   { "type": "integer" },
           "quantity":     { "type": "integer" },
           "name":         { "type": "string" },
-          "price":        { "type": "number" }
+          "price":        { "type": "number" },
+          "sub_total":    { "type": "number" }
         },
-        "required": ["cart_item_id","product_id","quantity","name","price"]
+        "required": ["cart_item_id","product_id","quantity","name","price","sub_total"]
       }
-    }
+    },
+    "cart_total":  { "type": "number" }
   },
-  "required": ["cart_id","cart_items"]
+  "required": ["cart_id","cart_items","cart_total"]
 }
 ```
 
@@ -364,9 +366,9 @@
         "tax":         { "type":"number" },
         "shipping":    { "type":"number" },
         "discounts":   { "type":"number" },
-        "totalAmount": { "type":"number" }
+        "total_amount": { "type":"number" }
       },
-      "required":["subtotal","tax","shipping","totalAmount"]
+      "required":["subtotal","tax","shipping","total_amount"]
     }
   },
   "required":["preview"]
