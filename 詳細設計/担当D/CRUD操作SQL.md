@@ -214,7 +214,6 @@ FROM
   INNER JOIN products ON order_items.product_id = products.product_id
 WHERE
   order_items.order_id = 1;
-
 ```
 
 #### Update
