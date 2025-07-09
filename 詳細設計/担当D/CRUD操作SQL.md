@@ -5,7 +5,7 @@
 ・商品登録
 ```sql
 INSERT INTO products (
-  name, description, material, category_id, price, stock_quantity, image_url
+  name, description, material, price, stock_quantity, image_url
 ) VALUES (
   '花瓶 フラワーベース', 'フラワーベース パステルカラー', NULL, 1, 1980.00, 10, 'https://image.rakuten.co.jp/pease/cabinet/10797533/777-551-22.jpg'
 );
@@ -24,8 +24,6 @@ SELECT
   image_url
 FROM
   products
-WHERE
-  stock_quantity > 0
 ORDER BY
   name ASC;
 ```
