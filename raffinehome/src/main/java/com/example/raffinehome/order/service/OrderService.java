@@ -1,16 +1,16 @@
 package com.example.raffinehome.order.service;
 
-import com.example.simplezakka.dto.cart.Cart;
-import com.example.simplezakka.dto.cart.CartItem;
-import com.example.simplezakka.dto.order.CustomerInfo;
-import com.example.simplezakka.dto.order.OrderRequest;
-import com.example.simplezakka.dto.order.OrderResponse;
-import com.example.simplezakka.entity.Order;
-import com.example.simplezakka.entity.OrderDetail;
-import com.example.simplezakka.entity.Product;
-import com.example.simplezakka.repository.OrderDetailRepository;
-import com.example.simplezakka.repository.OrderRepository;
-import com.example.simplezakka.repository.ProductRepository;
+import com.example.raffinehome.cart.dto.Cart;
+import com.example.raffinehome.cart.dto.CartItem;
+import com.example.raffinehome.order.dto.CustomerInfo;
+import com.example.raffinehome.order.dto.OrderRequest;
+import com.example.raffinehome.order.dto.OrderResponse;
+import com.example.raffinehome.order.entity.Order;
+import com.example.raffinehome.order.entity.OrderDetail;
+import com.example.raffinehome.order.entity.Product;
+import com.example.raffinehome.order.repository.OrderDetailRepository;
+import com.example.raffinehome.order.repository.OrderRepository;
+import com.example.raffinehome.order.repository.ProductRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

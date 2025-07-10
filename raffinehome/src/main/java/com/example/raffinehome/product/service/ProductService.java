@@ -1,9 +1,9 @@
 package com.example.raffinehome.product.service;
 
-import com.example.simplezakka.dto.product.ProductDetail;
-import com.example.simplezakka.dto.product.ProductListItem;
-import com.example.simplezakka.entity.Product;
-import com.example.simplezakka.repository.ProductRepository;
+import com.example.raffinehome.product.dto.ProductDetail;
+import com.example.raffinehome.product.dto.ProductListItem;
+import com.example.raffinehome.product.entity.Product;
+import com.example.raffinehome.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
