@@ -2,8 +2,8 @@ package com.example.raffinehome.cart.controller;
 
 import com.example.raffinehome.cart.dto.Cart;
 import com.example.raffinehome.cart.dto.CartItem;
-import com.example.raffinehome.cart.dto.CartUpdate;
-import com.example.raffinehome.cart.dto.CartAdd;
+import com.example.raffinehome.cart.dto.CartItemInfo;
+import com.example.raffinehome.cart.dto.CartItemQuantityDto;
 import com.example.raffinehome.cart.service.CartService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -46,7 +46,7 @@ public class CartController {
     @PutMapping("/items/{itemId}")
     public ResponseEntity<Cart> updateItem(
             @PathVariable String itemId,
-            @Valid @RequestBody CartItemUpdateDTO CartAddDTO,
+            @Valid @RequestBody CartItemQuantityDto quantityDto,
             HttpSession session) {
         Cart cart = cartService.updateItemQuantity(itemId, quantityDto.getQuantity(), session);
         return ResponseEntity.ok(cart);
