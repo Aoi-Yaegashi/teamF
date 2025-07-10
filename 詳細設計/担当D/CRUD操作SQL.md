@@ -13,7 +13,7 @@ INSERT INTO products (
 
 #### Read
 
-・商品一覧の取得（在庫があるもの）
+・商品一覧の取得
 
 ```sql
 SELECT
@@ -24,6 +24,8 @@ SELECT
   image_url
 FROM
   products
+WHERE
+  is_deleted = 0
 ORDER BY
   name ASC;
 ```
@@ -32,7 +34,9 @@ ORDER BY
 ```sql
 SELECT *
 FROM products
-WHERE name LIKE '%花瓶%';
+WHERE 
+  name LIKE '%花瓶%'
+  AND is_deleted = 0;
 ```
 
 #### Update
@@ -52,7 +56,10 @@ WHERE
 #### Delete
 ・`product_id = 1`の商品の削除
 ```sql
-DELETE FROM products
+UPDATE products
+SET
+  is_deleted = 1,
+  deleted_at = CURRENT_TIMESTAMP
 WHERE product_id = 1;
 ```
 
