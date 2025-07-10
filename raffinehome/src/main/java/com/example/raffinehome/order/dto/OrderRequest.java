@@ -1,4 +1,4 @@
-package com.example.simplezakka.dto.order;
+package com.example.raffinehome.order.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

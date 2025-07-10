@@ -1,4 +1,4 @@
-package com.example.simplezakka.dto.cart;
+package com.example.raffinehome.cart.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

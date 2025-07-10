@@ -1,4 +1,4 @@
-package com.example.simplezakka.dto.product;
+package com.example.raffinehome.product.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
