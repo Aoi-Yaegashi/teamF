@@ -1,5 +1,6 @@
 {
     "cSpell.words": [
         "Simplezakka"
-    ]
+    ],
+    "java.compile.nullAnalysis.mode": "automatic"
 }
