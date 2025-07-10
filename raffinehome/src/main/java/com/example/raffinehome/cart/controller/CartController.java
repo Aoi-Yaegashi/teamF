@@ -1,9 +1,10 @@
-package com.example.simplezakka.controller;
+package com.example.raffinehome.cart.controller;
 
-import com.example.simplezakka.dto.cart.Cart;
-import com.example.simplezakka.dto.cart.CartItemInfo;
-import com.example.simplezakka.dto.cart.CartItemQuantityDto;
-import com.example.simplezakka.service.CartService;
+import com.example.raffinehome.cart.dto.Cart;
+import com.example.raffinehome.cart.dto.CartItem;
+import com.example.raffinehome.cart.dto.CartItemInfo;
+import com.example.raffinehome.cart.dto.CartItemQuantityDto;
+import com.example.raffinehome.cart.service.CartService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class CartController {
     }
     
     @PostMapping
-    public ResponseEntity<Cart> addItem(@Valid @RequestBody CartItemInfo cartItemInfo, HttpSession session) {
+    public ResponseEntity<Cart> addItem(@Valid @RequestBody CartItem cartItemInfo, HttpSession session) {
         Cart cart = cartService.addItemToCart(
                 cartItemInfo.getProductId(),
                 cartItemInfo.getQuantity(),
