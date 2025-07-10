@@ -6,6 +6,10 @@ import com.example.simplezakka.dto.cart.CartItemQuantityDto;
 import com.example.simplezakka.service.CartService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+<<<<<<< HEAD
+=======
+import org.springframework.beans.factory.annotation.Autowired;
+>>>>>>> e8bd4b2666154e82f28603ec0124bde361c5409a
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +19,10 @@ public class CartController {
 
     private final CartService cartService; 
     
+<<<<<<< HEAD
+=======
+    @Autowired
+>>>>>>> e8bd4b2666154e82f28603ec0124bde361c5409a
     public CartController(CartService cartService) {
         this.cartService = cartService;
     }
