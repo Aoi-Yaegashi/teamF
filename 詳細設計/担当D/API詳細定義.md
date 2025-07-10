@@ -1,5 +1,5 @@
 
-### 1. トップページ表示（カテゴリ一覧取得）
+### 1. トップページ表示
 
 #### `GET /api/top-page`
 
@@ -11,15 +11,6 @@
   "title": "TopPageResponse",
   "type": "object",
   "properties": {
-    "categories": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name":        { "type": "string" }
-        },
-      }
-    },
     "new_arrivals": {
       "type": "array",
       "items": { "$ref": "#/definitions/ProductSummary" }
@@ -36,7 +27,7 @@
       }
     }
   },
-  "required": ["categories"],
+
   "definitions": {
     "ProductSummary": {
       "type": "object",
@@ -629,55 +620,6 @@ order_id={integer}
 
 ---
 
-### 18. カテゴリ一覧取得（管理画面）
-
-#### `GET /api/admin/categories`
-
-・リクエスト（クエリパラメータ）
-
-```
-?page={integer}&limit={integer}
-```
-
-・レスポンス（200 OK）スキーマ
-
-```json
-# CategoryListResponse + Pagination を組み合わせ
-```
-
----
-
-### 19. カテゴリ登録・編集
-
-#### `POST /api/admin/categories`
-
-・リクエストボディスキーマ
-
-```json
-{
-  "$schema":"http://json-schema.org/draft-07/schema#",
-  "title":"AdminCategoryCreateRequest",
-  "type":"object",
-  "properties":{
-    "name":       { "type":"string" },
-    "description":{ "type":"string" }
-  },
-  "required":["name","description"]
-}
-```
-
-・レスポンス（201 Created）スキーマ
-
-```json
-{
-  "$schema":"http://json-schema.org/draft-07/schema#",
-  "title":"AdminCategoryCreateResponse",
-  "type":"object",
-  "properties":{
-}
-```
-
----
 
 ### 20. 注文一覧取得（管理画面）
 
