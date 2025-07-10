@@ -7,10 +7,7 @@ import com.example.simplezakka.service.CartService;
 import com.example.simplezakka.service.OrderService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-<<<<<<< HEAD
-=======
-import org.springframework.beans.factory.annotation.Autowired;
->>>>>>> e8bd4b2666154e82f28603ec0124bde361c5409a
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,10 +22,6 @@ public class OrderController {
     private final OrderService orderService;
     private final CartService cartService;
     
-<<<<<<< HEAD
-=======
-    @Autowired
->>>>>>> e8bd4b2666154e82f28603ec0124bde361c5409a
     public OrderController(OrderService orderService, CartService cartService) {
         this.orderService = orderService;
         this.cartService = cartService;

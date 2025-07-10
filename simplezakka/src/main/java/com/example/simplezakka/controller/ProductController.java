@@ -3,10 +3,7 @@ package com.example.simplezakka.controller;
 import com.example.simplezakka.dto.product.ProductDetail;
 import com.example.simplezakka.dto.product.ProductListItem;
 import com.example.simplezakka.service.ProductService;
-<<<<<<< HEAD
-=======
-import org.springframework.beans.factory.annotation.Autowired;
->>>>>>> e8bd4b2666154e82f28603ec0124bde361c5409a
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,10 +18,6 @@ public class ProductController {
 
     private final ProductService productService;
     
-<<<<<<< HEAD
-=======
-    @Autowired
->>>>>>> e8bd4b2666154e82f28603ec0124bde361c5409a
     public ProductController(ProductService productService) {
         this.productService = productService;
     }

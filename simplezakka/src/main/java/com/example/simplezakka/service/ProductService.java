@@ -4,10 +4,6 @@ import com.example.simplezakka.dto.product.ProductDetail;
 import com.example.simplezakka.dto.product.ProductListItem;
 import com.example.simplezakka.entity.Product;
 import com.example.simplezakka.repository.ProductRepository;
-<<<<<<< HEAD
-=======
-import org.springframework.beans.factory.annotation.Autowired;
->>>>>>> e8bd4b2666154e82f28603ec0124bde361c5409a
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,10 +15,6 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     
-<<<<<<< HEAD
-=======
-    @Autowired
->>>>>>> e8bd4b2666154e82f28603ec0124bde361c5409a
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
