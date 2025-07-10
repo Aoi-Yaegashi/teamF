@@ -2,8 +2,8 @@ package com.example.raffinehome.order.controller;
 
 import com.example.raffinehome.cart.dto.Cart;
 import com.example.raffinehome.order.dto.OrderRequest;
-import com.example.raffinehome.order.dto.OrderResponse;
-import com.example.raffinehome.order.service.CartService;
+import com.example.raffinehome.order.dto.OrderCreateDTO;
+import com.example.raffinehome.cart.service.CartService;
 import com.example.raffinehome.order.service.OrderService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -29,7 +29,7 @@ public class OrderController {
     }
     
     @PostMapping
-    public ResponseEntity<OrderResponse> placeOrder(
+    public ResponseEntity<OrderCreateDTO> placeOrder(
             @Valid @RequestBody OrderRequest orderRequest,
             HttpSession session) {
         
@@ -40,7 +40,7 @@ public class OrderController {
         }
         
         try {
-            OrderResponse orderResponse = orderService.placeOrder(cart, orderRequest, session);
+            OrderCreateDTO orderResponse = orderService.placeOrder(cart, orderRequest, session);
             return ResponseEntity.status(HttpStatus.CREATED).body(orderResponse);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

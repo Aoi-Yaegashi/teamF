@@ -1,8 +1,8 @@
 package com.example.raffinehome.product.controller;
 
 import com.example.raffinehome.product.dto.ProductDetail;
-import com.example.simplezakka.dto.product.ProductListItem;
-import com.example.simplezakka.service.ProductService;
+import com.example.raffinehome.product.dto.ProductListItem;
+import com.example.raffinehome.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
