@@ -2,8 +2,8 @@ package com.example.raffinehome.cart.service;
 
 import com.example.raffinehome.cart.dto.Cart;
 import com.example.raffinehome.cart.dto.CartItem;
-import com.example.raffinehome.cart.entity.Product;
-import com.example.raffinehome.cart.repository.ProductRepository;
+import com.example.raffinehome.product.entity.Product;
+import com.example.raffinehome.product.repository.ProductRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
