@@ -46,7 +46,7 @@ public class CartController {
     @PutMapping("/items/{itemId}")
     public ResponseEntity<Cart> updateItem(
             @PathVariable String itemId,
-            @Valid @RequestBody CartItemUpdateDTO quantityDto,
+            @Valid @RequestBody CartItemUpdateDTO CartAddDTO,
             HttpSession session) {
         Cart cart = cartService.updateItemQuantity(itemId, quantityDto.getQuantity(), session);
         return ResponseEntity.ok(cart);
