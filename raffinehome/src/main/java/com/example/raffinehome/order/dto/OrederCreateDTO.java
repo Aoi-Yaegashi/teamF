@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class OrederCreate {
+public class OrederCreateDTO {
     @NotBlank(message = "お名前は必須です")
     private String name;
     
