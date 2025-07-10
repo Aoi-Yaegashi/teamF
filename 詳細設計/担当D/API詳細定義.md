@@ -16,10 +16,8 @@
       "items": {
         "type": "object",
         "properties": {
-          "category_id": { "type": "integer" },
           "name":        { "type": "string" }
         },
-        "required": ["category_id","name"]
       }
     },
     "new_arrivals": {
@@ -62,9 +60,7 @@
 
 ・リクエスト（クエリパラメータ）
 
-```
-?category_id={integer}
-```
+
 
 ・レスポンス（200 OK）スキーマ
 
@@ -556,9 +552,6 @@ order_id={integer}
 
 ・リクエスト（クエリパラメータ）
 
-```
-?search_keyword={string}&category_id={integer}&page={integer}&limit={integer}
-```
 
 ・レスポンス（200 OK）スキーマ
 
@@ -595,11 +588,10 @@ order_id={integer}
     "name":          { "type":"string" },
     "description":   { "type":"string" },
     "price":         { "type":"number" },
-    "category_id":   { "type":"integer" },
     "image_url":     { "type":"string","format":"uri" },
     "stock_quantity":{ "type":"integer" }
   },
-  "required":["name","description","price","category_id","image_url","stock_quantity"]
+  "required":["name","description","price","image_url","stock_quantity"]
 }
 ```
 
@@ -682,9 +674,6 @@ order_id={integer}
   "title":"AdminCategoryCreateResponse",
   "type":"object",
   "properties":{
-    "category_id":{ "type":"integer" }
-  },
-  "required":["category_id"]
 }
 ```
 
