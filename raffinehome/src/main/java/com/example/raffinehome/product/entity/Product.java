@@ -1,4 +1,4 @@
-package com.example.simplezakka.entity;
+package com.example.raffinehome.product.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

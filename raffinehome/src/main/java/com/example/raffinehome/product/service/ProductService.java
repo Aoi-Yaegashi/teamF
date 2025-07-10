@@ -1,4 +1,4 @@
-package com.example.simplezakka.service;
+package com.example.raffinehome.product.service;
 
 import com.example.simplezakka.dto.product.ProductDetail;
 import com.example.simplezakka.dto.product.ProductListItem;

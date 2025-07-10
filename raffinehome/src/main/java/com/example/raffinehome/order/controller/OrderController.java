@@ -1,4 +1,4 @@
-package com.example.simplezakka.controller;
+package com.example.raffinehome.order.controller;
 
 import com.example.simplezakka.dto.cart.Cart;
 import com.example.simplezakka.dto.order.OrderRequest;
