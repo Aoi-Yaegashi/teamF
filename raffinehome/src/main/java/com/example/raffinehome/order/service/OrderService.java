@@ -1,16 +1,13 @@
 package com.example.raffinehome.order.service;
 
-import com.example.simplezakka.dto.cart.Cart;
-import com.example.simplezakka.dto.cart.CartItem;
-import com.example.simplezakka.dto.order.CustomerInfo;
-import com.example.simplezakka.dto.order.OrderRequest;
-import com.example.simplezakka.dto.order.OrderResponse;
-import com.example.simplezakka.entity.Order;
-import com.example.simplezakka.entity.OrderDetail;
-import com.example.simplezakka.entity.Product;
-import com.example.simplezakka.repository.OrderDetailRepository;
-import com.example.simplezakka.repository.OrderRepository;
-import com.example.simplezakka.repository.ProductRepository;
+import com.example.raffinehome.cart.dto.Cart;
+import com.example.raffinehome.cart.dto.CartItem;
+import com.example.raffinehome.order.entity.Order;
+import com.example.raffinehome.order.entity.OrderItem;
+import com.example.raffinehome.product.entity.Product;
+import com.example.raffinehome.order.repository.OrderItemRepository;
+import com.example.raffinehome.order.repository.OrderRepository;
+import com.example.raffinehome.product.repository.ProductRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,18 +20,18 @@ import java.util.Optional;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final OrderDetailRepository orderDetailRepository;
+    private final OrderItemRepository orderItemRepository;
     private final ProductRepository productRepository;
     private final CartService cartService;
 
     @Autowired
     public OrderService(
             OrderRepository orderRepository,
-            OrderDetailRepository orderDetailRepository,
+            OrderItemRepository orderItemRepository,
             ProductRepository productRepository,
             CartService cartService) {
         this.orderRepository = orderRepository;
-        this.orderDetailRepository = orderDetailRepository;
+        this.orderItemRepository = orderItemRepository;
         this.productRepository = productRepository;
         this.cartService = cartService;
     }
@@ -48,8 +45,8 @@ public class OrderService {
         // 在庫確認
         for (CartItem cartItem : cart.getItems().values()) {
             Optional<Product> productOpt = productRepository.findById(cartItem.getProductId());
-            if (productOpt.isEmpty() || productOpt.get().getStock() < cartItem.getQuantity()) {
-                throw new RuntimeException("在庫不足または商品未存在: " + cartItem.getName());
+            if (productOpt.isEmpty() || productOpt.get().getStockQuantity() < cartItem.getQuantity()) {
+                throw new RuntimeException("在庫不足または商品未存在: " + cartItem.getProductName());
             }
         }
 
@@ -61,36 +58,28 @@ public class OrderService {
         order.setCustomerName(customerInfo.getName());
         order.setCustomerEmail(customerInfo.getEmail());
         order.setShippingAddress(customerInfo.getAddress());
-        order.setShippingPhoneNumber(customerInfo.getPhoneNumber());
-        order.setStatus("PENDING");
+        order.setPostalCode(customerInfo.getPostalCode());
+        order.setOrderStatus("PENDING");
 
         // 注文明細作成と在庫減算
         for (CartItem cartItem : cart.getItems().values()) {
             Product product = productRepository.findById(cartItem.getProductId()).orElseThrow(
-                () -> new IllegalStateException("在庫確認後に商品が見つかりません: " + cartItem.getName())
+                () -> new IllegalStateException("在庫確認後に商品が見つかりません: " + cartItem.getProductName())
             );
 
-            OrderDetail orderDetail = new OrderDetail();
-            orderDetail.setProduct(product);
-            orderDetail.setProductName(product.getName());
-            orderDetail.setPrice(product.getPrice());
-            orderDetail.setQuantity(cartItem.getQuantity());
+            OrderItem orderItem = new OrderItem();
+            orderItem.setProductId(product.getId());
+            orderItem.setProductName(product.getName());
+            orderItem.setUnitPrice(product.getPrice());
+            orderItem.setQuantity(cartItem.getQuantity());
+            orderItem.calculateSubtotal(); // 小計計算
+            orderItem.setCreatedAt(LocalDateTime.now());
 
-            order.addOrderDetail(orderDetail);
+            order.addOrderItem(orderItem);
 
-            // 在庫減算処理と結果のチェック
-            int updatedRows = productRepository.decreaseStock(product.getProductId(), cartItem.getQuantity());
-
-            // 更新された行数が1でない場合（在庫更新に失敗した場合）
-            if (updatedRows != 1) {
-                throw new IllegalStateException(
-                    "在庫の更新に失敗しました (更新行数: " + updatedRows + ")。" +
-                    "商品ID: " + product.getProductId() +
-                    ", 商品名: " + product.getName() +
-                    ", 要求数量: " + cartItem.getQuantity()
-                    // 必要であれば、考えられる原因（競合など）を示すメッセージを追加
-                );
-            }
+            // 在庫減算
+            product.reduceStock(cartItem.getQuantity());
+            productRepository.save(product);
         }
 
         // 注文保存
@@ -99,6 +88,6 @@ public class OrderService {
         // カートクリア
         cartService.clearCart(session);
 
-        return new OrderResponse(savedOrder.getOrderId(), savedOrder.getOrderDate());
+        return new OrderResponse(savedOrder.getId(), savedOrder.getOrderDate());
     }
 }
