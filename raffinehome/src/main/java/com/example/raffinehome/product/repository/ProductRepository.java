@@ -1,6 +1,6 @@
-package com.example.simplezakka.repository;
+package com.example.raffinehome.product.repository;
 
-import com.example.simplezakka.entity.Product;
+import com.example.raffinehome.product.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

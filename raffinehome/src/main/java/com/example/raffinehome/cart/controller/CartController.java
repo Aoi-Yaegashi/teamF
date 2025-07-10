@@ -1,9 +1,9 @@
-package com.example.simplezakka.controller;
+package com.example.raffinehome.cart.controller;
 
-import com.example.simplezakka.dto.cart.Cart;
-import com.example.simplezakka.dto.cart.CartItemInfo;
-import com.example.simplezakka.dto.cart.CartItemQuantityDto;
-import com.example.simplezakka.service.CartService;
+import com.example.raffinehome.cart.dto.Cart;
+import com.example.raffinehome.cart.dto.CartItemInfo;
+import com.example.raffinehome.cart.dto.CartItemQuantity;
+import com.example.raffinehome.cart.service.CartService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
