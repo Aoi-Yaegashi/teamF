@@ -2,6 +2,7 @@ package com.example.raffinehome.order.service;
 
 import com.example.raffinehome.cart.dto.Cart;
 import com.example.raffinehome.cart.dto.CartItem;
+import com.example.raffinehome.cart.service.CartService;
 import com.example.raffinehome.order.dto.OrderItemDTO;
 import com.example.raffinehome.order.dto.OrderDTO;
 import com.example.raffinehome.order.dto.OrederCreateDTO;
@@ -25,14 +26,14 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final ProductRepository productRepository;
-    private final Cart cartService;
+    private final CartService cartService;
 
     @Autowired
     public OrderService(
             OrderRepository orderRepository,
             OrderItemRepository orderItemRepository,
             ProductRepository productRepository,
-            Cart cartService) {
+            CartService cartService) {
         this.orderRepository = orderRepository;
         this.orderItemRepository = orderItemRepository;
         this.productRepository = productRepository;
@@ -55,7 +56,7 @@ public class OrderService {
 
         // 注文エンティティ作成
         Order order = new Order();
-     OrederCreateDTO customerInfo = orederCreateDTO.getcustomerInfo();
+        OrederCreateDTO customerInfo = orederCreateDTO.getCustomerInfo();
         order.setOrderDate(LocalDateTime.now());
         order.setTotalAmount(cart.getTotalPrice());
         order.setCustomerName(customerInfo.getName());
@@ -89,7 +90,7 @@ public class OrderService {
         Order savedOrder = orderRepository.save(order);
 
         // カートクリア
-        cartService.clearCart(HttpSession session);
+        cartService.clearCart(session);
 
         return new OrderDTO(savedOrder.getOrderId(), savedOrder.getOrderDate());
     }

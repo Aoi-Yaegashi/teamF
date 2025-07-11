@@ -29,7 +29,7 @@ public class OrderController {
             @Valid @RequestBody OrederCreateDTO orederCreateDTO,
             HttpSession session) {
         try {
-            OrderDTO orderDTO = orderService.placeOrder(cart, orderService, session);
+            OrderDTO orderDTO = orderService.placeOrder(cart, orederCreateDTO, session);
             return ResponseEntity.status(HttpStatus.CREATED).body(orderDTO);
         } catch (Exception e) {
             // 例外ハンドラで詳細に制御するのが推奨
