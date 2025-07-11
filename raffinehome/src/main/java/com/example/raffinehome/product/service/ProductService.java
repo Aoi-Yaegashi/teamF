@@ -37,8 +37,8 @@ public class ProductService {
                 product.getId(),
                 product.getName(),
                 product.getPrice(),
-                product.getSale_price(),
-                product.getImage_url()
+                product.getSalePrice(),
+                product.getImageUrl()
         );
     }
     
@@ -47,10 +47,10 @@ public class ProductService {
                 product.getId(),
                 product.getName(),
                 product.getPrice(),
-                product.getSale_price(),
+                product.getSalePrice(),
                 product.getDescription(),
-                product.getStock_quantity(),
-                product.getImage_url()
+                product.getStockQuantity(),
+                product.getImageUrl()
         );
     }
 }
