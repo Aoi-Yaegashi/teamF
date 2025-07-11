@@ -2,6 +2,7 @@ package com.example.raffinehome.order.service;
 
 import com.example.raffinehome.cart.dto.Cart;
 import com.example.raffinehome.cart.dto.CartItem;
+import com.example.raffinehome.cart.service.CartService;
 import com.example.raffinehome.order.dto.OrderItemDTO;
 import com.example.raffinehome.order.dto.OrderDTO;
 import com.example.raffinehome.order.dto.OrederCreateDTO;
@@ -25,14 +26,14 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final ProductRepository productRepository;
-    private final Cart cartService;
+    private final CartService cartService;
 
     @Autowired
     public OrderService(
             OrderRepository orderRepository,
             OrderDetailRepository orderDetailRepository,
             ProductRepository productRepository,
-            Cart cartService) {
+            CartService cartService) {
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.productRepository = productRepository;
@@ -97,7 +98,7 @@ public class OrderService {
         Order savedOrder = orderRepository.save(order);
 
         // カートクリア
-        cartService.clearCart(HttpSession session);
+        cartService.clearCart(session);
 
         return new OrderDTO(savedOrder.getOrderId(), savedOrder.getOrderDate());
     }
