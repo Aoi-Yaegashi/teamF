@@ -67,4 +67,33 @@ public class CartService {
         session.setAttribute(CART_SESSION_KEY, cart);
         return cart;
     }
+
+    public int getCartItemCount(HttpSession session) {
+        Cart cartSession = (Cart) session.getAttribute(CART_SESSION_KEY);
+        if (cartSession == null || cartSession.getItems() == null) {
+            return 0;
+        }
+        int total = 0;
+        for (CartItem item : cartSession.getItems().values()) {
+            total += item.getQuantity();
+        }
+        return total;
+    }
+
+        public Cart getCartSession(HttpSession session) {
+        Cart cartSession = (Cart) session.getAttribute(CART_SESSION_KEY);
+        if (cartSession == null) {
+            cartSession = new Cart();
+            // 必要に応じてsession_idやcreated_atなどを初期化
+            session.setAttribute(CART_SESSION_KEY, cartSession);
+        }
+        return cartSession;
+    }
+
+        public void saveCartSession(HttpSession session, Cart cart) {
+        if (session == null || cart == null) {
+            return;
+        }
+        session.setAttribute(CART_SESSION_KEY, cart);
+    }
 }
