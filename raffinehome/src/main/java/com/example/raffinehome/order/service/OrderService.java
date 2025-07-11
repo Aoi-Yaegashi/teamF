@@ -2,7 +2,7 @@ package com.example.raffinehome.order.service;
 
 import com.example.raffinehome.cart.dto.Cart;
 import com.example.raffinehome.cart.dto.CartItem;
-import com.example.raffinehome.order.dto.CustomerInfo;
+import com.example.raffinehome.order.dto.OrderItemDTO;
 import com.example.raffinehome.order.dto.OrderDTO;
 import com.example.raffinehome.order.dto.OrederCreateDTO;
 import com.example.raffinehome.order.entity.Order;
@@ -55,7 +55,7 @@ public class OrderService {
 
         // 注文エンティティ作成
         Order order = new Order();
-        OrederCreateDTO customerInfo = orederCreateDTO.getOrederCreateDTO();
+     OrederCreateDTO customerInfo = orederCreateDTO.getcustomerInfo();
         order.setOrderDate(LocalDateTime.now());
         order.setTotalAmount(cart.getTotalPrice());
         order.setCustomerName(customerInfo.getName());
@@ -97,7 +97,7 @@ public class OrderService {
         Order savedOrder = orderRepository.save(order);
 
         // カートクリア
-        cartService.clearCart(session);
+        cartService.clearCart(HttpSession session);
 
         return new OrderDTO(savedOrder.getOrderId(), savedOrder.getOrderDate());
     }
