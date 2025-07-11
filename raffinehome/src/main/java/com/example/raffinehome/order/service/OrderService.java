@@ -49,7 +49,7 @@ public class OrderService {
         // 在庫確認
         for (CartItem cartItem : cart.getItems().values()) {
             Optional<Product> productOpt = productRepository.findById(cartItem.getProductId());
-            if (productOpt.isEmpty() || productOpt.get().getStock() < cartItem.getQuantity()) {
+            if (productOpt.isEmpty() || productOpt.get().getStockQuantity() < cartItem.getQuantity()) {
                 throw new RuntimeException("在庫不足または商品未存在: " + cartItem.getName());
             }
         }
@@ -62,8 +62,8 @@ public class OrderService {
         order.setCustomerName(customerInfo.getName());
         order.setCustomerEmail(customerInfo.getEmail());
         order.setShippingAddress(customerInfo.getAddress());
-        order.setShippingPhoneNumber(customerInfo.getPhoneNumber());
-        order.setStatus("PENDING");
+        order.setPhoneNumber(customerInfo.getPhoneNumber());
+        order.setOrderStatus("PENDING");
 
         // 注文明細作成と在庫減算
         for (CartItem cartItem : cart.getItems().values()) {
@@ -74,19 +74,19 @@ public class OrderService {
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setProduct(product);
             orderDetail.setProductName(product.getName());
-            orderDetail.setPrice(product.getPrice());
+            orderDetail.setUnitPrice(product.getPrice());
             orderDetail.setQuantity(cartItem.getQuantity());
 
             order.addOrderDetail(orderDetail);
 
             // 在庫減算処理と結果のチェック
-            int updatedRows = productRepository.decreaseStock(product.getProductId(), cartItem.getQuantity());
+            int updatedRows = productRepository.decreaseStock(product.getId(), cartItem.getQuantity());
 
             // 更新された行数が1でない場合（在庫更新に失敗した場合）
             if (updatedRows != 1) {
                 throw new IllegalStateException(
                     "在庫の更新に失敗しました (更新行数: " + updatedRows + ")。" +
-                    "商品ID: " + product.getProductId() +
+                    "商品ID: " + product.getId() +
                     ", 商品名: " + product.getName() +
                     ", 要求数量: " + cartItem.getQuantity()
                     // 必要であれば、考えられる原因（競合など）を示すメッセージを追加
@@ -100,6 +100,6 @@ public class OrderService {
         // カートクリア
         cartService.clearCart(session);
 
-        return new OrderDTO(savedOrder.getOrderId(), savedOrder.getOrderDate());
+        return new OrderDTO(savedOrder.getId(), savedOrder.getOrderDate());
     }
 }

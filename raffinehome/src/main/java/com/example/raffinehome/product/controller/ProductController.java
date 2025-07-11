@@ -19,22 +19,22 @@ public class ProductController {
     private final ProductService productService;
     
     @Autowired
-    public ProductController(ProductService productService) {
-        this.productService = productService;
+    public ProductController(ProductService ProductService) {
+        this.productService = ProductService;
     }
     
     @GetMapping
     public ResponseEntity<List<ProductListItem>> getAllProducts() {
-        List<ProductListItem> products = productService.findAllProducts();
-        return ResponseEntity.ok(products);
+        List<ProductListItem> product = productService.findAllProducts();
+        return ResponseEntity.ok(product);
     }
     
-    @GetMapping("/{productId}")
-    public ResponseEntity<ProductDetail> getProductById(@PathVariable Integer productId) {
-        ProductDetail product = productService.findProductById(productId);
-        if (product == null) {
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDetail> getProductById(@PathVariable int id) {
+        ProductDetail products = productService.findProductById(id);
+        if (products == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(product);
+        return ResponseEntity.ok(products);
     }
 }

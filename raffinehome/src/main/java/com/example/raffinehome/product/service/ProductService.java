@@ -17,8 +17,8 @@ public class ProductService {
     private final ProductRepository productRepository;
     
     @Autowired
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    public ProductService(ProductRepository ProductRepository) {
+        this.productRepository = ProductRepository;
     }
     
     public List<ProductListItem> findAllProducts() {
@@ -27,27 +27,29 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
     
-    public ProductDetail findProductById(Integer productId) {
-        Optional<Product> productOpt = productRepository.findById(productId);
+    public ProductDetail findProductById(Integer id) {
+        Optional<Product> productOpt = productRepository.findById(id);
         return productOpt.map(this::convertToDetail).orElse(null);
     }
     
     private ProductListItem convertToListItem(Product product) {
         return new ProductListItem(
-                product.getProductId(),
+                product.getId(),
                 product.getName(),
                 product.getPrice(),
+                product.getSalePrice(),
                 product.getImageUrl()
         );
     }
     
     private ProductDetail convertToDetail(Product product) {
         return new ProductDetail(
-                product.getProductId(),
+                product.getId(),
                 product.getName(),
                 product.getPrice(),
+                product.getSalePrice(),
                 product.getDescription(),
-                product.getStock(),
+                product.getStockQuantity(),
                 product.getImageUrl()
         );
     }

@@ -16,7 +16,7 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer orderId;
+    private Integer id;
     
     @Column(nullable = false)
     private LocalDateTime orderDate;
@@ -34,10 +34,10 @@ public class Order {
     private String shippingAddress;
     
     @Column(nullable = false)
-    private String shippingPhoneNumber;
+    private String phoneNumber;
     
     @Column(nullable = false)
-    private String status;
+    private String orderStatus;
     
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderDetail> orderDetails = new ArrayList<>();
