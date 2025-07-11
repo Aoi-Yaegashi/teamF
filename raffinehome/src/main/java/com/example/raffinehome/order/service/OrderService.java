@@ -7,9 +7,9 @@ import com.example.raffinehome.order.dto.OrderItemDTO;
 import com.example.raffinehome.order.dto.OrderDTO;
 import com.example.raffinehome.order.dto.OrederCreateDTO;
 import com.example.raffinehome.order.entity.Order;
-import com.example.raffinehome.order.entity.OrderDetail;
+import com.example.raffinehome.order.entity.OrderItem;
 import com.example.raffinehome.product.entity.Product;
-import com.example.raffinehome.order.repository.OrderDetailRepository;
+import com.example.raffinehome.order.repository.OrderItemRepository;
 import com.example.raffinehome.order.repository.OrderRepository;
 import com.example.raffinehome.product.repository.ProductRepository;
 import jakarta.servlet.http.HttpSession;
@@ -24,14 +24,14 @@ import java.util.Optional;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final OrderDetailRepository orderDetailRepository;
+    private final OrderItemRepository orderDetailRepository;
     private final ProductRepository productRepository;
     private final CartService cartService;
 
     @Autowired
     public OrderService(
             OrderRepository orderRepository,
-            OrderDetailRepository orderDetailRepository,
+            OrderItemRepository orderDetailRepository,
             ProductRepository productRepository,
             CartService cartService) {
         this.orderRepository = orderRepository;
@@ -71,7 +71,7 @@ public class OrderService {
                 () -> new IllegalStateException("在庫確認後に商品が見つかりません: " + cartItem.getName())
             );
 
-            OrderDetail orderDetail = new OrderDetail();
+            OrderItem orderDetail = new OrderItem();
             orderDetail.setProduct(product);
             orderDetail.setProductName(product.getName());
             orderDetail.setUnitPrice(product.getPrice());
