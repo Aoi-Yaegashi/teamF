@@ -1,8 +1,15 @@
 package com.example.raffinehome.order.controller;
 
+<<<<<<< HEAD
 import com.example.raffinehome.order.dto.OrderCreateDTO;
 import com.example.raffinehome.order.dto.OrderDTO;
 import com.example.raffinehome.order.dto.OrderStatusUpdateDTO;
+=======
+import com.example.raffinehome.cart.dto.Cart;
+import com.example.raffinehome.order.dto.OrederCreateDTO;
+import com.example.raffinehome.order.dto.OrderDTO;
+import com.example.raffinehome.cart.service.CartService;
+>>>>>>> 8418ac7618e70d499c60e7777592c7b835a4ac76
 import com.example.raffinehome.order.service.OrderService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -24,11 +31,20 @@ public class OrderController {
 
     // 注文作成
     @PostMapping
+<<<<<<< HEAD
     public ResponseEntity<OrderDTO> createOrder(
             @Valid @RequestBody OrderCreateDTO orderCreateDTO,
+=======
+    public ResponseEntity<OrderDTO> placeOrder(
+            @Valid @RequestBody OrederCreateDTO orederCreateDTO,
+>>>>>>> 8418ac7618e70d499c60e7777592c7b835a4ac76
             HttpSession session) {
         try {
+<<<<<<< HEAD
             OrderDTO orderDTO = orderService.createOrder(orderCreateDTO, session);
+=======
+            OrderDTO orderDTO = orderService.placeOrder(cart, orderService, session);
+>>>>>>> 8418ac7618e70d499c60e7777592c7b835a4ac76
             return ResponseEntity.status(HttpStatus.CREATED).body(orderDTO);
         } catch (Exception e) {
             // 例外ハンドラで詳細に制御するのが推奨

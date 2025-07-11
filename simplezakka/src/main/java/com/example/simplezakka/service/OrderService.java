@@ -12,7 +12,6 @@ import com.example.simplezakka.repository.OrderDetailRepository;
 import com.example.simplezakka.repository.OrderRepository;
 import com.example.simplezakka.repository.ProductRepository;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,18 +22,15 @@ import java.util.Optional;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final OrderDetailRepository orderDetailRepository;
     private final ProductRepository productRepository;
     private final CartService cartService;
 
-    @Autowired
     public OrderService(
             OrderRepository orderRepository,
             OrderDetailRepository orderDetailRepository,
             ProductRepository productRepository,
             CartService cartService) {
         this.orderRepository = orderRepository;
-        this.orderDetailRepository = orderDetailRepository;
         this.productRepository = productRepository;
         this.cartService = cartService;
     }
