@@ -1,7 +1,7 @@
 package com.example.raffinehome.product.controller;
 
-import com.example.raffinehome.product.dto.ProductDetail;
-import com.example.raffinehome.product.dto.ProductListItem;
+import com.example.raffinehome.product.dto.ProductDTO;
+import com.example.raffinehome.product.dto.ProductCreateDTO;
 import com.example.raffinehome.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,16 +24,16 @@ public class ProductController {
     }
     
     @GetMapping
-    public ResponseEntity<List<ProductListItem>> getAllProducts() {
-        List<ProductListItem> product = productService.findAllProducts();
+    public ResponseEntity<List<ProductCreateDTO>> getAllProducts() {
+        List<ProductCreateDTO> product = productService.findAllProducts();
         return ResponseEntity.ok(product);
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDetail> getProductById(@PathVariable int id) {
-        ProductDetail products = productService.findProductById(id);
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable int id) {
+        ProductDTO products = productService.findProductById(id);
         if (products == null) {
-            return ResponseEntity.notFound().build();
+           return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(products);
     }

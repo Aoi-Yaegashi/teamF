@@ -1,7 +1,8 @@
 package com.example.raffinehome.product.service;
 
-import com.example.raffinehome.product.dto.ProductDetail;
-import com.example.raffinehome.product.dto.ProductListItem;
+import com.example.raffinehome.product.dto.ProductDTO;
+import com.example.raffinehome.product.dto.ProductCreateDTO;
+import com.example.raffinehome.product.dto.ProductDTO;
 import com.example.raffinehome.product.entity.Product;
 import com.example.raffinehome.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,19 +22,19 @@ public class ProductService {
         this.productRepository = ProductRepository;
     }
     
-    public List<ProductListItem> findAllProducts() {
+    public List<ProductCreateDTO> findAllProducts() {
         return productRepository.findAll().stream()
                 .map(this::convertToListItem)
                 .collect(Collectors.toList());
     }
     
-    public ProductDetail findProductById(Integer id) {
+    public ProductDTO findProductById(Integer id) {
         Optional<Product> productOpt = productRepository.findById(id);
         return productOpt.map(this::convertToDetail).orElse(null);
     }
     
-    private ProductListItem convertToListItem(Product product) {
-        return new ProductListItem(
+    private ProductCreateDTO convertToListItem(Product product) {
+        return new ProductCreateDTO(
                 product.getId(),
                 product.getName(),
                 product.getPrice(),
@@ -42,8 +43,8 @@ public class ProductService {
         );
     }
     
-    private ProductDetail convertToDetail(Product product) {
-        return new ProductDetail(
+    private ProductDTO convertToDetail(Product product) {
+        return new ProductDTO(
                 product.getId(),
                 product.getName(),
                 product.getPrice(),
