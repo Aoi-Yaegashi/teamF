@@ -1,8 +1,9 @@
-package com.example.simplezakka.entity;
+package com.example.raffinehome.order.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.example.raffinehome.product.entity.Product;
 
 @Entity
 @Table(name = "order_details")

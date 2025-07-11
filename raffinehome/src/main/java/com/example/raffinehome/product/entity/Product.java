@@ -1,4 +1,4 @@
-package com.example.simplezakka.entity;
+package com.example.raffinehome.product.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "products")
+@Table(name = "product")
 @Data
 @NoArgsConstructor
 public class Product {
