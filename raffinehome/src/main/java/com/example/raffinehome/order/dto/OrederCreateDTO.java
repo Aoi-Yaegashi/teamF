@@ -18,4 +18,8 @@ public class OrederCreateDTO {
     
     @NotBlank(message = "電話番号は必須です")
     private String phoneNumber;
+
+public OrederCreateDTO getCustomerInfo(){
+    return this;
+  }
 }
