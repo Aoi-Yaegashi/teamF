@@ -22,7 +22,7 @@ public class CartService {
         this.productRepository = productRepository;
     }
     
-    public Cart getCartFromSession(HttpSession session) {
+    public Cart getCart(HttpSession session) {
         Cart cart = (Cart) session.getAttribute(CART_SESSION_KEY);
         if (cart == null) {
             cart = new Cart();
@@ -31,12 +31,12 @@ public class CartService {
         return cart;
     }
     
-    public Cart addItemToCart(Integer productId, Integer quantity, HttpSession session) {
+    public Cart addToCart(Integer productId, Integer quantity, HttpSession session) {
         Optional<Product> productOpt = productRepository.findById(productId);
         
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
-            Cart cart = getCartFromSession(session);
+            Cart cart = getCart(session);
             
             CartItem item = new CartItem();
             item.setProductId(product.getProductId());
@@ -53,22 +53,18 @@ public class CartService {
         
         return null;
     }
-    
-    public Cart updateItemQuantity(String itemId, Integer quantity, HttpSession session) {
-        Cart cart = getCartFromSession(session);
-        cart.updateQuantity(itemId, quantity);
+
+    public Cart removeFromCart(String productId, HttpSession session) {
+        Cart cart = getCart(session);
+        cart.removeItem(productId);
         session.setAttribute(CART_SESSION_KEY, cart);
         return cart;
     }
     
-    public Cart removeItemFromCart(String itemId, HttpSession session) {
-        Cart cart = getCartFromSession(session);
-        cart.removeItem(itemId);
+    public Cart updateCartItem(String productId, Integer quantity, HttpSession session) {
+        Cart cart = getCart(session);
+        cart.updateQuantity(productId, quantity);
         session.setAttribute(CART_SESSION_KEY, cart);
         return cart;
-    }
-    
-    public void clearCart(HttpSession session) {
-        session.removeAttribute(CART_SESSION_KEY);
     }
 }

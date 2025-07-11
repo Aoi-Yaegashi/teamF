@@ -24,13 +24,13 @@ public class CartController {
     
     @GetMapping
     public ResponseEntity<Cart> getCart(HttpSession session) {
-        Cart cart = cartService.getCartFromSession(session);
+        Cart cart = cartService.getCart(session);
         return ResponseEntity.ok(cart);
     }
     
     @PostMapping
     public ResponseEntity<Cart> addItem(@Valid @RequestBody CartItem cartItemInfo, HttpSession session) {
-        Cart cart = cartService.addItemToCart(
+        Cart cart = cartService.addToCart(
                 cartItemInfo.getProductId(),
                 cartItemInfo.getQuantity(),
                 session
