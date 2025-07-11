@@ -7,43 +7,43 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "product")
+@Table(name = "products")
 @Data
 @NoArgsConstructor
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer productId;
+    private int id;
     
     @Column(nullable = false)
     private String name;
     
-    @Column(length = 1000)
     private String description;
     
     @Column(nullable = false)
-    private Integer price;
+    private int price;
+
+     @Column(nullable = false)
+    private int sale_price;
     
     @Column(nullable = false)
-    private Integer stock;
+    private int stock_quantity;
     
-    private String imageUrl;
+    private String image_url;
     
-    private Boolean isRecommended;
+    private LocalDateTime created_at;
     
-    private LocalDateTime createdAt;
-    
-    private LocalDateTime updatedAt;
+    private LocalDateTime updated_at;
     
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
+        created_at = LocalDateTime.now();
+        updated_at = LocalDateTime.now();
     }
     
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
+        updated_at = LocalDateTime.now();
     }
 }
