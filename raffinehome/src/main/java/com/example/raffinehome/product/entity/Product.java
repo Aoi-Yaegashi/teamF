@@ -25,25 +25,25 @@ public class Product {
     private int price;
 
      @Column(nullable = false)
-    private int sale_price;
+    private int salePrice;
     
     @Column(nullable = false)
-    private int stock_quantity;
+    private int stockQuantity;
     
-    private String image_url;
+    private String imageUrl;
     
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
     
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
     
     @PrePersist
     protected void onCreate() {
-        created_at = LocalDateTime.now();
-        updated_at = LocalDateTime.now();
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
     
     @PreUpdate
     protected void onUpdate() {
-        updated_at = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 }
