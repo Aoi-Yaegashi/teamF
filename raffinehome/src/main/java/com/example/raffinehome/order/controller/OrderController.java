@@ -40,7 +40,7 @@ public class OrderController {
         }
         
         try {
-            OrderDTO orderDTO = orderService.placeOrder(cart, orderService, session);
+            OrderDTO orderDTO = orderService.placeOrder(cart, orederCreateDTO, session);
             return ResponseEntity.status(HttpStatus.CREATED).body(orderDTO);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
