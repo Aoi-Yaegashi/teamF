@@ -4,13 +4,13 @@ import com.example.raffinehome.cart.dto.Cart;
 import com.example.raffinehome.cart.dto.CartItem;
 import com.example.raffinehome.order.dto.CustomerInfo;
 import com.example.raffinehome.order.dto.OrderDTO;
-import com.example.raffinehome.order.dto.;
+import com.example.raffinehome.order.dto.OrederCreateDTO;
 import com.example.raffinehome.order.entity.Order;
 import com.example.raffinehome.order.entity.OrderDetail;
-import com.example.raffinehome.order.entity.Product;
+import com.example.raffinehome.product.entity.Product;
 import com.example.raffinehome.order.repository.OrderDetailRepository;
 import com.example.raffinehome.order.repository.OrderRepository;
-import com.example.raffinehome.order.repository.ProductRepository;
+import com.example.raffinehome.product.repository.ProductRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,14 +25,14 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final ProductRepository productRepository;
-    private final CartService cartService;
+    private final Cart cartService;
 
     @Autowired
     public OrderService(
             OrderRepository orderRepository,
             OrderDetailRepository orderDetailRepository,
             ProductRepository productRepository,
-            CartService cartService) {
+            Cart cartService) {
         this.orderRepository = orderRepository;
         this.orderDetailRepository = orderDetailRepository;
         this.productRepository = productRepository;
@@ -40,7 +40,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse placeOrder(Cart cart, OrderRequest orderRequest, HttpSession session) {
+    public OrderDTO placeOrder(Cart cart, OrederCreateDTO orederCreateDTO, HttpSession session) {
         if (cart == null || cart.getItems().isEmpty()) {
             return null;
         }
@@ -55,7 +55,7 @@ public class OrderService {
 
         // 注文エンティティ作成
         Order order = new Order();
-        CustomerInfo customerInfo = orderRequest.getCustomerInfo();
+        OrederCreateDTO customerInfo = orederCreateDTO.getOrederCreateDTO();
         order.setOrderDate(LocalDateTime.now());
         order.setTotalAmount(cart.getTotalPrice());
         order.setCustomerName(customerInfo.getName());
@@ -99,6 +99,6 @@ public class OrderService {
         // カートクリア
         cartService.clearCart(session);
 
-        return new OrderResponse(savedOrder.getOrderId(), savedOrder.getOrderDate());
+        return new OrderDTO(savedOrder.getOrderId(), savedOrder.getOrderDate());
     }
 }
