@@ -59,9 +59,9 @@ public class OrderService {
         OrederCreateDTO customerInfo = orederCreateDTO.getCustomerInfo();
         order.setOrderDate(LocalDateTime.now());
         order.setTotalAmount(cart.getTotalPrice());
-        order.setCustomerName(customerInfo.getName());
-        order.setCustomerEmail(customerInfo.getEmail());
-        order.setShippingAddress(customerInfo.getAddress());
+        order.setCustomerName(customerInfo.getCustomerName());
+        order.setCustomerEmail(customerInfo.getCustomerEmail());
+        order.setShippingAddress(customerInfo.getShippingAddress());
         order.setPhoneNumber(customerInfo.getPhoneNumber());
         order.setOrderStatus("PENDING");
 
