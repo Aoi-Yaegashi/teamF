@@ -11,6 +11,6 @@ public class ProductListItem {
     private int id;
     private String name;
     private int price;
-    private int sale_price;
-    private String image_url;
+    private int salePrice;
+    private String imageUrl;
 }

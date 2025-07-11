@@ -11,8 +11,8 @@ public class ProductDetail {
     private int id;
     private String name;
     private int price;
-    private int sale_price;
+    private int salePrice;
     private String description;
-    private int stock_quantity;
-    private String image_url;
+    private int stockQuantity;
+    private String imageUrl;
 }
