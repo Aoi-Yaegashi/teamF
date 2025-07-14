@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class CartItemInfo {
+public class CartAddDTO {
     @NotNull(message = "商品IDは必須です")
     private Integer productId;
     
