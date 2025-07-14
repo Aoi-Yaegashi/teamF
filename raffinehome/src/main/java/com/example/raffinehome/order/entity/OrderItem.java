@@ -3,17 +3,20 @@ package com.example.raffinehome.order.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
 import com.example.raffinehome.product.entity.Product;
 
 @Entity
 @Table(name = "order_details")
 @Data
 @NoArgsConstructor
-public class OrderDetail {
+public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer orderDetailId;
+    private int id;
     
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
@@ -27,8 +30,18 @@ public class OrderDetail {
     private String productName;
     
     @Column(nullable = false)
-    private Integer price;
+    private  int unitPrice;
     
     @Column(nullable = false)
-    private Integer quantity;
+    private int quantity;
+    
+    @Column(nullable = false)
+    private int subtotal;
+
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }
