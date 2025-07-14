@@ -82,7 +82,7 @@ header nav {
 
 .scroll-infinity {
   overflow: hidden;
-  width: 80%;
+  width: 70%;
   margin: 0 auto
 }
 
@@ -98,8 +98,8 @@ header nav {
 
 .scroll-infinity__item {
   flex: 0 0 auto;
-  width: 200px; 
-  margin-right: 10px;
+  width: 300px; 
+  margin-right: 5px;
 }
 
 .scroll-infinity__item img {
