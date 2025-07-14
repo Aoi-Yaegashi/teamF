@@ -11,16 +11,16 @@ import java.util.Map;
 
 @Data
 public class CartDTO implements Serializable {
-    private Map<String, CartItem> items = new LinkedHashMap<>();
-    private int totalQuantity;
+    private Map<String, CartItemDTO> items = new LinkedHashMap<>();
+    private int itemCount;
     private int totalPrice;
     
-    public void addItem(CartItem product) {
+    public void addItem(CartItemDTO product) {
         String productId = String.valueOf(product.getProductId());
         
         // 既存のアイテムがあれば数量を加算
         if (items.containsKey(productId)) {
-            CartItem quantity = items.get(productId);
+            CartItemDTO quantity = items.get(productId);
             quantity.setQuantity(quantity.getQuantity() + product.getQuantity());
             quantity.setSubtotal(quantity.getPrice() * quantity.getQuantity());
         } else {
@@ -36,7 +36,7 @@ public class CartDTO implements Serializable {
     
     public void updateQuantity(String itemId, int quantity) {
         if (items.containsKey(itemId)) {
-            CartItem item = items.get(itemId);
+            CartItemDTO item = items.get(itemId);
             item.setQuantity(quantity);
             item.setSubtotal(item.getPrice() * quantity);
             calculateTotals();
@@ -49,11 +49,11 @@ public class CartDTO implements Serializable {
     }
     
     public void calculateTotals() {
-        totalQuantity = 0;
+        itemCount = 0;
         totalPrice = 0;
         
-        for (CartItem item : items.values()) {
-            totalQuantity += item.getQuantity();
+        for (CartItemDTO item : items.values()) {
+            itemCount += item.getQuantity();
             totalPrice += item.getSubtotal();
         }
     }

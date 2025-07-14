@@ -52,7 +52,7 @@ public class CartController {
      */
     @PutMapping("/update")
     public ResponseEntity<CartDTO> updateCartItem(HttpSession session, @RequestBody CartUpdateDTO dto) {
-        CartDTO cartDTO = cartService.updateCartItem(session, dto.getProduct_id(), dto.getQuantity());
+        CartDTO cartDTO = cartService.updateCartItem(session, dto.getProductId(), dto.getQuantity());
         return ResponseEntity.ok(cartDTO);
     }
 
