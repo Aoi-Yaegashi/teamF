@@ -33,7 +33,7 @@ public class OrderController {
             @Valid @RequestBody OrederCreateDTO orederCreateDTO,
             HttpSession session) {
         
-        Cart cart = cartService.getCartFromSession(session);
+        Cart cart = cartService.getCartSession(session);
         
         if (cart == null || cart.getItems().isEmpty()) {
             return ResponseEntity.badRequest().build();
