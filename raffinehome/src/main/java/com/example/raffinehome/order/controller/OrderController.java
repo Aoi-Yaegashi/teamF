@@ -32,17 +32,25 @@ public class OrderController {
     public ResponseEntity<OrderDTO> placeOrder(
             @Valid @RequestBody OrederCreateDTO orederCreateDTO,
             HttpSession session) {
+<<<<<<< HEAD
         
         Cart cart = cartService.getCartSession(session);
         
+=======
+System.out.println("controllerstart");
+        Cart cart = cartService.getCartFromSession(session);
+System.out.println("カート取得end");
+>>>>>>> 7ab3de8bbab6de59b74c6750ad4e96182c805595
         if (cart == null || cart.getItems().isEmpty()) {
+System.out.println("カートが空");            
             return ResponseEntity.badRequest().build();
         }
-        
+System.out.println("カートの中身あり");
         try {
             OrderDTO orderDTO = orderService.placeOrder(cart, orederCreateDTO, session);
             return ResponseEntity.status(HttpStatus.CREATED).body(orderDTO);
         } catch (Exception e) {
+System.out.println("注文失敗");             
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

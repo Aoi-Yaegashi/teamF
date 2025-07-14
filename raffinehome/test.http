@@ -20,7 +20,7 @@ GET http://localhost:8080/api/cart
 POST http://localhost:8080/api/orders
 content-type: application/json
 
-    {   "name": "テスト",
-        "email": "t@e.com",
-        "address": "住所",
-        "phoneNumber": "123"}
+{   "name": "テスト",
+    "email": "t@e.com",
+    "address": "住所",
+    "phoneNumber": "123"}

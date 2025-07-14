@@ -24,6 +24,7 @@
             </div>
         </header>
 
+<div th:replace="fragments/header :: header"></div>
 
         <div id="main-content">
             <!-- ここにコンテンツが動的に表示される -->
@@ -32,7 +33,7 @@
             </div>
         </div>
 
-        <footer class="footer">
+        <footer class="simple-footer">
             <div class="footer-links">
                 <a href="terms.html">利用規約</a>
                 <span>|</span>
@@ -42,9 +43,11 @@
                 <span>|</span>
                 <a href="faq.html">よくあるご質問</a>
             </div>
-            <div class="footer-copy">&copy; Raffiné Home. 2025
+            <div class="footer-copy">
+                &copy; Raffiné Home. 2025
             </div>
         </footer>
+
     </div>
 
     <!-- 商品詳細モーダル -->
