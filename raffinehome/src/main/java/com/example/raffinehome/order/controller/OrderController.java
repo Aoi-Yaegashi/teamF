@@ -34,14 +34,9 @@ public class OrderController {
             HttpSession session) {
 
         
-        Cart cart = cartService.getCartSession(session);
+        CartDTO cart = cartService.getCartSession(session);
         
 System.out.println("controllerstart");
-        Cart cart = cartService.getCartFromSession(session);
-System.out.println("カート取得end");
-
-System.out.println("controllerstart");
-        Cart cart = cartService.getCartFromSession(session);
 System.out.println("カート取得end");
 
         if (cart == null || cart.getItems().isEmpty()) {

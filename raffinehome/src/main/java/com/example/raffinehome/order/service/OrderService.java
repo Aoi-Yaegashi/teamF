@@ -1,14 +1,8 @@
 package com.example.raffinehome.order.service;
 
-import com.example.raffinehome.cart.dto.Cart;
 import com.example.raffinehome.cart.dto.CartItemDTO;
 
 import com.example.raffinehome.cart.dto.CartDTO;
-import com.example.raffinehome.cart.dto.CartItem;
-
-
-import com.example.raffinehome.cart.dto.CartDTO;
-import com.example.raffinehome.cart.dto.CartItem;
 
 import com.example.raffinehome.cart.service.CartService;
 import com.example.raffinehome.order.dto.OrderItemDTO;
