@@ -13,7 +13,7 @@ public class CartItemDTO implements Serializable {
     private String id;
     private int productId;
     private String name;
-    private Integer price;
+    private int price;
     private String imageUrl;
     private int quantity;
     private int subtotal;
