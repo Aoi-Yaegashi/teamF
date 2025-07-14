@@ -1,8 +1,18 @@
 package com.example.raffinehome.order.service;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+import com.example.raffinehome.cart.dto.Cart;
+import com.example.raffinehome.cart.dto.CartItemDTO;
+=======
+import com.example.raffinehome.cart.dto.CartDTO;
+import com.example.raffinehome.cart.dto.CartItem;
+>>>>>>> 96490c2969097815a2f733e02923ebbef0c2794d
+=======
 
 import com.example.raffinehome.cart.dto.CartDTO;
 import com.example.raffinehome.cart.dto.CartItem;
+>>>>>>> 1a7957affdf22411ec79b1e65c24c28f485d0e53
 import com.example.raffinehome.cart.service.CartService;
 import com.example.raffinehome.order.dto.OrderItemDTO;
 import com.example.raffinehome.order.dto.OrderDTO;
