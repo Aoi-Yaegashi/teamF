@@ -1,7 +1,12 @@
 package com.example.raffinehome.order.service;
 
+<<<<<<< HEAD
 import com.example.raffinehome.cart.dto.Cart;
 import com.example.raffinehome.cart.dto.CartItemDTO;
+=======
+import com.example.raffinehome.cart.dto.CartDTO;
+import com.example.raffinehome.cart.dto.CartItem;
+>>>>>>> 96490c2969097815a2f733e02923ebbef0c2794d
 import com.example.raffinehome.cart.service.CartService;
 import com.example.raffinehome.order.dto.OrderItemDTO;
 import com.example.raffinehome.order.dto.OrderDTO;
@@ -41,7 +46,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderDTO placeOrder(Cart cart, OrederCreateDTO orederCreateDTO, HttpSession session) {
+    public OrderDTO placeOrder(CartDTO cart, OrederCreateDTO orederCreateDTO, HttpSession session) {
         if (cart == null || cart.getItems().isEmpty()) {
             return null;
         }

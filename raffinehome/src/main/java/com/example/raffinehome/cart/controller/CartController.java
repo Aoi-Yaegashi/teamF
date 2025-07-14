@@ -34,7 +34,7 @@ public class CartController {
      */
     @PostMapping("/add")
     public ResponseEntity<CartDTO> addToCart(HttpSession session, @RequestBody CartAddDTO dto) {
-        CartDTO cartDTO = cartService.addToCart(session, dto.getProduct_id(), dto.getQuantity());
+        CartDTO cartDTO = cartService.addToCart(dto.getProductId(), dto.getQuantity(), session);
         return ResponseEntity.ok(cartDTO);
     }
 
@@ -43,7 +43,7 @@ public class CartController {
      */
     @DeleteMapping("/remove/{productId}")
     public ResponseEntity<CartDTO> removeFromCart(HttpSession session, @PathVariable int productId) {
-        CartDTO cartDTO = cartService.removeFromCart(session, productId);
+        CartDTO cartDTO = cartService.removeFromCart(String.valueOf(productId), session);
         return ResponseEntity.ok(cartDTO);
     }
 
@@ -52,7 +52,7 @@ public class CartController {
      */
     @PutMapping("/update")
     public ResponseEntity<CartDTO> updateCartItem(HttpSession session, @RequestBody CartUpdateDTO dto) {
-        CartDTO cartDTO = cartService.updateCartItem(session, dto.getProduct_id(), dto.getQuantity());
+        CartDTO cartDTO = cartService.updateCartItem(String.valueOf(dto.getProductId()), dto.getQuantity(), session);
         return ResponseEntity.ok(cartDTO);
     }
 

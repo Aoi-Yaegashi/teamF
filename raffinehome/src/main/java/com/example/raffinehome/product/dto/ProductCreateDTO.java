@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductCreateDTO {
+<<<<<<< HEAD
+=======
+    private int id;
+>>>>>>> 96490c2969097815a2f733e02923ebbef0c2794d
     private String name;
     private int price;
     private int salePrice;

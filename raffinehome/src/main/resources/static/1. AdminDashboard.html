@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ダッシュボード</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    body {
+    background: #f5f6fa;
+    margin: 0;
+    height: 100vh;
+    font-family: 'Segoe UI', 'Meiryo', sans-serif;
+    }
+    .admin-select-area {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    z-index: 100;
+    background: rgba(255,255,255,0.95);
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+    }
+    .admin-select-label {
+    font-size: 1rem;
+    margin-right: 8px;
+    color: #2c3e50;
+    font-weight: bold;
+    }
+    .admin-select {
+    font-size: 1rem;
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1px solid #b2bec3;
+    }
+    .wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    }
+    h1 {
+    text-align: center;
+    margin-bottom: 32px;
+    color: #2c3e50;
+    font-size: 2rem;
+    }
+    .button-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 24px;
+    width: 700px;
+    max-width: 98vw;
+    }
+    .admin-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #3498db;
+    color: #fff;
+    border-radius: 12px;
+    padding: 32px 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.1s;
+    box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+    width: 95%;
+    letter-spacing: 0.05em;
+    margin: 0 auto;
+    }
+    .admin-link:hover {
+    background: #217dbb;
+    transform: translateY(-2px) scale(1.02);
+    }
+    @media (max-width: 900px) {
+    .button-grid {
+        width: 100%;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: repeat(3, 1fr);
+    }
+    }
+    @media (max-width: 600px) {
+    .button-grid {
+        width: 100%;
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(6, 1fr);
+    }
+    .admin-link {
+        width: 100%;
+        font-size: 1rem;
+        padding: 24px 0;
+    }
+    }
+</style>
+</head>
+<body>
+<div class="admin-select-area">
+    <label for="admin-select" class="admin-select-label">管理者：</label>
+    <select id="admin-select" name="admin" class="admin-select">
+    <option value="admin1">村田さん</option>
+    <option value="admin2">八重樫さん</option>
+    <option value="admin3">吉田さん</option>
+    <option value="admin3">西嶋さん</option>
+    <option value="admin3">島田さん</option>
+    <option value="admin3">伴場さん</option>
+    </select>
+</div>
+<div class="wrapper">
+    <h1>ダッシュボード</h1>
+    <div class="button-grid">
+    <a href="2. AdminProductList.html" class="admin-link">商品一覧</a>
+    <a href="3. AdminListEditor.html" class="admin-link">商品登録・編集</a>
+    <a href="4. AdminOrderControl.html" class="admin-link">注文管理</a>
+    <a href="5. AdminStockControl.html" class="admin-link">在庫管理</a>
+    <a href="6. AdminCSV.html" class="admin-link">CSV</a>
+    <a href="logout.html" class="admin-link">ログアウト</a>
+    </div>
+</div>
+</body>
+</html>
