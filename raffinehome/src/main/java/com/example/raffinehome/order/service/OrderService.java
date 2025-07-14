@@ -1,7 +1,7 @@
 package com.example.raffinehome.order.service;
 
 import com.example.raffinehome.cart.dto.Cart;
-import com.example.raffinehome.cart.dto.CartItem;
+import com.example.raffinehome.cart.dto.CartItemDTO;
 import com.example.raffinehome.cart.service.CartService;
 import com.example.raffinehome.order.dto.OrderItemDTO;
 import com.example.raffinehome.order.dto.OrderDTO;
@@ -47,7 +47,7 @@ public class OrderService {
         }
 
         // 在庫確認
-        for (CartItem cartItem : cart.getItems().values()) {
+        for (CartItemDTO cartItem : cart.getItems().values()) {
             Optional<Product> productOpt = productRepository.findById(cartItem.getProductId());
             if (productOpt.isEmpty() || productOpt.get().getStockQuantity() < cartItem.getQuantity()) {
                 throw new RuntimeException("在庫不足または商品未存在: " + cartItem.getName());
@@ -66,7 +66,7 @@ public class OrderService {
         order.setOrderStatus("PENDING");
 
         // 注文明細作成と在庫減算
-        for (CartItem cartItem : cart.getItems().values()) {
+        for (CartItemDTO cartItem : cart.getItems().values()) {
             Product product = productRepository.findById(cartItem.getProductId()).orElseThrow(
                 () -> new IllegalStateException("在庫確認後に商品が見つかりません: " + cartItem.getName())
             );
