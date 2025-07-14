@@ -32,9 +32,13 @@ public class OrderController {
     public ResponseEntity<OrderDTO> placeOrder(
             @Valid @RequestBody OrederCreateDTO orederCreateDTO,
             HttpSession session) {
+
+        
+        CartDTO cart = cartService.getCartSession(session);
+        
 System.out.println("controllerstart");
-        Cart cart = cartService.getCartFromSession(session);
 System.out.println("カート取得end");
+
         if (cart == null || cart.getItems().isEmpty()) {
 System.out.println("カートが空");            
             return ResponseEntity.badRequest().build();

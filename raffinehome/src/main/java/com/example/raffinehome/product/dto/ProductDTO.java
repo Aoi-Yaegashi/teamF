@@ -15,4 +15,5 @@ public class ProductDTO {
     private String description;
     private int stockQuantity;
     private String imageUrl;
+    private boolean isInStock;
 }

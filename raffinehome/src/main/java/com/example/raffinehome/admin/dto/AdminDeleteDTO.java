@@ -7,14 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdminUpdateDTO{
-
+public class AdminDeleteDTO{
     private int id;
-    private String name;
-    private String description;
-    private int price;
-    private int salePrice;
-    private String imageUrl;
-    private int stockQuantity;
-
+    private boolean is_Deleted;
 }
