@@ -32,6 +32,19 @@ public class ProductService {
         Optional<Product> productOpt = productRepository.findById(id);
         return productOpt.map(this::convertToDetail).orElse(null);
     }
+
+    private ProductDTO convertToDetail(Product product) {
+    return new ProductDTO(
+            product.getId(),
+            product.getName(),
+            product.getPrice(),
+            product.getSalePrice(),
+            product.getDescription(),
+            product.getStockQuantity(),
+            product.getImageUrl(),
+            product.getStockQuantity() > 0 
+    );
+}
     
     private ProductCreateDTO convertToListItem(Product product) {
         return new ProductCreateDTO(
