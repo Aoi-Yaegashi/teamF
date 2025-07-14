@@ -79,3 +79,39 @@ header nav {
     font-size: 0.9rem;
     color: #ccc;
 }
+
+.scroll-infinity {
+  overflow: hidden;
+  width: 80%;
+  margin: 0 auto
+}
+
+.scroll-infinity__wrap {
+  display: flex;
+  width: max-content;
+  animation: scroll-left 50s linear infinite;
+}
+
+.scroll-infinity__list {
+  display: flex;
+}
+
+.scroll-infinity__item {
+  flex: 0 0 auto;
+  width: 200px; 
+  margin-right: 10px;
+}
+
+.scroll-infinity__item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
