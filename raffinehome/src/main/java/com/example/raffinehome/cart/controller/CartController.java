@@ -25,7 +25,6 @@ public class CartController {
      */
     @GetMapping
     public ResponseEntity<CartDTO> getCart(HttpSession session) {
-<<<<<<< HEAD
         CartDTO cartDTO = cartService.getCart(session);
         return ResponseEntity.ok(cartDTO);
     }
@@ -84,39 +83,5 @@ public class CartController {
         cartService.validateCartStock(session);
         CartDTO cartDTO = cartService.getCart(session);
         return ResponseEntity.ok(cartDTO);
-=======
-        CartDTO cart = cartService.getCartFromSession(session);
-        return ResponseEntity.ok(cart);
-    }
-    
-    @PostMapping
-    public ResponseEntity<CartDTO> addItem(@Valid @RequestBody CartItem cartItemInfo, HttpSession session) {
-        CartDTO cart = cartService.addItemToCart(
-                cartItemInfo.getProductId(),
-                cartItemInfo.getQuantity(),
-                session
-        );
-        
-        if (cart == null) {
-            return ResponseEntity.notFound().build();
-        }
-        
-        return ResponseEntity.ok(cart);
-    }
-    
-    @PutMapping("/items/{itemId}")
-    public ResponseEntity<CartDTO> updateItem(
-            @PathVariable String itemId,
-            @Valid @RequestBody CartUpdateDTO quantityDto,
-            HttpSession session) {
-        CartDTO cart = cartService.updateItemQuantity(itemId, quantityDto.getQuantity(), session);
-        return ResponseEntity.ok(cart);
-    }
-    
-    @DeleteMapping("/items/{itemId}")
-    public ResponseEntity<CartDTO> removeItem(@PathVariable String itemId, HttpSession session) {
-        CartDTO cart = cartService.removeItemFromCart(itemId, session);
-        return ResponseEntity.ok(cart);
->>>>>>> 72f40798637a00c51aabab0bcee175e8de86b140
     }
 }

@@ -1,5 +1,5 @@
 package com.example.raffinehome.cart.service;
- 
+
 import com.example.raffinehome.cart.dto.CartDTO;
 import com.example.raffinehome.cart.dto.CartItemDTO;
 import com.example.raffinehome.product.entity.Product;
@@ -10,15 +10,14 @@ import com.example.raffinehome.product.repository.ProductRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
- 
 import java.util.Optional;
 import java.util.List;
 import java.util.ArrayList;
 @Service
 public class CartService {
- 
+
     private static final String CART_SESSION_KEY = "cart";
-   
+
     private final ProductRepository productRepository;
     
 
@@ -38,7 +37,7 @@ public class CartService {
     
     public Cart addToCart(Integer productId, Integer quantity, HttpSession session) {
         Optional<Product> productOpt = productRepository.findById(productId);
-       
+
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
             Cart cart = getCart(session);
@@ -49,13 +48,13 @@ public class CartService {
             item.setPrice(product.getPrice());
             item.setImageUrl(product.getImageUrl());
             item.setQuantity(quantity);
-           
+        
             cart.addItem(item);
             session.setAttribute(CART_SESSION_KEY, cart);
-           
+        
             return cart;
         }
-       
+    
         return null;
     }
     public Cart removeFromCart(String productId, HttpSession session) {
