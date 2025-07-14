@@ -10,6 +10,33 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDTO {
-    private Integer orderId;
+    private int id;
+
+    private String customerName;
+    
+    private String customerEmail;
+    
+    private String shippingAddress;
+    
+    private String postalCode;
+    
+    private String phoneNumber;
+    
+    private int subtotal;
+    
+    private int totalAmount;
+    
+    private String orderStatus;
+
     private LocalDateTime orderDate;
+
+    private Boolean canCancel;
+   
+    private Boolean canShip;
+
+    public OrderDTO(int id, LocalDateTime orderDate) {
+    this.id = id;
+    this.orderDate = orderDate;
+}
+
 }
