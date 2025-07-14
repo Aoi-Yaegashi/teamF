@@ -44,10 +44,10 @@ public class AdminService {
 
     public AdminDeleteDTO deleteProduct(int id, AdminDeleteDTO deleteRequest){
 
-        AdminDeleteDTO admindeleteDTO = adminDeleteDTO.findbyId(id);
-        admindeleteDTO.setIs_Deleted(deleteRequest.setIsdeleted());
+        AdminDeleteDTO adminDeleteDTO = productRepository.findById(id);
+        adminDeleteDTO.setIs_Deleted(deleteRequest.setIs_deleted());
 
-        return productRepository.save(admindeleteDTO);
+        return productRepository.save(adminDeleteDTO);
 
     }
 
