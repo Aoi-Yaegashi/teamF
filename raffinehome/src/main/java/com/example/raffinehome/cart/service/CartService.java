@@ -1,6 +1,6 @@
 package com.example.raffinehome.cart.service;
  
-import com.example.raffinehome.cart.dto.Cart;
+import com.example.raffinehome.cart.dto.CartDTO;
 import com.example.raffinehome.cart.dto.CartItemDTO;
 import com.example.raffinehome.product.entity.Product;
 import com.example.raffinehome.product.exception.InsufficientStockException;
