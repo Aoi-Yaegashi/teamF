@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Data
-public class Cart implements Serializable {
+public class CartDTO implements Serializable {
     private Map<String, CartItem> items = new LinkedHashMap<>();
     private int totalQuantity;
     private int totalPrice;
