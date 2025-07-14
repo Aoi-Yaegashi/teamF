@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CartItem implements Serializable {
+public class CartItemDTO implements Serializable {
     private String id;
     private Integer productId;
     private String name;

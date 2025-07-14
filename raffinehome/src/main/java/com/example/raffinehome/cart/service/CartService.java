@@ -1,7 +1,7 @@
 package com.example.raffinehome.cart.service;
 
 import com.example.raffinehome.cart.dto.Cart;
-import com.example.raffinehome.cart.dto.CartItem;
+import com.example.raffinehome.cart.dto.CartItemDTO;
 import com.example.raffinehome.product.entity.Product;
 import com.example.raffinehome.product.exception.InsufficientStockException;
 import com.example.raffinehome.product.exception.OutOfStockException;
@@ -44,7 +44,7 @@ public class CartService {
             Product product = productOpt.get();
             Cart cart = getCart(session);
             
-            CartItem item = new CartItem();
+            CartItemDTO item = new CartItemDTO();
             item.setProductId(product.getProductId());
             item.setName(product.getName());
             item.setPrice(product.getPrice());
@@ -80,7 +80,7 @@ public class CartService {
             return 0;
         }
         int total = 0;
-        for (CartItem item : cartSession.getItems().values()) {
+        for (CartItemDTO item : cartSession.getItems().values()) {
             total += item.getQuantity();
         }
         return total;
@@ -120,7 +120,7 @@ public void validateProductStock(int productId, int quantity) {
         if (cart.getItems() == null || cart.getItems().isEmpty()) {
             return; // カートが空なら何もしない
         }
-        for (CartItem item : cart.getItems().values()) {
+        for (CartItemDTO item : cart.getItems().values()) {
             // 商品IDと数量を取得
             int productId = item.getProductId();
             int quantity = item.getQuantity();
