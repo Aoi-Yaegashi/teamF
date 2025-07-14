@@ -34,7 +34,7 @@ public class ProductService {
     }
 
     private ProductDTO convertToDetail(Product product) {
-    return new ProductDTO(
+        return new ProductDTO(
             product.getId(),
             product.getName(),
             product.getPrice(),
@@ -43,8 +43,8 @@ public class ProductService {
             product.getStockQuantity(),
             product.getImageUrl(),
             product.getStockQuantity() > 0 
-    );
-}
+        );
+    }
     
     private ProductCreateDTO convertToListItem(Product product) {
         return new ProductCreateDTO(
@@ -54,7 +54,7 @@ public class ProductService {
                 product.getDescription(),
                 product.getStockQuantity(),
                 product.getImageUrl()
-        );
+        ) ;
     }
     
-    }
+}
