@@ -313,10 +313,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         const orderData = {
+            customerInfo: {
                 name: document.getElementById('name').value,
                 email: document.getElementById('email').value,
                 address: document.getElementById('address').value,
                 phoneNumber: document.getElementById('phone').value
+            }
         };
         
         try {
