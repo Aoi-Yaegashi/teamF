@@ -1,6 +1,6 @@
 package com.example.raffinehome.cart.service;
 
-import com.example.raffinehome.cart.dto.Cart;
+import com.example.raffinehome.cart.dto.CartDTO;
 import com.example.raffinehome.cart.dto.CartItem;
 import com.example.raffinehome.product.entity.Product;
 import com.example.raffinehome.product.repository.ProductRepository;
@@ -22,21 +22,21 @@ public class CartService {
         this.productRepository = productRepository;
     }
     
-    public Cart getCartFromSession(HttpSession session) {
-        Cart cart = (Cart) session.getAttribute(CART_SESSION_KEY);
+    public CartDTO getCartFromSession(HttpSession session) {
+        CartDTO cart = (CartDTO) session.getAttribute(CART_SESSION_KEY);
         if (cart == null) {
-            cart = new Cart();
+            cart = new CartDTO();
             session.setAttribute(CART_SESSION_KEY, cart);
         }
         return cart;
     }
     
-    public Cart addItemToCart(Integer productId, Integer quantity, HttpSession session) {
+    public CartDTO addItemToCart(Integer productId, Integer quantity, HttpSession session) {
         Optional<Product> productOpt = productRepository.findById(productId);
         
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
-            Cart cart = getCartFromSession(session);
+            CartDTO cart = getCartFromSession(session);
             
             CartItem product = new CartItem();
             product.setProductId(product.getProductId());
@@ -54,15 +54,15 @@ public class CartService {
         return null;
     }
     
-    public Cart updateItemQuantity(String itemId, Integer quantity, HttpSession session) {
-        Cart cart = getCartFromSession(session);
+    public CartDTO updateItemQuantity(String itemId, Integer quantity, HttpSession session) {
+        CartDTO cart = getCartFromSession(session);
         cart.updateQuantity(itemId, quantity);
         session.setAttribute(CART_SESSION_KEY, cart);
         return cart;
     }
     
-    public Cart removeItemFromCart(String itemId, HttpSession session) {
-        Cart cart = getCartFromSession(session);
+    public CartDTO removeItemFromCart(String itemId, HttpSession session) {
+        CartDTO cart = getCartFromSession(session);
         cart.removeItem(itemId);
         session.setAttribute(CART_SESSION_KEY, cart);
         return cart;

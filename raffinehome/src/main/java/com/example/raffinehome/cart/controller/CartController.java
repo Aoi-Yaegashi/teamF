@@ -1,6 +1,6 @@
 package com.example.raffinehome.cart.controller;
 
-import com.example.raffinehome.cart.dto.Cart;
+import com.example.raffinehome.cart.dto.CartDTO;
 import com.example.raffinehome.cart.dto.CartItem;
 import com.example.raffinehome.cart.dto.CartItemInfo;
 import com.example.raffinehome.cart.dto.CartItemQuantityDto;
@@ -23,14 +23,14 @@ public class CartController {
     }
     
     @GetMapping
-    public ResponseEntity<Cart> getCart(HttpSession session) {
-        Cart cart = cartService.getCartFromSession(session);
+    public ResponseEntity<CartDTO> getCart(HttpSession session) {
+        CartDTO cart = cartService.getCartFromSession(session);
         return ResponseEntity.ok(cart);
     }
     
     @PostMapping
-    public ResponseEntity<Cart> addItem(@Valid @RequestBody CartItem cartItemInfo, HttpSession session) {
-        Cart cart = cartService.addItemToCart(
+    public ResponseEntity<CartDTO> addItem(@Valid @RequestBody CartItem cartItemInfo, HttpSession session) {
+        CartDTO cart = cartService.addItemToCart(
                 cartItemInfo.getProductId(),
                 cartItemInfo.getQuantity(),
                 session
@@ -44,17 +44,17 @@ public class CartController {
     }
     
     @PutMapping("/items/{itemId}")
-    public ResponseEntity<Cart> updateItem(
+    public ResponseEntity<CartDTO> updateItem(
             @PathVariable String itemId,
             @Valid @RequestBody CartItemQuantityDto quantityDto,
             HttpSession session) {
-        Cart cart = cartService.updateItemQuantity(itemId, quantityDto.getQuantity(), session);
+        CartDTO cart = cartService.updateItemQuantity(itemId, quantityDto.getQuantity(), session);
         return ResponseEntity.ok(cart);
     }
     
     @DeleteMapping("/items/{itemId}")
-    public ResponseEntity<Cart> removeItem(@PathVariable String itemId, HttpSession session) {
-        Cart cart = cartService.removeItemFromCart(itemId, session);
+    public ResponseEntity<CartDTO> removeItem(@PathVariable String itemId, HttpSession session) {
+        CartDTO cart = cartService.removeItemFromCart(itemId, session);
         return ResponseEntity.ok(cart);
     }
 }

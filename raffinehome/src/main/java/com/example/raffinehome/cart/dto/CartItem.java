@@ -18,7 +18,4 @@ public class CartItem implements Serializable {
     private int quantity;
     private int subtotal;
 
-public int containsKey(){
-    return productId;
-  }
 }

@@ -11,23 +11,23 @@ import java.util.Map;
 
 @Data
 public class Cart implements Serializable {
-    private Map<String, CartItem> productId = new LinkedHashMap<>();
-    private int itemCount;
+    private Map<String, CartItem> items = new LinkedHashMap<>();
+    private int totalQuantity;
     private int totalPrice;
     
     public void addItem(CartItem product) {
         String productId = String.valueOf(product.getProductId());
         
         // 既存のアイテムがあれば数量を加算
-        if (product.containsKey(productId)) {
-            CartItem quantity = product.getProductId(productId);
+        if (items.containsKey(productId)) {
+            CartItem quantity = items.get(productId);
             quantity.setQuantity(quantity.getQuantity() + product.getQuantity());
             quantity.setSubtotal(quantity.getPrice() * quantity.getQuantity());
         } else {
             // 新しいアイテムを追加
             product.setId(productId);
             product.setSubtotal(product.getPrice() * product.getQuantity());
-            product.put(productId, product);
+            items.put(productId, product);
         }
         
         // 合計計算

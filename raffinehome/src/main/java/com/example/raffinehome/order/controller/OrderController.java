@@ -1,6 +1,6 @@
 package com.example.raffinehome.order.controller;
 
-import com.example.raffinehome.cart.dto.Cart;
+import com.example.raffinehome.cart.dto.CartDTO;
 import com.example.raffinehome.order.dto.OrederCreateDTO;
 import com.example.raffinehome.order.dto.OrderDTO;
 import com.example.raffinehome.cart.service.CartService;
@@ -33,7 +33,7 @@ public class OrderController {
             @Valid @RequestBody OrederCreateDTO orederCreateDTO,
             HttpSession session) {
         
-        Cart cart = cartService.getCartFromSession(session);
+        CartDTO cart = cartService.getCartFromSession(session);
         
         if (cart == null || cart.getItems().isEmpty()) {
             return ResponseEntity.badRequest().build();
