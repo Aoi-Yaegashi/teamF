@@ -1,6 +1,9 @@
 package com.example.raffinehome.product.repository;
 
 import com.example.raffinehome.product.entity.Product;
+
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,4 +16,10 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query(
         "UPDATE Product p SET p.stockQuantity = p.stockQuantity - ?2 WHERE p.id = ?1 AND p.stockQuantity >= ?2")
     int decreaseStock(int id, int stockQuantity);
+
+    @Override
+    default Optional findById(Integer id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+    }
 }

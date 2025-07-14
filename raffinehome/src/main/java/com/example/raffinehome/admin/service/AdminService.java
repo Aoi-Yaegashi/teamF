@@ -1,11 +1,14 @@
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
 import org.springframework.stereotype.Service;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.raffinehome.product.dto.ProductCreateDTO;
+import com.example.raffinehome.product.dto.ProductDTO;
 import com.example.raffinehome.product.repository.ProductRepository;
 
 import jakarta.transaction.TransactionScoped;
@@ -42,18 +45,20 @@ public class AdminService {
         return productRepository.save(product);
     }
 
-    public AdminDeleteDTO deleteProduct(int id, AdminDeleteDTO deleteRequest){
+    public ProductDTO deleteProduct(int id, ProductDTO deleteRequest){
 
-        AdminDeleteDTO adminDeleteDTO = productRepository.findById(id);
-        adminDeleteDTO.setIs_Deleted(deleteRequest.setIs_deleted());
+        Optional product = productRepository.findById(Integer.valueOf(id));
+        product.setIs_Deleted(deleteRequest.getIsDeleted());
 
-        return productRepository.save(adminDeleteDTO);
+        Product saveProduct = productRepository.save(product);
+
+        return product.save(product);
 
     }
 
     public AdminUpdateDTO updateProduct(int id, AdminUpdateDTO updateRequest){
 
-        AdminUpdateDTO adminUpdateDTO = adminUpdateDTO.findbyId(id);
+        AdminUpdateDTO adminUpdateDTO = productRepository.findById(id);
         adminUpdateDTO.setName(updateRequest.getName());
         adminUpdateDTO.setDescription(updateRequest.getDescription());
         adminUpdateDTO.setPrice(updateRequest.getPrice());
