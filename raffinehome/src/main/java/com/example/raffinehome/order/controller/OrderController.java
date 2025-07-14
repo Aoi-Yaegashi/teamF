@@ -32,6 +32,7 @@ public class OrderController {
     public ResponseEntity<OrderDTO> placeOrder(
             @Valid @RequestBody OrederCreateDTO orederCreateDTO,
             HttpSession session) {
+
 System.out.println("controllerstart");
         Cart cart = cartService.getCartFromSession(session);
 System.out.println("カート取得end");

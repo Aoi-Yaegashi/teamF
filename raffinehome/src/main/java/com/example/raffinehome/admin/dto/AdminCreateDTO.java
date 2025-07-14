@@ -1,15 +1,17 @@
 package com.example.raffinehome.admin.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class AdminCreateDTO{
-
+@NoArgsConstructor
+@AllArgsConstructor
+public class AdminCreateDTO {
     private String name;
-    private String description;
     private int price;
     private int salePrice;
+    private String description;
+    private int stockQuantity;
     private String imageUrl;
-    private int stock;
-
 }
