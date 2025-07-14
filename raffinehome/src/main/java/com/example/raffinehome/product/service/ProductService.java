@@ -2,7 +2,7 @@ package com.example.raffinehome.product.service;
 
 import com.example.raffinehome.product.dto.ProductDTO;
 import com.example.raffinehome.product.dto.ProductCreateDTO;
-import com.example.raffinehome.product.dto.ProductDTO;
+import com.example.raffinehome.product.dto.ProductUpdateDTO;
 import com.example.raffinehome.product.entity.Product;
 import com.example.raffinehome.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,17 +35,6 @@ public class ProductService {
     
     private ProductCreateDTO convertToListItem(Product product) {
         return new ProductCreateDTO(
-                product.getId(),
-                product.getName(),
-                product.getPrice(),
-                product.getSalePrice(),
-                product.getImageUrl()
-        );
-    }
-    
-    private ProductDTO convertToDetail(Product product) {
-        return new ProductDTO(
-                product.getId(),
                 product.getName(),
                 product.getPrice(),
                 product.getSalePrice(),
@@ -54,4 +43,5 @@ public class ProductService {
                 product.getImageUrl()
         );
     }
-}
+    
+    }
