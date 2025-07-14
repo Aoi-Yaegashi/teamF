@@ -1,7 +1,7 @@
-package com.example.simplezakka.config;
+package com.example.raffinehome.config;
 
-import com.example.simplezakka.entity.Product;
-import com.example.simplezakka.repository.ProductRepository;
+import com.example.raffinehome.product.entity.Product;
+import com.example.raffinehome.product.repository.ProductRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
