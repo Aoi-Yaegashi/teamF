@@ -2,29 +2,32 @@ package com.example.raffinehome.cart.dto;
 
 import lombok.Data;
 
+import com.example.raffinehome.cart.dto.CartItem;
+import com.example.raffinehome.product.entity.Product;
+
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Data
-public class Cart implements Serializable {
+public class CartDTO implements Serializable {
     private Map<String, CartItem> items = new LinkedHashMap<>();
     private int totalQuantity;
     private int totalPrice;
     
-    public void addItem(CartItem item) {
-        String itemId = String.valueOf(item.getProductId());
+    public void addItem(CartItem product) {
+        String productId = String.valueOf(product.getProductId());
         
         // 既存のアイテムがあれば数量を加算
-        if (items.containsKey(itemId)) {
-            CartItem existingItem = items.get(itemId);
-            existingItem.setQuantity(existingItem.getQuantity() + item.getQuantity());
-            existingItem.setSubtotal(existingItem.getPrice() * existingItem.getQuantity());
+        if (items.containsKey(productId)) {
+            CartItem quantity = items.get(productId);
+            quantity.setQuantity(quantity.getQuantity() + product.getQuantity());
+            quantity.setSubtotal(quantity.getPrice() * quantity.getQuantity());
         } else {
             // 新しいアイテムを追加
-            item.setId(itemId);
-            item.setSubtotal(item.getPrice() * item.getQuantity());
-            items.put(itemId, item);
+            product.setId(productId);
+            product.setSubtotal(product.getPrice() * product.getQuantity());
+            items.put(productId, product);
         }
         
         // 合計計算

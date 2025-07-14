@@ -1,5 +1,5 @@
 package com.example.raffinehome.cart.service;
-
+ 
 import com.example.raffinehome.cart.dto.Cart;
 import com.example.raffinehome.cart.dto.CartItemDTO;
 import com.example.raffinehome.product.entity.Product;
@@ -10,16 +10,15 @@ import com.example.raffinehome.product.repository.ProductRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+ 
 import java.util.Optional;
 import java.util.List;
 import java.util.ArrayList;
-
 @Service
 public class CartService {
-
+ 
     private static final String CART_SESSION_KEY = "cart";
-    
+   
     private final ProductRepository productRepository;
     
 
@@ -39,7 +38,7 @@ public class CartService {
     
     public Cart addToCart(Integer productId, Integer quantity, HttpSession session) {
         Optional<Product> productOpt = productRepository.findById(productId);
-        
+       
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
             Cart cart = getCart(session);
@@ -50,16 +49,15 @@ public class CartService {
             item.setPrice(product.getPrice());
             item.setImageUrl(product.getImageUrl());
             item.setQuantity(quantity);
-            
+           
             cart.addItem(item);
             session.setAttribute(CART_SESSION_KEY, cart);
-            
+           
             return cart;
         }
-        
+       
         return null;
     }
-
     public Cart removeFromCart(String productId, HttpSession session) {
         Cart cart = getCart(session);
         cart.removeItem(productId);
@@ -73,7 +71,6 @@ public class CartService {
         session.setAttribute(CART_SESSION_KEY, cart);
         return cart;
     }
-
     public int getCartItemCount(HttpSession session) {
         Cart cartSession = (Cart) session.getAttribute(CART_SESSION_KEY);
         if (cartSession == null || cartSession.getItems() == null) {
@@ -85,7 +82,6 @@ public class CartService {
         }
         return total;
     }
-
     public void clearCart(HttpSession session) {
     Cart cart = getCartSession(session);
     // clear()を使わずに全てのキーを削除
@@ -97,7 +93,6 @@ public class CartService {
         }
     }
     }
-
     //うまくできてないかな
 public void validateProductStock(int productId, int quantity) {
     Optional<Product> productOpt = productRepository.findById(productId);
@@ -105,7 +100,6 @@ public void validateProductStock(int productId, int quantity) {
         throw new ProductNotFoundException(productId);
     }
     Product product = productOpt.get();
-
     // フィールドを直接参照（例: product.stockQuantity）
     if (product.getStock() <= 0) {
         throw new OutOfStockException(productId, product.getName());
@@ -114,7 +108,6 @@ public void validateProductStock(int productId, int quantity) {
         throw new InsufficientStockException(productId, product.getName(), quantity, product.getStock());
     }
 }
-
     public void validateCartStock(HttpSession session) {
         Cart cart = getCartSession(session);
         if (cart.getItems() == null || cart.getItems().isEmpty()) {
@@ -124,14 +117,12 @@ public void validateProductStock(int productId, int quantity) {
             // 商品IDと数量を取得
             int productId = item.getProductId();
             int quantity = item.getQuantity();
-
             // 商品をDBから取得
             Optional<Product> productOpt = productRepository.findById(productId);
             if (productOpt.isEmpty()) {
                 throw new ProductNotFoundException(productId);
             }
             Product product = productOpt.get();
-
             // 在庫チェック: 在庫が0以下なら在庫切れ
             if (product.getStock() <= 0) {
                 throw new OutOfStockException(product.getProductId(), product.getName());
@@ -150,7 +141,6 @@ public void saveCartSession(HttpSession session, Cart cart) {
     }
     session.setAttribute(CART_SESSION_KEY, cart);
 }
-
 public Cart getCartSession(HttpSession session) {
     Cart cartSession = (Cart) session.getAttribute(CART_SESSION_KEY);
     if (cartSession == null) {

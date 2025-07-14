@@ -1,6 +1,6 @@
 package com.example.raffinehome.order.service;
 
-import com.example.raffinehome.cart.dto.Cart;
+import com.example.raffinehome.cart.dto.CartDTO;
 import com.example.raffinehome.cart.dto.CartItem;
 import com.example.raffinehome.cart.service.CartService;
 import com.example.raffinehome.order.dto.OrderItemDTO;
@@ -41,7 +41,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderDTO placeOrder(Cart cart, OrederCreateDTO orederCreateDTO, HttpSession session) {
+    public OrderDTO placeOrder(CartDTO cart, OrederCreateDTO orederCreateDTO, HttpSession session) {
         if (cart == null || cart.getItems().isEmpty()) {
             return null;
         }
