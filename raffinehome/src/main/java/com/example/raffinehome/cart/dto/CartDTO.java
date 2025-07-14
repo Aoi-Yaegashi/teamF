@@ -2,7 +2,7 @@ package com.example.raffinehome.cart.dto;
 
 import lombok.Data;
 
-import com.example.raffinehome.cart.dto.CartItem;
+import com.example.raffinehome.cart.dto.CartItemDTO;
 import com.example.raffinehome.product.entity.Product;
 
 import java.io.Serializable;
