@@ -38,14 +38,14 @@ public class CartService {
             Product product = productOpt.get();
             Cart cart = getCartFromSession(session);
             
-            CartItem item = new CartItem();
-            item.setProductId(product.getProductId());
-            item.setName(product.getName());
-            item.setPrice(product.getPrice());
-            item.setImageUrl(product.getImageUrl());
-            item.setQuantity(quantity);
+            CartItem product = new CartItem();
+            product.setProductId(product.getProductId());
+            product.setName(product.getName());
+            product.setPrice(product.getPrice());
+            product.setImageUrl(product.getImageUrl());
+            product.setQuantity(quantity);
             
-            cart.addItem(item);
+            cart.addItem(product);
             session.setAttribute(CART_SESSION_KEY, cart);
             
             return cart;

@@ -11,10 +11,14 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class CartItem implements Serializable {
     private String id;
-    private Integer productId;
+    private int productId;
     private String name;
     private Integer price;
     private String imageUrl;
     private int quantity;
     private int subtotal;
+
+public int containsKey(){
+    return productId;
+  }
 }
