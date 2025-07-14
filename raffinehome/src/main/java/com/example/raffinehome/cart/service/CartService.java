@@ -26,24 +26,24 @@ public class CartService {
         this.productRepository = productRepository;
     }
     
-    public Cart getCart(HttpSession session) {
-        Cart cart = (Cart) session.getAttribute(CART_SESSION_KEY);
+    public CartDTO getCart(HttpSession session) {
+        CartDTO cart = (CartDTO) session.getAttribute(CART_SESSION_KEY);
         if (cart == null) {
-            cart = new Cart();
+            cart = new CartDTO();
             session.setAttribute(CART_SESSION_KEY, cart);
         }
         return cart;
     }
     
-    public Cart addToCart(Integer productId, Integer quantity, HttpSession session) {
+    public CartDTO addToCart(Integer productId, Integer quantity, HttpSession session) {
         Optional<Product> productOpt = productRepository.findById(productId);
 
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
-            Cart cart = getCart(session);
+            CartDTO cart = getCart(session);
             
             CartItemDTO item = new CartItemDTO();
-            item.setProductId(product.getProductId());
+            item.setProductId(product.getId());
             item.setName(product.getName());
             item.setPrice(product.getPrice());
             item.setImageUrl(product.getImageUrl());
@@ -57,21 +57,21 @@ public class CartService {
     
         return null;
     }
-    public Cart removeFromCart(String productId, HttpSession session) {
-        Cart cart = getCart(session);
+    public CartDTO removeFromCart(String productId, HttpSession session) {
+        CartDTO cart = getCart(session);
         cart.removeItem(productId);
         session.setAttribute(CART_SESSION_KEY, cart);
         return cart;
     }
     
-    public Cart updateCartItem(String productId, Integer quantity, HttpSession session) {
-        Cart cart = getCart(session);
+    public CartDTO updateCartItem(String productId, Integer quantity, HttpSession session) {
+        CartDTO cart = getCart(session);
         cart.updateQuantity(productId, quantity);
         session.setAttribute(CART_SESSION_KEY, cart);
         return cart;
     }
     public int getCartItemCount(HttpSession session) {
-        Cart cartSession = (Cart) session.getAttribute(CART_SESSION_KEY);
+        CartDTO cartSession = (CartDTO) session.getAttribute(CART_SESSION_KEY);
         if (cartSession == null || cartSession.getItems() == null) {
             return 0;
         }
@@ -82,7 +82,7 @@ public class CartService {
         return total;
     }
     public void clearCart(HttpSession session) {
-    Cart cart = getCartSession(session);
+    CartDTO cart = getCartSession(session);
     // clear()を使わずに全てのキーを削除
     if (cart.getItems() != null) {
         // キーのリストをコピーしてから削除（ConcurrentModificationException防止）
@@ -100,15 +100,15 @@ public void validateProductStock(int productId, int quantity) {
     }
     Product product = productOpt.get();
     // フィールドを直接参照（例: product.stockQuantity）
-    if (product.getStock() <= 0) {
+    if (product.getStockQuantity() <= 0) {
         throw new OutOfStockException(productId, product.getName());
     }
-    if (product.getStock() < quantity) {
-        throw new InsufficientStockException(productId, product.getName(), quantity, product.getStock());
+    if (product.getStockQuantity() < quantity) {
+        throw new InsufficientStockException(productId, product.getName(), quantity, product.getStockQuantity());
     }
 }
     public void validateCartStock(HttpSession session) {
-        Cart cart = getCartSession(session);
+        CartDTO cart = getCartSession(session);
         if (cart.getItems() == null || cart.getItems().isEmpty()) {
             return; // カートが空なら何もしない
         }
@@ -123,27 +123,27 @@ public void validateProductStock(int productId, int quantity) {
             }
             Product product = productOpt.get();
             // 在庫チェック: 在庫が0以下なら在庫切れ
-            if (product.getStock() <= 0) {
-                throw new OutOfStockException(product.getProductId(), product.getName());
+            if (product.getStockQuantity() <= 0) {
+                throw new OutOfStockException(product.getId(), product.getName());
             }
-            if (product.getStock() < quantity) {
-                throw new InsufficientStockException(product.getProductId(), product.getName(), quantity, product.getStock());
+            if (product.getStockQuantity() < quantity) {
+                throw new InsufficientStockException(product.getId(), product.getName(), quantity, product.getStockQuantity());
             }
         }
     }
 
 //refreshCartAvailabilityできてないです
 
-public void saveCartSession(HttpSession session, Cart cart) {
+public void saveCartSession(HttpSession session, CartDTO cart) {
     if (session == null || cart == null) {
         return;
     }
     session.setAttribute(CART_SESSION_KEY, cart);
 }
-public Cart getCartSession(HttpSession session) {
-    Cart cartSession = (Cart) session.getAttribute(CART_SESSION_KEY);
+public CartDTO getCartSession(HttpSession session) {
+    CartDTO cartSession = (CartDTO) session.getAttribute(CART_SESSION_KEY);
     if (cartSession == null) {
-        cartSession = new Cart();
+        cartSession = new CartDTO();
         // 必要に応じてsession_idやcreated_atなどを初期化
         session.setAttribute(CART_SESSION_KEY, cartSession);
     }
