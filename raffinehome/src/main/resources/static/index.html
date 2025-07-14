@@ -27,10 +27,46 @@
 
         <div id="main-content">
             <!-- ここにコンテンツが動的に表示される -->
+            <div class="slideshow-container">
+             <div class="slide fade">
+              <img src="sara1.png" alt="画像1">
+             </div>
+             <div class="slide fade">
+              <img src="sara2.png" alt="画像2">
+             </div>
+             <div class="slide fade">
+              <img src="sara3.png" alt="画像3">
+             </div>
+             <div class="slide fade">
+              <img src="sara4.png" alt="画像4">
+             </div>
+            </div>
+            
+<script>
+    let slideIndex = 1;
+
+    function showSlide() {
+        let slides = document.getElementsByClassName("slide")
+
+        for (let i= 0; i < slides. length; i++) {
+            slides[i].style.display = "none";
+        }
+
+    slideIndex++;
+     if (slideIndex > slides.length) {slideIndex = 1}
+     slides[slideIndex - 1].style.display ="block";
+     setTimeout(showSlides, 3000); // 3秒ごとにスライドを切り替え
+    }
+    
+    window.onload = showSlides;
+
+</script>
+
             <div id="products-container" class="row row-cols-1 row-cols-md-3 g-4 mb-5">
                 <!-- 商品リストがここに表示される -->
             </div>
         </div>
+    </div>
 
         <footer class="simple-footer">
             <div class="footer-links">
@@ -45,7 +81,6 @@
             <div class="footer-copy">&copy; Raffiné Home. 2025
             </div>
         </footer>
-    </div>
 
     <!-- 商品詳細モーダル -->
     <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
