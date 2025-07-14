@@ -89,7 +89,7 @@ header nav {
 .scroll-infinity__wrap {
   display: flex;
   width: max-content;
-  animation: scroll-left 50s linear infinite;
+  animation: scroll-left 30s linear infinite;
 }
 
 .scroll-infinity__list {
@@ -115,4 +115,15 @@ header nav {
   100% {
     transform: translateX(-50%);
   }
+}
+
+.sacramento {
+  font-family: 'Sacramento', cursive;
+}
+
+.scroll-infinity__list {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
