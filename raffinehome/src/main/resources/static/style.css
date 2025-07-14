@@ -13,3 +13,36 @@
     top: -8px;
     right: 5px;
 }
+
+.footer {
+    background-color: #444;
+    color: #fff;
+    text-align: center;
+    padding: 20px 10px;
+    font-size: 0.95rem;
+    margin-top: 60px;
+}
+
+.footer a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 12px;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+.footer .footer-links {
+    margin-bottom: 8px;
+}
+
+.footer span {
+    margin: 0 6px;
+    color: #bbb;
+}
+
+.footer-copy {
+    font-size: 0.9rem;
+    color: #ccc;
+}
