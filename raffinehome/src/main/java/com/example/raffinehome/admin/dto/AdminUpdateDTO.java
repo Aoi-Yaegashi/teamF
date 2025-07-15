@@ -14,7 +14,7 @@ public class AdminUpdateDTO{
     private String description;
     private int price;
     private int salePrice;
-    private String imageUrl;
     private int stockQuantity;
+    private String imageUrl;
 
 }

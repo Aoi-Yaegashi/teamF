@@ -42,6 +42,7 @@ DELETE http://localhost:8080/api/admin/1
 
 ### 商品編集
 PUT http://localhost:8080/api/admin/1
+content-type: application/json
 
 {   "name": "テスト",
     "description": "あああ",
