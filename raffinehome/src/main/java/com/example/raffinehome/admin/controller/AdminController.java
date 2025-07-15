@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.raffinehome.product.dto.ProductDetail;
+import com.example.raffinehome.product.dto.ProductDTO;
 import com.example.raffinehome.product.entity.Product;
 import com.example.raffinehome.product.service.ProductService;
-import com.example.raffinehome.product.dto.ProductListItem;
 import com.example.raffinehome.admin.dto.AdminCreateDTO;
 import com.example.raffinehome.admin.dto.AdminUpdateDTO;
+import com.example.raffinehome.admin.service.AdminService;
 
 import java.util.List;
 
@@ -27,21 +27,23 @@ import java.util.List;
 public class AdminController{
 
     private final ProductService productService;
+    private final AdminService adminService;
 
     @Autowired
-    public AdminController(ProductService productService){
+    public AdminController(ProductService productService, AdminService adminService){
     this.productService = productService;
+    this.adminService = adminService;
 }
 
 @GetMapping
-public ResponseEntity<List<ProductListItem>> getAllProducts(){
-    List<ProductListItem> products = productService.findAllProducts();
+public ResponseEntity<List<ProductDTO>> getAllProducts(){
+    List<ProductDTO> products = productService.findAllProducts();
     return ResponseEntity.ok(products);
 }
 
 @GetMapping("/{productId}")
-public ResponseEntity<ProductDetail> getProductById(@PathVariable Integer productId){
-    ProductDetail product = productService.findProductById(productId);
+public ResponseEntity<ProductDTO> getProductById(@PathVariable Integer productId){
+    ProductDTO product = productService.findProductById(productId);
     if (product == null){
         return ResponseEntity.notFound().build();
     }
@@ -54,7 +56,8 @@ public ResponseEntity<String> createProduct(@RequestBody AdminCreateDTO dto) {
 }
 
 @PutMapping("/{productId}")
-public ResponseEntity<String> updateProduct(@RequestBody AdminUpdateDTO dto){
+public ResponseEntity<String> updateProduct(@PathVariable int productId, @RequestBody AdminUpdateDTO dto){
+    adminService.updateProduct(productId, dto);
     return ResponseEntity.ok("商品情報を更新しました");
 }
 }

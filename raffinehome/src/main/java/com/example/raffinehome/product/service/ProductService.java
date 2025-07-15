@@ -22,9 +22,9 @@ public class ProductService {
         this.productRepository = ProductRepository;
     }
     
-    public List<ProductCreateDTO> findAllProducts() {
+    public List<ProductDTO> findAllProducts() {
         return productRepository.findAll().stream()
-                .map(this::convertToListItem)
+                .map(this::convertToDetail)
                 .collect(Collectors.toList());
     }
     
