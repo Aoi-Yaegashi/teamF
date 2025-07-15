@@ -57,12 +57,12 @@ public class AdminService {
             return productRepository.save(product);
             
         } else {
-            new IllegalStateException("該当商品が見つかりません" );
+            throw new IllegalStateException("該当商品が見つかりません" );
         // 商品が存在しない時の処理
         }
     }
 
-    public Product updateProduct(int id){
+    public Product updateProduct(int id, AdminUpdateDTO dto){
 
         Optional<Product> productOpt = productRepository.findById(id);
         if (productOpt.isPresent()) {
@@ -76,7 +76,7 @@ public class AdminService {
             return productRepository.save(product);
         
         } else {
-            new IllegalStateException("該当商品が見つかりません" );
+            throw new IllegalStateException("該当商品が見つかりません" );
         // 商品が存在しない時の処理
         }  
     }
