@@ -1,3 +1,5 @@
+package com.example.raffinehome.admin.service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,30 +47,39 @@ public class AdminService {
         return productRepository.save(product);
     }
 
-    public ProductDTO deleteProduct(int id, ProductDTO deleteRequest){
+    public Product deleteProduct(int id){
 
-        Optional product = productRepository.findById(Integer.valueOf(id));
-        product.setIs_Deleted(deleteRequest.getIsDeleted());
+        Optional<Product> productOpt = productRepository.findById(id);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+            // productの処理
 
-        Product saveProduct = productRepository.save(product);
-
-        return product.save(product);
-
+            return productRepository.save(product);
+            
+        } else {
+            new IllegalStateException("該当商品が見つかりません" );
+        // 商品が存在しない時の処理
+        }
     }
 
-    public AdminUpdateDTO updateProduct(int id, AdminUpdateDTO updateRequest){
+    public Product updateProduct(int id){
 
-        AdminUpdateDTO adminUpdateDTO = productRepository.findById(id);
-        adminUpdateDTO.setName(updateRequest.getName());
-        adminUpdateDTO.setDescription(updateRequest.getDescription());
-        adminUpdateDTO.setPrice(updateRequest.getPrice());
-        adminUpdateDTO.setSalePrice(updateRequest.getSalePrice());
-        adminUpdateDTO.setStockQuantity(updateRequest.getStockQuantity());
-        adminUpdateDTO.setImageUrl(updateRequest.getImageUrl());
+        Optional<Product> productOpt = productRepository.findById(id);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+            /*adminUpdateDTO.setDescription(updateRequest.getDescription());
+            adminUpdateDTO.setPrice(updateRequest.getPrice());
+            adminUpdateDTO.setSalePrice(updateRequest.getSalePrice());
+            adminUpdateDTO.setStockQuantity(updateRequest.getStockQuantity());
+            adminUpdateDTO.setImageUrl(updateRequest.getImageUrl());*/
 
-        return productRepository.save(adminUpdateDTO);
+            return productRepository.save(product);
+        
+        } else {
+            new IllegalStateException("該当商品が見つかりません" );
+        // 商品が存在しない時の処理
+        }  
     }
-
-    
-
 }
+
+/*Productのどの要素に作用するかをどの記述で決めてる？*/
