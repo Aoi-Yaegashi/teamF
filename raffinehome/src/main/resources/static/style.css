@@ -80,6 +80,92 @@ header nav {
     color: #ccc;
 }
 
+
+#humMenu {
+  padding: 12px;
+  background: white;
+}
+ 
+#humCheck, #humClose { display:none; }
+#humOpen {
+  display: block;
+  width: 58px;
+  cursor: pointer;
+}
+
+#humOpen:hover {
+  opacity: 0.5;
+}
+
+#humOpen img { display: block; }
+#humClose, nav {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+}
+
+#humClose {
+  z-index: 2;
+  width: 100%;
+  background: gray;
+  opacity: 0.8;
+  transition: 0.5s;
+}
+
+nav {
+  z-index: 3;
+  width: 330px;
+  background: white;
+  transition: 0.5s;
+  transform: translateX(-100%);
+}
+
+#humCheck:checked ~ #humClose { display: block; }
+#humCheck:checked ~ nav {
+  transform: translateX(0);
+}
+
+nav ul{
+overflow: hidden;
+list-style: none;
+}
+
+nav li{
+  padding: 15px 0;
+  margin: 10px 0;
+}
+
+nav li:hover{
+  opacity: 0.5;
+}
+
+nav li a{
+  font-size: 20px;
+  text-decoration: none;
+  font-size: 20px;
+  color: black;
+}
+
+  @media screen and (min-width: 769px) {
+    nav.desktop {
+      transform: none !important;
+      position: static !important;
+      width: auto;
+      height: auto;
+      z-index: auto;
+      background: transparent;
+    }
+  }
+
+  nav.desktop a {
+    font-size: 16px;
+    color: black;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    display: block;
+  }
+
 .scroll-infinity {
   overflow: hidden;
   width: 70%;
@@ -127,3 +213,4 @@ header nav {
   padding: 0;
   margin: 0;
 }
+

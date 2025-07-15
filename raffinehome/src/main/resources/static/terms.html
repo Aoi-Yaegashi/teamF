@@ -9,35 +9,103 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
 </head>
+<div id="humMenu">
+    <input id="humCheck" type="checkbox">
+    <label id="humOpen" for="humCheck"><img src="images/hum.png" alt="メニュー" width="34" height="28"></label>
+    <label id="humClose" for="humCheck"></label>
 
+    <nav>
+      <ul class="inner">
+        <li><a href="index.html">トップページ</a></li>
+        <li><a href="products.html">商品一覧</a></li>
+        <li><a href="terms.html">利用規約</a></li>
+        <li><a href="privacy.html">プライバシーポリシー</a></li>
+        <li><a href="faq.html">よくあるご質問</a></li>
+      </ul>
+    </nav>
+</div>
     <body>
         <div class="container">
-            <header class="d-flex flex-wrap justify-content-between py-3 mb-4 border-bottom">
-                <a href="index.html"  class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-                    <span class="fs-4">Raffiné Home.</span>
-                </a>
-                <div class="text-end">
-                    <button id="cart-btn" class="btn btn-outline-dark position-relative">
-                        <i class="bi bi-cart"></i> カート
-                        <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge">
-                            0
-                        </span>
-                    </button>
+           <header class="mb-4 border-bottom">
+                <div class="container d-flex justify-content-between align-items-center py-3">
+                    <a href="index.html"  class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+                        <span class="fs-2">Raffiné Home.</span>
+                    </a>
+
+                    <div class="text-end">
+                        <button id="cart-btn" class="btn btn-outline-dark position-relative">
+                            <i class="bi bi-cart"></i> カート
+                            <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge">
+                                0
+                            </span>
+                        </button>
+                    </div>
                 </div>
+
+                <nav class="desktop d-flex justify-content-between px-5 border-top py-2">
+                    <div class="container d-flex justify-content-center py-2">
+                        <a href="index.html" class="nav-link">トップページ</a>
+                        <a href="products.html" class="nav-link">商品一覧</a>
+                        <a href="faq.html" class="nav-link">よくあるご質問</a>
+                    </div>
+                </nav>
+
             </header>
+
 
             <div class="container py-5">
                 <h1 class="mb-4">利用規約</h1>
-                <p>テキストテキストテキストテキストテキストテキストテキストテキスト</p>
-                <h2 class="mt-4">1. テキストテキスト</h2>
-                <p>テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト</p>
-                <h2 class="mt-4">2. テキストテキスト</h2>
-                <p>テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト</p>
-                <h2 class="mt-4">3. テキストテキスト</h2>
-                <p>テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト</p>
-                <h2 class="mt-4">4. テキストテキスト</h2>
-                <p>テキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキスト</p>
-            </div>
+
+                <p>本利用規約（以下「本規約」といいます）は、株式会社〇〇〇〇（以下「当社」といいます）が運営するウェブサイト「〇〇〇〇オンラインストア」（以下「本サービス」といいます）の利用条件を定めるものです。本サービスをご利用いただく前に、以下の規約を必ずお読みいただき、同意の上でご利用ください。​</p>
+
+                <h2 class="mt-4">第1条（適用）</h2>
+                <p>本規約は、ユーザーと当社との間における本サービスの利用に関わる一切の関係に適用されます。​</p>
+
+                <h2 class="mt-4">第2条（禁止事項）</h2>
+                <p>ユーザーは、本サービスの利用にあたり、以下の行為をしてはなりません。</p>
+                <p>1. 法令または公序良俗に違反する行為</p>
+                <p>2. 犯罪行為に関連する行為</p>
+                <p>3. 当社のサーバーやネットワークの機能を破壊したり妨害したりする行為</p>
+                <p>4. 当社のサービス運営を妨害するおそれのある行為</p>
+                <p>5. 他のユーザーまたは第三者に不利益、損害、不快感を与える行為</p>
+                <p>6. 不正アクセスをし、またはこれを試みる行為</p>
+                <p>7. 他人になりすます行為</p>
+                <p>8. 本サービスに関連して、反社会的勢力に対して直接または間接に利益を提供する行為</p>
+                <p>9. その他、当社が不適切と判断する行為</p>
+
+                <h2 class="mt-4">第3条（本サービスの提供の停止等）</h2>
+                <p>当社は、以下のいずれかの事由があると判断した場合、ユーザーに事前に通知することなく、本サービスの全部または一部の提供を停止または中断することができます。</p>
+                <p>1. 本サービスにかかるコンピュータシステムの保守点検または更新を行う場合</p>
+                <p>2. 火災、停電、天災などの不可抗力によりサービスの提供が困難になった場合</p>
+                <p>3. コンピュータまたは通信回線等が事故により停止した場合</p>
+                <p>4. その他、当社がサービス提供が困難と判断した場合</p>
+                <p>当社は、サービスの提供の停止または中断により、ユーザーまたは第三者が被ったいかなる不利益や損害についても責任を負いません。</p>
+
+                <h2 class="mt-4">第4条（利用制限およびアクセス制御）</h2>
+                <p>当社は、以下の場合には、事前の通知なく、ユーザーによる本サービスの全部または一部の利用を制限し、またはアクセスを制御することができます。</p>
+                <p>1. 本規約のいずれかの条項に違反した場合</p>
+                <p>2. 本サービスを不正に利用したと当社が判断した場合</p>
+                <p>3. その他、当社が本サービスの利用を適当でないと判断した場合</p>
+                <p>当社は、これによりユーザーに生じた損害について一切の責任を負いません。</p>
+
+                <h2 class="mt-4">第5条（著作権および知的財産権）</h2>
+                <p>本サービスに含まれるコンテンツ（文章、画像、動画、プログラム等）の著作権・知的財産権は、当社または正当な権利を有する第三者に帰属します。ユーザーは、当該権利者の許諾なく、これらを使用、転載、複製、配布することはできません。</p>
+
+                <h2 class="mt-4">第6条（免責事項）</h2>
+                <p>当社は、本サービスに事実上または法律上の瑕疵がないことを明示的にも黙示的にも保証しておらず、完全性、正確性、有用性、安全性等について一切の責任を負いません。</p>
+                <p>当社は、ユーザーが本サービスを利用したことにより生じた一切の損害について責任を負いません。ただし、当社の故意または重大な過失による場合はこの限りではありません。</p>
+
+                <h2 class="mt-4">第7条（サービス内容の変更および終了）</h2>
+                <p>当社は、ユーザーへの事前通知なくして、本サービスの内容を変更または提供を終了することができます。</p>
+                <p>これによりユーザーに不利益や損害が生じたとしても、当社は一切の責任を負いません。</p>
+
+                <h2 class="mt-4">第8条（利用規約の変更）</h2>
+                <p>当社は、必要と判断した場合には、ユーザーに通知することなく、本規約を変更することができます。変更後の規約は、本サービス上に表示された時点で効力を生じるものとします。</p>
+
+                <h2 class="mt-4">第9条（準拠法および管轄）</h2>
+                <p>本規約の解釈にあたっては、日本法を準拠法とします。</p>
+                <p>本サービスに関して紛争が生じた場合には、当社の本店所在地を管轄する地方裁判所を第一審の専属的合意管轄裁判所とします。</p>
+                
         </div>
 
         <footer class="footer">
@@ -54,5 +122,100 @@
                 &copy; Raffiné Home. 2025
             </div>
         </footer>
+
+            <!-- 商品詳細モーダル -->
+    <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="productModalTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="productModalBody">
+                    <!-- 商品詳細情報 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- カートモーダル -->
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">ショッピングカート</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="cartModalBody">
+                    <!-- カート内容 -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">買い物を続ける</button>
+                    <button type="button" class="btn btn-primary" id="checkout-btn">注文手続きへ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 注文フォームモーダル -->
+    <div class="modal fade" id="checkoutModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">お客様情報入力</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="order-form" class="needs-validation" novalidate>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">お名前</label>
+                            <input type="text" class="form-control" id="name" required>
+                            <div class="invalid-feedback">お名前を入力してください</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">メールアドレス</label>
+                            <input type="email" class="form-control" id="email" required>
+                            <div class="invalid-feedback">有効なメールアドレスを入力してください</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">住所</label>
+                            <input type="text" class="form-control" id="address" required>
+                            <div class="invalid-feedback">住所を入力してください</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">電話番号</label>
+                            <input type="tel" class="form-control" id="phone" required>
+                            <div class="invalid-feedback">電話番号を入力してください</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">キャンセル</button>
+                    <button type="button" class="btn btn-primary" id="confirm-order-btn">注文を確定する</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 注文完了モーダル -->
+    <div class="modal fade" id="orderCompleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">ご注文ありがとうございます</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="orderCompleteBody">
+                    <!-- 注文完了メッセージ -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">トップに戻る</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="main.js"></script>
     </body>
 </html>

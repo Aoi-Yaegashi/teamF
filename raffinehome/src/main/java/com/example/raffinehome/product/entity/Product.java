@@ -29,6 +29,9 @@ public class Product {
     
     @Column(nullable = false)
     private int stockQuantity;
+
+    @Column(nullable = false)
+    private boolean is_Deleted;
     
     private String imageUrl;
     
@@ -45,5 +48,10 @@ public class Product {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public void setIs_Deleted(Object is_Deleted2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setIs_Deleted'");
     }
 }
