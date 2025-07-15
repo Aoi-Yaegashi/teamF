@@ -54,7 +54,7 @@ public class AdminService {
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
             // productの処理
-            product.setIs_Deleted(true);
+            product.IsDeleted(true);
             return productRepository.save(product);
             
         } else {
@@ -84,5 +84,3 @@ public class AdminService {
         }  
     }
 }
-
-/*Productのどの要素に作用するかをどの記述で決めてる？*/
