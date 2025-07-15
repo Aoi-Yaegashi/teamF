@@ -42,9 +42,9 @@ public class ProductService {
             product.getDescription(),
             product.getStockQuantity(),
             product.getImageUrl(),
-            product.getStockQuantity() > 0,
+            product.getStockQuantity() > 0
             
-            product.isDeleted()
+            /*product.isDeleted()*/
         );
     }
     

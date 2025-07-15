@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.raffinehome.product.dto.ProductListDTO;
 import com.example.raffinehome.product.dto.ProductDTO;
 import com.example.raffinehome.product.repository.ProductRepository;
+import com.example.raffinehome.admin.dto.AdminCreateDTO;
 
 import jakarta.transaction.TransactionScoped;
 import jakarta.transaction.Transactional;
@@ -34,7 +35,7 @@ public class AdminService {
     this.productRepository = productRepository;
     }
 
-    public Product createProduct(Product request){
+    public Product createProduct(AdminCreateDTO request){
         
         Product product = new Product();
         product.setName(request.getName());
