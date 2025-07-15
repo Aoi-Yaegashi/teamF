@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // カートに商品を追加する関数
     async function addToCart(productId, quantity) {
         try {
-            const response = await fetch(`${API_BASE}/cart`, {
+            const response = await fetch(`${API_BASE}/cart/add`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
