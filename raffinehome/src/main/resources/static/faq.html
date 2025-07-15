@@ -26,31 +26,30 @@
 </div>
     <body>
         <div class="container">
-            <header class="mb-4 border-bottom">
-                <div class="container d-flex justify-content-between align-items-center py-3">
-                    <a href="index.html"  class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-                        <span class="fs-2">Raffiné Home.</span>
-                    </a>
+                <header class="mb-4 border-bottom">
+                   <div class="container d-flex justify-content-between align-items-center py-3">
+                     <a href="index.html" class="d-flex align-items-center text-dark text-decoration-none">
+                         <span class="fs-2">Raffiné Home.</span>
+                     </a>
+                        <div class="text-end">
+                          <button class="btn btn-outline-dark position-relative">
+                              <i class="bi bi-cart"></i> カート
+                              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge">
+                                 0
+                              </span>
+                          </button>
+                        </div>
+                   </div>
 
-                    <div class="text-end">
-                        <button id="cart-btn" class="btn btn-outline-dark position-relative">
-                            <i class="bi bi-cart"></i> カート
-                            <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge">
-                                0
-                            </span>
-                        </button>
-                    </div>
-                </div>
-
-                <nav class="d-flex justify-content-between px-5 border-top py-2">
-                    <div class="container d-flex justify-content-center py-2">
-                        <a href="index.html" class="nav-link">トップページ</a>
-                        <a href="products.html" class="nav-link">商品一覧</a>
-                        <a href="faq.html" class="nav-link">よくあるご質問</a>
-                    </div>
-                </nav>
-
-            </header>
+                 <!-- ナビゲーション部分 -->
+                 <div class="container">
+                   <nav class="desktop d-flex justify-content-center gap-4 py-2">
+                     <a href="index.html" class="nav-link">トップページ</a>
+                     <a href="products.html" class="nav-link">商品一覧</a>
+                     <a href="faq.html" class="nav-link">よくあるご質問</a>
+                   </nav>
+                 </div>
+                </header>
 
             <div class="py-5">
                 <h1 class="mb-4">FAQ</h1>

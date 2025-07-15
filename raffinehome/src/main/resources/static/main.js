@@ -110,58 +110,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
         `;
-　　
- document.addEventListener('DOMContentLoaded', async function () {
-    const API_BASE = '/api';
-
-    // クエリパラメータからキーワードを取得
-    const params = new URLSearchParams(window.location.search);
-    const keyword = params.get('keyword')?.toLowerCase();
-
-    try {
-        const response = await fetch(`${API_BASE}/products`);
-        const products = await response.json();
-
-        // キーワードでフィルタリング
-        const filteredProducts = keyword
-            ? products.filter(p =>
-                p.name.toLowerCase().includes(keyword) ||
-                (p.description && p.description.toLowerCase().includes(keyword))
-              )
-            : products;
-
-        displayProducts(filteredProducts);
-    } catch (error) {
-        console.error('商品一覧の取得に失敗しました', error);
-    }
-
-    function displayProducts(products) {
-        const container = document.getElementById('products-container');
-        container.innerHTML = '';
-
-        if (products.length === 0) {
-            container.innerHTML = '<p>該当する商品が見つかりませんでした。</p>';
-            return;
-        }
-
-        products.forEach(product => {
-            const card = document.createElement('div');
-            card.className = 'col';
-            card.innerHTML = `
-                <div class="card product-card">
-                    <img src="${product.imageUrl}" class="card-img-top" alt="${product.name}">
-                    <div class="card-body">
-                        <h5 class="card-title">${product.name}</h5>
-                        <p class="card-text">¥${product.price.toLocaleString()}</p>
-                        <button class="btn btn-outline-primary view-product" data-id="${product.productId}">詳細を見る</button>
-                    </div>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-   　 }
-　　});
-
         
         // カートに追加ボタンのイベント設定
         modalBody.querySelector('.add-to-cart').addEventListener('click', function() {

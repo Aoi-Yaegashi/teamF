@@ -91,9 +91,11 @@ header nav {
   width: 58px;
   cursor: pointer;
 }
+
 #humOpen:hover {
   opacity: 0.5;
 }
+
 #humOpen img { display: block; }
 #humClose, nav {
   position: fixed;
@@ -101,6 +103,7 @@ header nav {
   top: 0;
   height: 100%;
 }
+
 #humClose {
   z-index: 2;
   width: 100%;
@@ -108,6 +111,7 @@ header nav {
   opacity: 0.8;
   transition: 0.5s;
 }
+
 nav {
   z-index: 3;
   width: 330px;
@@ -115,21 +119,26 @@ nav {
   transition: 0.5s;
   transform: translateX(-100%);
 }
+
 #humCheck:checked ~ #humClose { display: block; }
 #humCheck:checked ~ nav {
   transform: translateX(0);
 }
+
 nav ul{
 overflow: hidden;
 list-style: none;
 }
+
 nav li{
   padding: 15px 0;
   margin: 10px 0;
 }
+
 nav li:hover{
   opacity: 0.5;
 }
+
 nav li a{
   font-size: 20px;
   text-decoration: none;
@@ -137,31 +146,21 @@ nav li a{
   color: black;
 }
 
-@media screen and (min-width: 769px) {
-  #humOpen,
-  #humCheck,
-  #humClose,
-  nav.mobile {
-    display: none;
+  @media screen and (min-width: 769px) {
+    nav.desktop {
+      transform: none !important;
+      position: static !important;
+      width: auto;
+      height: auto;
+      z-index: auto;
+      background: transparent;
+    }
   }
 
-  nav.desktop {
-    display: block;
-  }
-
-  nav.desktop ul {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-  }
-
-  nav.desktop li {
-    padding: 0;
-    margin: 0;
-  }
-
-  nav.desktop li a {
+  nav.desktop a {
     font-size: 16px;
     color: black;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    display: block;
   }
-}
