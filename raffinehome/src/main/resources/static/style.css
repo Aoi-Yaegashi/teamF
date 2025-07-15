@@ -158,6 +158,10 @@ nav li a{
     }
   }
 
+  #humMenu {
+    display: none; 
+  }
+
   nav.desktop a {
     font-size: 16px;
     color: black;
