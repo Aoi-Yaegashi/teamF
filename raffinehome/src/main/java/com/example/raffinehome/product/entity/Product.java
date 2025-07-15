@@ -50,8 +50,8 @@ public class Product {
         updatedAt = LocalDateTime.now();
     }
 
-    public void setIs_Deleted(Object is_Deleted2) {
+    public void IsDeleted(Object is_Deleted2) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setIs_Deleted'");
+        throw new UnsupportedOperationException("Unimplemented method 'IsDeleted'");
     }
 }
