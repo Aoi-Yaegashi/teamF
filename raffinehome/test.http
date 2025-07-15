@@ -38,6 +38,14 @@ content-type: application/json
     "imageUrl":"a.png"}
 
 ### 削除
-DELETE http://localhost:8080/api/admin/{1}
+DELETE http://localhost:8080/api/admin/1
 
 ### 商品編集
+PUT http://localhost:8080/api/admin/1
+
+{   "name": "テスト",
+    "description": "あああ",
+    "price": "12",
+    "saleprice": "12",
+    "stockQuantity":"1",
+    "imageUrl":"a.png"}
