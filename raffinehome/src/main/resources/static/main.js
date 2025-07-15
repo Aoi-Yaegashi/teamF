@@ -74,9 +74,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // 商品詳細を取得する関数
-    async function fetchProductDetail(productId) {
+    async function fetchProductDetail(id) {
         try {
-            const response = await fetch(`${API_BASE}/products/${productId}`);
+            const response = await fetch(`${API_BASE}/products/${id}`);
             if (!response.ok) {
                 throw new Error('商品詳細の取得に失敗しました');
             }
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // カートに商品を追加する関数
     async function addToCart(productId, quantity) {
         try {
-            const response = await fetch(`${API_BASE}/cart/add`, {
+            const response = await fetch(`${API_BASE}/cart`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
