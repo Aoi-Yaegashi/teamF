@@ -17,9 +17,5 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
         "UPDATE Product p SET p.stockQuantity = p.stockQuantity - ?2 WHERE p.id = ?1 AND p.stockQuantity >= ?2")
     int decreaseStock(int id, int stockQuantity);
 
-    @Override
-    default Optional findById(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
-    }
+    
 }
