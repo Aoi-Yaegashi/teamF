@@ -43,8 +43,6 @@ public class ProductService {
             product.getStockQuantity(),
             product.getImageUrl(),
             product.getStockQuantity() > 0
-            
-            /*product.isDeleted()*/
         );
     }
     
