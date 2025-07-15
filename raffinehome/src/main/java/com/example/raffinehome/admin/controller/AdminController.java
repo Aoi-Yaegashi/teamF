@@ -18,6 +18,7 @@ import com.example.raffinehome.product.service.ProductService;
 import com.example.raffinehome.admin.dto.AdminCreateDTO;
 import com.example.raffinehome.admin.dto.AdminUpdateDTO;
 import com.example.raffinehome.admin.service.AdminService;
+import com.example.raffinehome.product.dto.ProductListDTO;
 
 import java.util.List;
 
@@ -36,8 +37,8 @@ public class AdminController{
 }
 
 @GetMapping
-public ResponseEntity<List<ProductDTO>> getAllProducts(){
-    List<ProductDTO> products = productService.findAllProducts();
+public ResponseEntity<List<ProductListDTO>> getAllProducts(){
+    List<ProductListDTO> products = productService.findAllProducts();
     return ResponseEntity.ok(products);
 }
 
@@ -52,6 +53,7 @@ public ResponseEntity<ProductDTO> getProductById(@PathVariable Integer productId
 
 @PostMapping
 public ResponseEntity<String> createProduct(@RequestBody AdminCreateDTO dto) {
+    
     return ResponseEntity.ok("商品登録が完了しました");
 }
 
