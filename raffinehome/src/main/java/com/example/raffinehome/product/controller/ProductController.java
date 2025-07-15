@@ -31,10 +31,10 @@ public class ProductController {
     
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable int id) {
-        ProductDTO products = productService.findProductById(id);
-        if (products == null) {
+        ProductDTO product = productService.findProductById(id);
+        if (product == null) {
            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(products);
+        return ResponseEntity.ok(product);
     }
 }

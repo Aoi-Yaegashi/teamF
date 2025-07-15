@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.raffinehome.product.dto.ProductListDTO;
 import com.example.raffinehome.product.dto.ProductDTO;
 import com.example.raffinehome.product.repository.ProductRepository;
+import com.example.raffinehome.admin.dto.AdminCreateDTO;
 
 import jakarta.transaction.TransactionScoped;
 import jakarta.transaction.Transactional;
@@ -34,7 +35,7 @@ public class AdminService {
     this.productRepository = productRepository;
     }
 
-    public Product createProduct(Product request){
+    public Product createProduct(AdminCreateDTO request){
         
         Product product = new Product();
         product.setName(request.getName());
@@ -53,7 +54,7 @@ public class AdminService {
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
             // productの処理
-            product.setIs_Deleted(true);
+            product.IsDeleted(true);
             return productRepository.save(product);
             
         } else {
@@ -83,5 +84,3 @@ public class AdminService {
         }  
     }
 }
-
-/*Productのどの要素に作用するかをどの記述で決めてる？*/
