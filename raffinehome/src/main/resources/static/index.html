@@ -25,19 +25,33 @@
 </div>
 <body>
     <div class="container">
-        <header class="d-flex flex-wrap justify-content-between py-3 mb-4 border-bottom">
-            <a href="index.html" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-                <span class="fs-4">Raffiné Home.</span>
-            </a>
-            <div class="text-end">
-                <button id="cart-btn" class="btn btn-outline-dark position-relative">
-                    <i class="bi bi-cart"></i> カート
-                    <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge">
-                        0
-                    </span>
-                </button>
-            </div>
-        </header>
+           <header class="mb-4 border-bottom">
+                <div class="container d-flex justify-content-between align-items-center py-3">
+                    <a href="index.html"  class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+                        <span class="fs-2">Raffiné Home.</span>
+                    </a>
+
+                    <div class="text-end">
+                        <button id="cart-btn" class="btn btn-outline-dark position-relative">
+                            <i class="bi bi-cart"></i> カート
+                            <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge">
+                                0
+                            </span>
+                        </button>
+                    </div>
+                </div>
+
+                <nav class="desktop d-flex px-5 border-top py-2" style="width: 100%;">
+                  <a href="index.html" class="nav-link" style="flex-basis: 25%; text-align: center;">トップページ</a>
+                  <a href="products.html" class="nav-link" style="flex-basis: 25%; text-align: center;">商品一覧</a>
+                  <a href="faq.html" class="nav-link" style="flex-basis: 25%; text-align: center;">よくあるご質問</a>
+  
+                 <form class="d-flex search-form" role="search" style="flex-basis: 25%; justify-content: center;">
+                  <input class="form-control me-2" type="search" placeholder="商品名・キーワードで検索" aria-label="Search" style="width: 70%;">
+                  <button class="btn btn-outline-primary" type="submit">検索</button>
+                 </form>
+                </nav>
+            </header>
 
 
         <div id="main-content">
@@ -46,6 +60,7 @@
                 <!-- 商品リストがここに表示される -->
             </div>
         </div>
+    </div>
 
         <footer class="footer">
             <div class="footer-links">
@@ -60,7 +75,7 @@
             <div class="footer-copy">&copy; Raffiné Home. 2025
             </div>
         </footer>
-    </div>
+
 
     <!-- 商品詳細モーダル -->
     <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
