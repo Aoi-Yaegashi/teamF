@@ -15,10 +15,7 @@ public class ProductDTO {
     private int stockQuantity;
     private String imageUrl;
     private boolean isInStock;
-    public Object getIsDeleted() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getIsDeleted'");
-    }
+
 public ProductDTO(int id, String name, int price, int salePrice, String description,
                   int stockQuantity, String imageUrl, boolean isInStock) {
     this.id = id;
