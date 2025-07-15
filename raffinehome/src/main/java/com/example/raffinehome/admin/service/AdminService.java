@@ -1,13 +1,16 @@
 package com.example.raffinehome.admin.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
 import org.springframework.stereotype.Service;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.raffinehome.product.dto.ProductCreateDTO;
+import com.example.raffinehome.product.dto.ProductDTO;
 import com.example.raffinehome.product.repository.ProductRepository;
 
 import jakarta.transaction.TransactionScoped;
@@ -44,28 +47,39 @@ public class AdminService {
         return productRepository.save(product);
     }
 
-    public AdminDeleteDTO deleteProduct(int id, AdminDeleteDTO deleteRequest){
+    public Product deleteProduct(int id){
 
-        AdminDeleteDTO adminDeleteDTO = productRepository.findById(id);
-        adminDeleteDTO.setIs_Deleted(deleteRequest.setIs_deleted());
+        Optional<Product> productOpt = productRepository.findById(id);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+            // productの処理
 
-        return productRepository.save(adminDeleteDTO);
-
+            return productRepository.save(product);
+            
+        } else {
+            new IllegalStateException("該当商品が見つかりません" );
+        // 商品が存在しない時の処理
+        }
     }
 
-    public AdminUpdateDTO updateProduct(int id, AdminUpdateDTO updateRequest){
+    public Product updateProduct(int id){
 
-        AdminUpdateDTO adminUpdateDTO = adminUpdateDTO.findbyId(id);
-        adminUpdateDTO.setName(updateRequest.getName());
-        adminUpdateDTO.setDescription(updateRequest.getDescription());
-        adminUpdateDTO.setPrice(updateRequest.getPrice());
-        adminUpdateDTO.setSalePrice(updateRequest.getSalePrice());
-        adminUpdateDTO.setStockQuantity(updateRequest.getStockQuantity());
-        adminUpdateDTO.setImageUrl(updateRequest.getImageUrl());
+        Optional<Product> productOpt = productRepository.findById(id);
+        if (productOpt.isPresent()) {
+            Product product = productOpt.get();
+            /*adminUpdateDTO.setDescription(updateRequest.getDescription());
+            adminUpdateDTO.setPrice(updateRequest.getPrice());
+            adminUpdateDTO.setSalePrice(updateRequest.getSalePrice());
+            adminUpdateDTO.setStockQuantity(updateRequest.getStockQuantity());
+            adminUpdateDTO.setImageUrl(updateRequest.getImageUrl());*/
 
-        return productRepository.save(adminUpdateDTO);
+            return productRepository.save(product);
+        
+        } else {
+            new IllegalStateException("該当商品が見つかりません" );
+        // 商品が存在しない時の処理
+        }  
     }
-
-    
-
 }
+
+/*Productのどの要素に作用するかをどの記述で決めてる？*/
