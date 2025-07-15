@@ -31,7 +31,7 @@ public class Product {
     private int stockQuantity;
 
     @Column(nullable = false)
-    private boolean is_Deleted;
+    private boolean isDeleted;
     
     private String imageUrl;
     
