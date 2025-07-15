@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class ProductDTO {
     private int id;
     private String name;
@@ -16,7 +15,6 @@ public class ProductDTO {
     private int stockQuantity;
     private String imageUrl;
     private boolean isInStock;
-    public boolean isDeleted;
     public Object getIsDeleted() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getIsDeleted'");
