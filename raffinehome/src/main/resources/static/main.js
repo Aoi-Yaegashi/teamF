@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // カートに商品を追加する関数
     async function addToCart(productId, quantity) {
         try {
-            const response = await fetch(`${API_BASE}/cart`, {
+            const response = await fetch(`${API_BASE}/cart/add`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -313,9 +313,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         const orderData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                address: document.getElementById('address').value,
+                customerName: document.getElementById('name').value,
+                customerEmail: document.getElementById('email').value,
+                shippingAddress: document.getElementById('address').value,
                 phoneNumber: document.getElementById('phone').value
         };
         
