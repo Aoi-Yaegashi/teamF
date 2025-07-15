@@ -5,7 +5,7 @@ GET http://localhost:8080/api/products
 GET http://localhost:8080/api/products/1
 
 ### カートに追加
-POST http://localhost:8080/api/cart
+POST http://localhost:8080/api/cart/add
 content-type: application/json
 
 {
@@ -20,10 +20,12 @@ GET http://localhost:8080/api/cart
 POST http://localhost:8080/api/orders
 content-type: application/json
 
-{   "name": "テスト",
-    "email": "t@e.com",
-    "address": "住所",
-    "phoneNumber": "123"}
+{
+  "customerName": "テスト",
+  "customerEmail": "t@e.com",
+  "shippingAddress": "住所",
+  "phoneNumber": "123"
+}
 
 ### 商品登録
 
