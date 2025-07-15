@@ -1,7 +1,7 @@
 package com.example.raffinehome.product.service;
 
 import com.example.raffinehome.product.dto.ProductDTO;
-import com.example.raffinehome.product.dto.ProductCreateDTO;
+import com.example.raffinehome.product.dto.ProductListDTO;
 import com.example.raffinehome.product.dto.ProductUpdateDTO;
 import com.example.raffinehome.product.entity.Product;
 import com.example.raffinehome.product.repository.ProductRepository;
@@ -22,9 +22,9 @@ public class ProductService {
         this.productRepository = ProductRepository;
     }
     
-    public List<ProductDTO> findAllProducts() {
+    public List<ProductListDTO> findAllProducts() {
         return productRepository.findAll().stream()
-                .map(this::convertToDetail)
+                .map(this::convertToListItem)
                 .collect(Collectors.toList());
     }
     
@@ -42,12 +42,12 @@ public class ProductService {
             product.getDescription(),
             product.getStockQuantity(),
             product.getImageUrl(),
-            product.getStockQuantity() > 0 
+            product.getStockQuantity() > 0
         );
     }
     
-    private ProductCreateDTO convertToListItem(Product product) {
-        return new ProductCreateDTO(
+    private ProductListDTO convertToListItem(Product product) {
+        return new ProductListDTO(
                 product.getName(),
                 product.getPrice(),
                 product.getSalePrice(),

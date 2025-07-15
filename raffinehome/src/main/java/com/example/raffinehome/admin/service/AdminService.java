@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
 import org.springframework.stereotype.Service;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.raffinehome.product.dto.ProductCreateDTO;
+import com.example.raffinehome.product.dto.ProductListDTO;
 import com.example.raffinehome.product.dto.ProductDTO;
 import com.example.raffinehome.product.repository.ProductRepository;
 
@@ -53,30 +53,32 @@ public class AdminService {
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
             // productの処理
-
+            product.setIs_Deleted(true);
             return productRepository.save(product);
             
         } else {
-            new IllegalStateException("該当商品が見つかりません" );
+            throw new IllegalStateException("該当商品が見つかりません" );
         // 商品が存在しない時の処理
         }
     }
 
-    public Product updateProduct(int id){
+    public Product updateProduct(int id,AdminUpdateDTO updateRequest){
+
 
         Optional<Product> productOpt = productRepository.findById(id);
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
-            /*adminUpdateDTO.setDescription(updateRequest.getDescription());
-            adminUpdateDTO.setPrice(updateRequest.getPrice());
-            adminUpdateDTO.setSalePrice(updateRequest.getSalePrice());
-            adminUpdateDTO.setStockQuantity(updateRequest.getStockQuantity());
-            adminUpdateDTO.setImageUrl(updateRequest.getImageUrl());*/
+            product.setName(updateRequest.getName());
+            product.setDescription(updateRequest.getDescription());
+            product.setPrice(updateRequest.getPrice());
+            product.setSalePrice(updateRequest.getSalePrice());
+            product.setStockQuantity(updateRequest.getStockQuantity());
+            product.setImageUrl(updateRequest.getImageUrl());
 
             return productRepository.save(product);
         
         } else {
-            new IllegalStateException("該当商品が見つかりません" );
+            throw new IllegalStateException("該当商品が見つかりません" );
         // 商品が存在しない時の処理
         }  
     }
