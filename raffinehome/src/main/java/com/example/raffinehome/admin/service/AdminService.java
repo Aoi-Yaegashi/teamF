@@ -64,6 +64,7 @@ public class AdminService {
 
     public Product updateProduct(int id,AdminUpdateDTO updateRequest){
 
+
         Optional<Product> productOpt = productRepository.findById(id);
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
