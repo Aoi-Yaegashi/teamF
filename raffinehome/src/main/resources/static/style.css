@@ -80,6 +80,7 @@ header nav {
     color: #ccc;
 }
 
+
 #humMenu {
   padding: 12px;
   background: white;
@@ -164,3 +165,52 @@ nav li a{
     padding: 0.5rem 1rem;
     display: block;
   }
+
+.scroll-infinity {
+  overflow: hidden;
+  width: 70%;
+  margin: 0 auto
+}
+
+.scroll-infinity__wrap {
+  display: flex;
+  width: max-content;
+  animation: scroll-left 30s linear infinite;
+}
+
+.scroll-infinity__list {
+  display: flex;
+}
+
+.scroll-infinity__item {
+  flex: 0 0 auto;
+  width: 200px; 
+  margin-right: 5px;
+}
+
+.scroll-infinity__item img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.sacramento {
+  font-family: 'Sacramento', cursive;
+}
+
+.scroll-infinity__list {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+

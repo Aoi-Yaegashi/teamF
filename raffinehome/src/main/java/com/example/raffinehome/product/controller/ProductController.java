@@ -1,7 +1,7 @@
 package com.example.raffinehome.product.controller;
 
-import com.example.raffinehome.product.dto.ProductDetail;
-import com.example.raffinehome.product.dto.ProductListItem;
+import com.example.raffinehome.product.dto.ProductDTO;
+import com.example.raffinehome.product.dto.ProductCreateDTO;
 import com.example.raffinehome.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,22 +19,22 @@ public class ProductController {
     private final ProductService productService;
     
     @Autowired
-    public ProductController(ProductService productService) {
-        this.productService = productService;
+    public ProductController(ProductService ProductService) {
+        this.productService = ProductService;
     }
     
     @GetMapping
-    public ResponseEntity<List<ProductListItem>> getAllProducts() {
-        List<ProductListItem> products = productService.findAllProducts();
-        return ResponseEntity.ok(products);
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+        List<ProductDTO> product = productService.findAllProducts();
+        return ResponseEntity.ok(product);
     }
     
-    @GetMapping("/{productId}")
-    public ResponseEntity<ProductDetail> getProductById(@PathVariable Integer productId) {
-        ProductDetail product = productService.findProductById(productId);
-        if (product == null) {
-            return ResponseEntity.notFound().build();
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable int id) {
+        ProductDTO products = productService.findProductById(id);
+        if (products == null) {
+           return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(product);
+        return ResponseEntity.ok(products);
     }
 }

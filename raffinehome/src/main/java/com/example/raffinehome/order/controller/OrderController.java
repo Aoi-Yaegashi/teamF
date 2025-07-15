@@ -1,6 +1,6 @@
 package com.example.raffinehome.order.controller;
 
-import com.example.raffinehome.cart.dto.Cart;
+import com.example.raffinehome.cart.dto.CartDTO;
 import com.example.raffinehome.order.dto.OrederCreateDTO;
 import com.example.raffinehome.order.dto.OrderDTO;
 import com.example.raffinehome.cart.service.CartService;
@@ -32,9 +32,13 @@ public class OrderController {
     public ResponseEntity<OrderDTO> placeOrder(
             @Valid @RequestBody OrederCreateDTO orederCreateDTO,
             HttpSession session) {
+
+        
+        CartDTO cart = cartService.getCartSession(session);
+        
 System.out.println("controllerstart");
-        Cart cart = cartService.getCartFromSession(session);
 System.out.println("カート取得end");
+
         if (cart == null || cart.getItems().isEmpty()) {
 System.out.println("カートが空");            
             return ResponseEntity.badRequest().build();

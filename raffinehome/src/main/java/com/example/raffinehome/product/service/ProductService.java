@@ -1,7 +1,8 @@
 package com.example.raffinehome.product.service;
 
-import com.example.raffinehome.product.dto.ProductDetail;
-import com.example.raffinehome.product.dto.ProductListItem;
+import com.example.raffinehome.product.dto.ProductDTO;
+import com.example.raffinehome.product.dto.ProductCreateDTO;
+import com.example.raffinehome.product.dto.ProductUpdateDTO;
 import com.example.raffinehome.product.entity.Product;
 import com.example.raffinehome.product.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,38 +18,43 @@ public class ProductService {
     private final ProductRepository productRepository;
     
     @Autowired
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    public ProductService(ProductRepository ProductRepository) {
+        this.productRepository = ProductRepository;
     }
     
-    public List<ProductListItem> findAllProducts() {
+    public List<ProductDTO> findAllProducts() {
         return productRepository.findAll().stream()
-                .map(this::convertToListItem)
+                .map(this::convertToDetail)
                 .collect(Collectors.toList());
     }
     
-    public ProductDetail findProductById(Integer productId) {
-        Optional<Product> productOpt = productRepository.findById(productId);
+    public ProductDTO findProductById(Integer id) {
+        Optional<Product> productOpt = productRepository.findById(id);
         return productOpt.map(this::convertToDetail).orElse(null);
     }
-    
-    private ProductListItem convertToListItem(Product product) {
-        return new ProductListItem(
-                product.getProductId(),
-                product.getName(),
-                product.getPrice(),
-                product.getImageUrl()
+
+    private ProductDTO convertToDetail(Product product) {
+        return new ProductDTO(
+            product.getId(),
+            product.getName(),
+            product.getPrice(),
+            product.getSalePrice(),
+            product.getDescription(),
+            product.getStockQuantity(),
+            product.getImageUrl(),
+            product.getStockQuantity() > 0 
         );
     }
     
-    private ProductDetail convertToDetail(Product product) {
-        return new ProductDetail(
-                product.getProductId(),
+    private ProductCreateDTO convertToListItem(Product product) {
+        return new ProductCreateDTO(
                 product.getName(),
                 product.getPrice(),
+                product.getSalePrice(),
                 product.getDescription(),
-                product.getStock(),
+                product.getStockQuantity(),
                 product.getImageUrl()
-        );
+        ) ;
     }
+    
 }
