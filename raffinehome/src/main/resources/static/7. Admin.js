@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function fetchProducts() {
     try {
-      const res = await fetch('/api/products');
+      const res = await fetch('/api/admin/products/import');
       if (!res.ok) throw new Error('商品取得失敗');
       const products = await res.json();
       renderProducts(products);

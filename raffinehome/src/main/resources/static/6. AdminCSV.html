@@ -102,23 +102,21 @@
     formData.append('csv', file);
     formData.append('mapping', mapping);
 
-    // ここでAPIに送信（例：/api/admin/import）
-    fetch('/api/admin/import', {
+    fetch('/api/admin/products/import', {
       method: 'POST',
       body: formData
     })
-    .then(res => {
-      if (!res.ok) throw new Error('インポートに失敗しました');
-      return res.json();
-    })
-    .then(data => {
-      alert('インポートが完了しました');
-      console.log(data);
-    })
-    .catch(err => {
-      alert(err.message);
-    });
-  });
+    .then(response => {
+  if (!response.ok) throw new Error('インポートに失敗しました');
+  return response.text();  // ←ここをJSONではなくtext()に
+})
+.then(message => {
+  alert(message); // "インポートが完了しました"
+})
+.catch(error => {
+  alert(error.message);
+});
+});//
 </script>
 
 </body>

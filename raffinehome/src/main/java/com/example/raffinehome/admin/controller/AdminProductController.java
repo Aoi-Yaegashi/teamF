@@ -18,18 +18,19 @@ public class AdminProductController {
     }
 
     /**
-     * 管理者によるCSVインポート
+     * 管理者によるCSVインポート（カウント表示なし）
      */
     @PostMapping("/import")
     public ResponseEntity<?> importCsv(@RequestParam("csv") MultipartFile file,
                                        @RequestParam("mapping") String mappingType) {
         try {
-            int count = importService.importCsv(file, mappingType);
-            return ResponseEntity.ok("インポート完了：" + count + " 件のデータを登録しました");
+            // 件数などを返さず、成功したらメッセージだけ返す
+            importService.importCsv(file, mappingType);
+            return ResponseEntity.ok("インポートが完了しました");
         } catch (Exception e) {
             return ResponseEntity
                     .badRequest()
-                    .body("CSVインポートに失敗しました: " + e.getMessage());
+                    .body("インポートに失敗しました: " + e.getMessage());
         }
     }
 }
