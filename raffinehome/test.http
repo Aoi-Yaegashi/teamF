@@ -24,3 +24,20 @@ content-type: application/json
     "email": "t@e.com",
     "address": "住所",
     "phoneNumber": "123"}
+
+### 商品登録
+
+POST http://localhost:8080/api/admin
+content-type: application/json
+
+{   "name": "テスト",
+    "price": "12",
+    "saleprice": "12",
+    "description": "123",
+    "stockQuantity":"1",
+    "imageUrl":"a.png"}
+
+### 削除
+DELETE http://localhost:8080/api/product/admin/{1}
+
+### 商品編集

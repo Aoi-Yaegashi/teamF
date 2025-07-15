@@ -1,7 +1,7 @@
 package com.example.raffinehome.product.controller;
 
 import com.example.raffinehome.product.dto.ProductDTO;
-import com.example.raffinehome.product.dto.ProductCreateDTO;
+import com.example.raffinehome.product.dto.ProductListDTO;
 import com.example.raffinehome.product.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +24,8 @@ public class ProductController {
     }
     
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
-        List<ProductDTO> product = productService.findAllProducts();
+    public ResponseEntity<List<ProductListDTO>> getAllProducts() {
+        List<ProductListDTO> product = productService.findAllProducts();
         return ResponseEntity.ok(product);
     }
     
