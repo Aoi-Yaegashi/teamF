@@ -34,15 +34,15 @@ public class AdminService {
     this.productRepository = productRepository;
     }
 
-    public Product createProduct(Product request){
+    public Product createProduct(AdminCreateDTO dto){
         
         Product product = new Product();
-        product.setName(request.getName());
-        product.setDescription(request.getDescription());
-        product.setPrice(request.getPrice());
-        product.setSalePrice(request.getSalePrice());
-        product.setStockQuantity(request.getStockQuantity());
-        product.setImageUrl(request.getImageUrl());
+        product.setName(dto.getName());
+        product.setDescription(dto.getDescription());
+        product.setPrice(dto.getPrice());
+        product.setSalePrice(dto.getSalePrice());
+        product.setStockQuantity(dto.getStockQuantity());
+        product.setImageUrl(dto.getImageUrl());
 
         return productRepository.save(product);
     }

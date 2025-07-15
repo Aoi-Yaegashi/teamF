@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.service.annotation.DeleteExchange;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,7 +54,7 @@ public ResponseEntity<ProductDTO> getProductById(@PathVariable Integer productId
 
 @PostMapping
 public ResponseEntity<String> createProduct(@RequestBody AdminCreateDTO dto) {
-    
+    adminService.createProduct(dto);
     return ResponseEntity.ok("商品登録が完了しました");
 }
 
@@ -61,5 +62,11 @@ public ResponseEntity<String> createProduct(@RequestBody AdminCreateDTO dto) {
 public ResponseEntity<String> updateProduct(@PathVariable int productId, @RequestBody AdminUpdateDTO dto){
     adminService.updateProduct(productId, dto);
     return ResponseEntity.ok("商品情報を更新しました");
+}
+
+@DeleteMapping("/{productId}")
+public ResponseEntity<String> deleteProduct(@PathVariable int productId) {
+    adminService.deleteProduct(productId);
+    return ResponseEntity.ok("商品を削除しました");
 }
 }
