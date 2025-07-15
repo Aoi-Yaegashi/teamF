@@ -24,8 +24,8 @@ public class ProductController {
     }
     
     @GetMapping
-    public ResponseEntity<List<ProductCreateDTO>> getAllProducts() {
-        List<ProductCreateDTO> product = productService.findAllProducts();
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+        List<ProductDTO> product = productService.findAllProducts();
         return ResponseEntity.ok(product);
     }
     
