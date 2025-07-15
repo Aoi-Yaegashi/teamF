@@ -17,6 +17,7 @@ import com.example.raffinehome.product.entity.Product;
 import com.example.raffinehome.product.service.ProductService;
 import com.example.raffinehome.admin.dto.AdminCreateDTO;
 import com.example.raffinehome.admin.dto.AdminUpdateDTO;
+import com.example.raffinehome.admin.service.AdminService;
 
 import java.util.List;
 
@@ -26,10 +27,12 @@ import java.util.List;
 public class AdminController{
 
     private final ProductService productService;
+    private final AdminService adminService;
 
     @Autowired
-    public AdminController(ProductService productService){
+    public AdminController(ProductService productService, AdminService adminService){
     this.productService = productService;
+    this.adminService = adminService;
 }
 
 @GetMapping
@@ -53,7 +56,8 @@ public ResponseEntity<String> createProduct(@RequestBody AdminCreateDTO dto) {
 }
 
 @PutMapping("/{productId}")
-public ResponseEntity<String> updateProduct(@RequestBody AdminUpdateDTO dto){
+public ResponseEntity<String> updateProduct(@PathVariable int productId, @RequestBody AdminUpdateDTO dto){
+    adminService.updateProduct(productId, dto);
     return ResponseEntity.ok("商品情報を更新しました");
 }
 }
