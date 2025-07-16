@@ -1,5 +1,11 @@
 {
     "cSpell.words": [
         "Simplezakka"
+<<<<<<< HEAD
     ]
+=======
+    ],
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx4G -Xms100m -Xlog:disable"
+>>>>>>> c701c0a4d878665a65c66999082773ddbcd087f5
 }

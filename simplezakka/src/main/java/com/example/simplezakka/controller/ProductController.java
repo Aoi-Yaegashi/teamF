@@ -3,7 +3,10 @@ package com.example.simplezakka.controller;
 import com.example.simplezakka.dto.product.ProductDetail;
 import com.example.simplezakka.dto.product.ProductListItem;
 import com.example.simplezakka.service.ProductService;
+<<<<<<< HEAD
 
+=======
+>>>>>>> c701c0a4d878665a65c66999082773ddbcd087f5
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
