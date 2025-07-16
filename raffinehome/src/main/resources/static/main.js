@@ -261,12 +261,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // カート内の商品数量を更新する関数
     async function updateItemQuantity(productId, quantity) {
         try {
-            const response = await fetch(`${API_BASE}/cart/items/${productId}`, {
+            const response = await fetch(`${API_BASE}/cart/update`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
+                    productId: productId,
                     quantity: parseInt(quantity)
                 })
             });
@@ -288,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // カート内の商品を削除する関数
     async function removeItem(productId) {
         try {
-            const response = await fetch(`${API_BASE}/cart/items/${productId}`, {
+            const response = await fetch(`${API_BASE}/cart/remove/${productId}`, {
                 method: 'DELETE'
             });
             
