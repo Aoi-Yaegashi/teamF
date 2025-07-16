@@ -13,6 +13,7 @@ import com.example.raffinehome.product.dto.ProductListDTO;
 import com.example.raffinehome.product.dto.ProductDTO;
 import com.example.raffinehome.product.repository.ProductRepository;
 import com.example.raffinehome.admin.dto.AdminCreateDTO;
+import com.example.raffinehome.product.entity.Product;
 
 import jakarta.transaction.TransactionScoped;
 import jakarta.transaction.Transactional;
@@ -54,7 +55,7 @@ public class AdminService {
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
             // productの処理
-            product.IsDeleted(true);
+            product.isDeleted();
             return productRepository.save(product);
             
         } else {
