@@ -150,11 +150,19 @@ nav li a{
   @media screen and (min-width: 769px) {
     nav.desktop {
       transform: none !important;
-      position: static !important;
+      position: absolute;
+      left: -9999px;
       width: auto;
       height: auto;
       z-index: auto;
       background: transparent;
+    }
+  }
+
+   @media screen and (min-width: 1024px) {
+    #humMenu {
+      position: absolute;
+      left: -9999px; /* PCでは画面外に飛ばす */
     }
   }
 
