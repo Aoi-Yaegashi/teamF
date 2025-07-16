@@ -42,9 +42,12 @@ document.addEventListener('DOMContentLoaded', function() {
             displayProducts(products);
         } catch (error) {
             console.error('Error:', error);
-            alert('商品の読み込みに失敗しました');
+             const pathname = window.location.pathname;
+             if (pathname === '/products.html') {
+              alert('商品の読み込みに失敗しました');
         }
     }
+}
     
     // 商品一覧を表示する関数
     function displayProducts(products) {
