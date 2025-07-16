@@ -250,6 +250,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
             
+　　　　　　　// クリアボタンイベントの設定
+            const clearCartBtn = document.getElementById('clearCartBtn');
+　　　　　　　if (clearCartBtn) {
+    　　　　　clearCartBtn.addEventListener('click', async function () {
+        　　　if (!confirm('カートをすべて削除しますか？')) return;
+
+        　　　try {
+            　const response = await fetch(`${API_BASE}/cart/clear`, {
+                method: 'DELETE'
+            　});
+
+            　if (!response.ok) {
+                throw new Error('カートのクリアに失敗しました');
+            　}
+
+            　alert('カートをクリアしました');
+            　updateCartModalContent(); // カート表示更新
+            　updateCartBadge(0); // バッジも更新
+        　　} catch (error) {
+            　console.error(error);
+            　alert('カートのクリア中にエラーが発生しました');
+        　　}
+    　　});
+　　}
+
+
             // 注文ボタンの有効化
             document.getElementById('checkout-btn').disabled = false;
         } else {
@@ -306,6 +332,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+　　// カートをクリアする関数
+async function clearCart() {
+    try {
+        const response = await fetch(`${API_BASE}/cart/clear`, {
+            method: 'DELETE'
+        });
+        if (!response.ok) throw new Error('カートのクリアに失敗しました');
+        alert('カートをクリアしました');
+        location.reload();
+        const cart = await response.json();
+            displayCart(cart);
+            updateCartBadge(0);
+    } catch (error) {
+        console.error(error);
+        alert('カートのクリア中にエラーが発生しました');
+    }
+}
+
+
     // 注文を確定する関数
     async function submitOrder() {
         const form = document.getElementById('order-form');
