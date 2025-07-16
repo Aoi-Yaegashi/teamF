@@ -147,22 +147,15 @@ nav li a{
   color: black;
 }
 
-  @media screen and (min-width: 769px) {
-    nav.desktop {
-      transform: none !important;
-      position: absolute;
-      left: -9999px;
-      width: auto;
-      height: auto;
-      z-index: auto;
-      background: transparent;
+  @media screen and (max-width: 768px) {
+    desktop-container {
+      display: none;
     }
   }
 
-   @media screen and (min-width: 1024px) {
+   @media screen and (min-width: 769px) {
     #humMenu {
-      position: absolute;
-      left: -9999px; /* PCでは画面外に飛ばす */
+      display: none;
     }
   }
 

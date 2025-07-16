@@ -9,22 +9,25 @@
     <link href="style.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
 </head>
-<div id="humMenu">
-    <input id="humCheck" type="checkbox">
-    <label id="humOpen" for="humCheck"><img src="images/hum.png" alt="メニュー" width="34" height="28"></label>
-    <label id="humClose" for="humCheck"></label>
 
-    <nav>
-      <ul class="inner">
+<body>
+
+    <div id="humMenu">
+       <input id="humCheck" type="checkbox">
+       <label id="humOpen" for="humCheck"><img src="images/hum.png" alt="メニュー" width="34" height="28"></label>
+       <label id="humClose" for="humCheck"></label>
+
+       <nav class="humNavi">
+       <ul class="inner">
         <li><a href="index.html">トップページ</a></li>
         <li><a href="products.html">商品一覧</a></li>
         <li><a href="terms.html">利用規約</a></li>
         <li><a href="privacy.html">プライバシーポリシー</a></li>
         <li><a href="faq.html">よくあるご質問</a></li>
-      </ul>
-    </nav>
-</div>
-<body>
+       </ul>
+       </nav>
+    </div>
+
     <div class="container">
            <header class="mb-4 border-bottom">
                 <div class="container d-flex justify-content-between align-items-center py-3">
@@ -41,17 +44,18 @@
                         </button>
                     </div>
                 </div>
-
-                <nav class="desktop d-flex px-5 border-top py-2" style="width: 100%;">
-                  <a href="index.html" class="nav-link" style="flex-basis: 25%; text-align: center;">トップページ</a>
-                  <a href="products.html" class="nav-link" style="flex-basis: 25%; text-align: center;">商品一覧</a>
-                  <a href="faq.html" class="nav-link" style="flex-basis: 25%; text-align: center;">よくあるご質問</a>
-  
-                 <form class="d-flex search-form" role="search" style="flex-basis: 25%; justify-content: center;">
-                  <input class="form-control me-2" type="search" placeholder="商品名・キーワードで検索" aria-label="Search" style="width: 70%;">
-                  <button class="btn btn-outline-primary" type="submit">検索</button>
-                 </form>
-                </nav>
+                <div class="desktop=container">
+                   <nav class="desktop d-flex px-5 border-top py-2" style="width: 100%;">
+                    <a href="index.html" class="nav-link" style="flex-basis: 25%; text-align: center;">トップページ</a>
+                    <a href="products.html" class="nav-link" style="flex-basis: 25%; text-align: center;">商品一覧</a>
+                    <a href="faq.html" class="nav-link" style="flex-basis: 25%; text-align: center;">よくあるご質問</a>
+                    
+                    <form class="d-flex search-form" role="search" style="flex-basis: 25%; justify-content: center;">
+                    <input class="form-control me-2" type="search" placeholder="商品名・キーワードで検索" aria-label="Search" style="width: 70%;">
+                    <button class="btn btn-outline-primary" type="submit">検索</button>
+                    </form>
+                   </nav>
+                </div>
             </header>
     </div>
 
