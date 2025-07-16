@@ -59,14 +59,14 @@ public ResponseEntity<String> createProduct(@RequestBody AdminCreateDTO dto) {
 }
 
 @PutMapping("/{id}")
-public ResponseEntity<String> updateProduct(@PathVariable int productId, @RequestBody AdminUpdateDTO dto){
-    adminService.updateProduct(productId, dto);
+public ResponseEntity<String> updateProduct(@PathVariable("id")int id, @RequestBody AdminUpdateDTO dto){
+    adminService.updateProduct(id, dto);
     return ResponseEntity.ok("商品情報を更新しました");
 }
 
 @DeleteMapping("/{id}")
-public ResponseEntity<String> deleteProduct(@PathVariable int productId) {
-    adminService.deleteProduct(productId);
+public ResponseEntity<String> deleteProduct(@PathVariable("id")int id) {
+    adminService.deleteProduct(id);
     return ResponseEntity.ok("商品を削除しました");
 }
 }
