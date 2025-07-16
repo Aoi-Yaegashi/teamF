@@ -48,6 +48,7 @@ public class ProductService {
     
     private ProductListDTO convertToListItem(Product product) {
         return new ProductListDTO(
+                product.getId(),
                 product.getName(),
                 product.getPrice(),
                 product.getSalePrice(),

@@ -74,9 +74,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // 商品詳細を取得する関数
-    async function fetchProductDetail(productId) {
+    async function fetchProductDetail(id) {
         try {
-            const response = await fetch(`${API_BASE}/products/${productId}`);
+            const response = await fetch(`${API_BASE}/products/${id}`);
             if (!response.ok) {
                 throw new Error('商品詳細の取得に失敗しました');
             }
@@ -313,9 +313,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         const orderData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                address: document.getElementById('address').value,
+                customerName: document.getElementById('name').value,
+                customerEmail: document.getElementById('email').value,
+                shippingAddress: document.getElementById('address').value,
                 phoneNumber: document.getElementById('phone').value
         };
         
