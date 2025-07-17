@@ -22,13 +22,28 @@ public class Product {
     private String description;
     
     @Column(nullable = false)
-    private int price;
+    private Integer price;
 
-     @Column(nullable = false)
+    public Integer getPrice() {
+    return price;
+    }
+
+    public void setPrice(Integer price) {
+    this.price = price;
+    }
+
+    @Column(nullable = false)
     private int salePrice;
     
     @Column(nullable = false)
-    private int stockQuantity;
+    private int StockQuantity;
+    public Integer getStockQuantity() {
+    return StockQuantity;
+    }
+
+    public void setStockQuantity(Integer StockQuantity) {
+    this.StockQuantity = StockQuantity;
+    }
 
     @Column(nullable = false)
     private boolean isDeleted;
