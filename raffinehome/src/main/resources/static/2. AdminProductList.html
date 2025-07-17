@@ -26,10 +26,7 @@
 
                     <div class="text-end">
                         <button id="create-product-btn" class="btn btn-outline-dark position-relative">
-                            <i class="bi bi-cart"></i> 新規追加
-                            <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge">
-                                0
-                            </span>
+                            <i class="create-product"></i> 新規追加
                         </button>
                     </div>
                 </div>
@@ -57,7 +54,48 @@
             </div>
         </div>
     </div>
-    
+
+    <!-- 商品追加モーダル -->
+    <div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createModalTitle">新規商品追加</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="createModalBody">
+                    <form class="form-area" id=create-form>
+                        <div class="form-group">
+                            <label for="product-name" class="form-label">新しい商品名</label>
+                            <input type="text" id="product-name" class="form-input" placeholder="新しい商品名を入力" />
+                        </div>
+                        <div class="form-group">
+                            <label for="product-description" class="form-label">新しい商品説明</label>
+                            <textarea id="product-description" class="form-textarea" placeholder="新しい商品の説明を入力"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="product-price" class="form-label">新しい販売価格</label>
+                            <input type="number" id="product-price" class="form-input" placeholder="例: 2980" min="0" />
+                        </div>
+                        <div class="form-group">
+                            <label for="product-saleprice" class="form-label">新しいセール価格</label>
+                            <input type="number" id="product-saleprice" class="form-input" placeholder="例: 1980" min="0" />
+                        </div>
+                        <div class="form-group">
+                            <label for="product-stockquantity" class="form-label">新しい在庫量</label>
+                            <input type="number" id="product-stockquantity" class="form-input" placeholder="例: 10" min="0" />
+                        </div>
+                        <div class="form-group">
+                            <span class="form-file-label">商品の新しい画像ファイル</span>
+                            <input type="file" id="product-image" class="form-file" accept="image/*" />
+                        </div>
+                    </form>
+                    <button class="btn btn-primary create-product-btn" id=create-product data-id="${product.id}">確定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="admin.js"></script>
 
