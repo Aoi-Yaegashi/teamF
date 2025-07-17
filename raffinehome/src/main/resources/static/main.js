@@ -1,10 +1,16 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // 追加：全商品リストを保存
+    let allProducts = []; 
+
     // モーダル要素の取得
     const productModal = new bootstrap.Modal(document.getElementById('productModal'));
     const cartModal = new bootstrap.Modal(document.getElementById('cartModal'));
     const checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
     const orderCompleteModal = new bootstrap.Modal(document.getElementById('orderCompleteModal'));
-    
+    const searchInput = document.getElementById('search-input');
+    const searchBtn = document.getElementById('search-btn');
+    const productList = document.getElementById('product-list');
+
     // APIのベースURL
     const API_BASE = '/api';
     
@@ -31,23 +37,75 @@ document.addEventListener('DOMContentLoaded', function() {
         submitOrder();
     });
     
+    // 検索イベントの設定
+            document.getElementById('search-btn').addEventListener('click', function () {
+            const keyword = document.getElementById('search-input').value.trim().toLowerCase();
+            searchProducts(keyword);
+        });
+
+            document.getElementById('search-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+            document.getElementById('search-btn').click();
+            }
+        });
+
+    // トップページから検索してproduct.htmlに遷移した時の処理
+    if (window.location.pathname === '/products.html') {
+            alert('トップページから遷移しました');
+            const params = new URLSearchParams(window.location.search);
+            const keyword = params.get('keyword');
+alert('キーワード'+keyword);
+            if (keyword) {
+            // 検索処理を呼び出す（例: fetch API などでバックエンド検索）
+                console.log("検索キーワード:", keyword);
+                searchProducts(keyword);
+            }
+        }
+
+    // 検索処理（商品名と説明の両方対象）
+    function searchProducts(keyword) {
+    alert('searchProductsstart');
+       alert(allProducts);
+    if (!keyword) {
+            displayProducts(allProducts);
+            alert('全件表示');
+            return;
+        }
+
+        const filtered = allProducts.filter(product =>
+            product.name.toLowerCase().includes(keyword) ||
+            product.description.toLowerCase().includes(keyword)
+        );
+alert(filtered);
+        displayProducts(filtered);
+
+        if (filtered.length === 0) {
+            document.getElementById('products-container').innerHTML =
+                '<p class="text-center">検索結果が見つかりませんでした。</p>';
+        }
+   alert('searchProductsend');
+    }
+
+
     // 商品一覧を取得して表示する関数
     async function fetchProducts() {
+    alert('fetchProducts');
         try {
-            const response = await fetch(`${API_BASE}/products`);
-            if (!response.ok) {
-                throw new Error('商品の取得に失敗しました');
-            }
-            const products = await response.json();
-            displayProducts(products);
-        } catch (error) {
-            console.error('Error:', error);
-             const pathname = window.location.pathname;
-             if (pathname === '/products.html') {
-              alert('商品の読み込みに失敗しました');
+        const response = await fetch(`${API_BASE}/products`);
+        if (!response.ok) {
+            throw new Error('商品の取得に失敗しました');
+        }
+        const products = await response.json();
+        allProducts = products;
+        displayProducts(products);
+    } catch (error) {
+        console.error('Error:', error);
+        if (window.location.pathname === '/products.html') {
+            alert('商品の読み込みに失敗しました');
         }
     }
 }
+
     
     // 商品一覧を表示する関数
     function displayProducts(products) {
@@ -274,7 +332,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 }
-
 
             // 注文ボタンの有効化
             document.getElementById('checkout-btn').disabled = false;
