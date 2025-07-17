@@ -1,8 +1,8 @@
-package com.example.simplezakka.controller;
+package com.example.raffinehome.product.controller;
 
-import com.example.simplezakka.dto.product.ProductDetail;
-import com.example.simplezakka.dto.product.ProductListItem;
-import com.example.simplezakka.service.ProductService;
+import com.example.raffinehome.product.dto.ProductDTO;
+import com.example.raffinehome.product.dto.ProductListDTO;
+import com.example.raffinehome.product.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -31,19 +31,19 @@ class ProductControllerTest {
     @MockBean // Service層のモック
     private ProductService productService;
 
-    private ProductListItem productListItem1;
-    private ProductListItem productListItem2;
-    private ProductDetail productDetail1;
-    private ProductDetail productDetailWithNulls; // nullフィールドを含む詳細データ
+    private ProductListDTO productListItem1;
+    private ProductListDTO productListItem2;
+    private ProductDTO productDetail1;
+    private ProductDTO productDetailWithNulls; // nullフィールドを含む詳細データ
 
     @BeforeEach
     void setUp() {
         // --- テストデータ準備 ---
-        productListItem1 = new ProductListItem(1, "リスト商品1", 100, "/list1.png");
-        productListItem2 = new ProductListItem(2, "リスト商品2", 200, "/list2.png");
+        productListItem1 = new ProductListDTO(1, "リスト商品1", 100, 90, "説明A", 3, "/list1.png");
+        productListItem2 = new ProductListDTO(2, "リスト商品2", 200, 180, "説明B", 0, "/list2.png");
 
-        productDetail1 = new ProductDetail(1, "詳細商品1", 100, "詳細説明1", 10, "/detail1.png");
-        productDetailWithNulls = new ProductDetail(3, "詳細商品3", 300, null, 5, null); // descriptionとimageUrlがnull
+        productDetail1 = new ProductDTO (1, "詳細商品1", 100, 90, "詳細説明1", 10,  "/detail1.png", true);
+        productDetailWithNulls = new ProductDTO(3, "詳細商品3", 300, 280, null, 5, null, true); // descriptionとimageUrlがnull
 
         // --- Serviceメソッドのデフォルトモック設定 (lenient) ---
         // デフォルトではfindAllProductsは2つのアイテムを返す
@@ -73,12 +73,12 @@ class ProductControllerTest {
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON)) // Content-TypeがJSON
                     .andExpect(jsonPath("$", hasSize(2))) // ルート配列のサイズが2
                     // 1番目の要素の全フィールドを検証
-                    .andExpect(jsonPath("$[0].productId", is(productListItem1.getProductId())))
+                    .andExpect(jsonPath("$[0].productId", is(productListItem1.getId())))
                     .andExpect(jsonPath("$[0].name", is(productListItem1.getName())))
                     .andExpect(jsonPath("$[0].price", is(productListItem1.getPrice())))
                     .andExpect(jsonPath("$[0].imageUrl", is(productListItem1.getImageUrl())))
                     // 2番目の要素の全フィールドを検証
-                    .andExpect(jsonPath("$[1].productId", is(productListItem2.getProductId())))
+                    .andExpect(jsonPath("$[1].productId", is(productListItem2.getId())))
                     .andExpect(jsonPath("$[1].name", is(productListItem2.getName())))
                     .andExpect(jsonPath("$[1].price", is(productListItem2.getPrice())))
                     .andExpect(jsonPath("$[1].imageUrl", is(productListItem2.getImageUrl())));
@@ -139,18 +139,18 @@ class ProductControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     // 全フィールドを検証
-                    .andExpect(jsonPath("$.productId", is(productDetail1.getProductId())))
+                    .andExpect(jsonPath("$.productId", is(productDetail1.getId())))
                     .andExpect(jsonPath("$.name", is(productDetail1.getName())))
                     .andExpect(jsonPath("$.price", is(productDetail1.getPrice())))
                     .andExpect(jsonPath("$.description", is(productDetail1.getDescription())))
-                    .andExpect(jsonPath("$.stock", is(productDetail1.getStock())))
+                    .andExpect(jsonPath("$.stock", is(productDetail1.getStockQuantity())))
                     .andExpect(jsonPath("$.imageUrl", is(productDetail1.getImageUrl())));
 
             verify(productService, times(1)).findProductById(productId);
             verifyNoMoreInteractions(productService);
         }
 
-         @Test
+        @Test
         @DisplayName("存在するproductIdで、一部フィールドがnullの商品の場合、nullを含む商品詳細を200 OKで返す")
         void getProductById_WhenProductExistsWithNullFields_ShouldReturnProductDetailWithNulls() throws Exception {
             // Arrange (setUpのデフォルトモックを使用 - ID:3)
@@ -161,11 +161,11 @@ class ProductControllerTest {
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.productId", is(productDetailWithNulls.getProductId())))
+                    .andExpect(jsonPath("$.productId", is(productDetailWithNulls.getId())))
                     .andExpect(jsonPath("$.name", is(productDetailWithNulls.getName())))
                     .andExpect(jsonPath("$.price", is(productDetailWithNulls.getPrice())))
                     .andExpect(jsonPath("$.description", is(nullValue()))) // descriptionがnull
-                    .andExpect(jsonPath("$.stock", is(productDetailWithNulls.getStock())))
+                    .andExpect(jsonPath("$.stock", is(productDetailWithNulls.getStockQuantity())))
                     .andExpect(jsonPath("$.imageUrl", is(nullValue()))); // imageUrlがnull
 
             verify(productService, times(1)).findProductById(productId);

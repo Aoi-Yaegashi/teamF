@@ -1,9 +1,9 @@
-package com.example.simplezakka.service;
+package com.example.raffinehome.product.service;
 
-import com.example.simplezakka.dto.product.ProductDetail;
-import com.example.simplezakka.dto.product.ProductListItem;
-import com.example.simplezakka.entity.Product;
-import com.example.simplezakka.repository.ProductRepository;
+import com.example.raffinehome.product.dto.ProductDTO;
+import com.example.raffinehome.product.dto.ProductListDTO;
+import com.example.raffinehome.product.entity.Product;
+import com.example.raffinehome.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,27 +37,27 @@ class ProductServiceTest {
     @BeforeEach
     void setUp() {
         product1 = new Product();
-        product1.setProductId(1);
+        product1.setId(1);
         product1.setName("商品1");
         product1.setPrice(100);
         product1.setImageUrl("/img1.png");
         product1.setDescription("説明1");
-        product1.setStock(10);
+        product1.setStockQuantity(10);
         // createdAt, updatedAt はエンティティ側で自動設定される想定
 
         product2 = new Product();
-        product2.setProductId(2);
+        product2.setId(2);
         product2.setName("商品2");
         product2.setPrice(200);
         product2.setImageUrl("/img2.png");
         product2.setDescription("説明2");
-        product2.setStock(5);
+        product2.setStockQuantity(5);
 
         productWithNullFields = new Product();
-        productWithNullFields.setProductId(3);
+        productWithNullFields.setId(3);
         productWithNullFields.setName("商品3（Nullあり）");
         productWithNullFields.setPrice(300);
-        productWithNullFields.setStock(8);
+        productWithNullFields.setStockQuantity(8);
         productWithNullFields.setDescription(null); // descriptionがnull
         productWithNullFields.setImageUrl(null);    // imageUrlがnull
     }
@@ -72,16 +72,16 @@ class ProductServiceTest {
         when(productRepository.findAll()).thenReturn(productsFromRepo);
 
         // Act: テスト対象メソッドの実行
-        List<ProductListItem> result = productService.findAllProducts();
+        List<ProductListDTO> result = productService.findAllProducts();
 
         // Assert: 結果の検証
         assertThat(result).hasSize(2);
         // 各要素の全フィールドが正しくマッピングされているか検証 (tupleを使うと便利)
         assertThat(result)
-            .extracting(ProductListItem::getProductId, ProductListItem::getName, ProductListItem::getPrice, ProductListItem::getImageUrl)
+            .extracting(ProductListDTO::getId, ProductListDTO::getName, ProductListDTO::getPrice, ProductListDTO::getImageUrl)
             .containsExactlyInAnyOrder(
-                tuple(product1.getProductId(), product1.getName(), product1.getPrice(), product1.getImageUrl()),
-                tuple(product2.getProductId(), product2.getName(), product2.getPrice(), product2.getImageUrl())
+                tuple(product1.getId(), product1.getName(), product1.getPrice(), product1.getImageUrl()),
+                tuple(product2.getId(), product2.getName(), product2.getPrice(), product2.getImageUrl())
             );
 
         // Verify: メソッド呼び出し検証
@@ -96,7 +96,7 @@ class ProductServiceTest {
         when(productRepository.findAll()).thenReturn(Collections.emptyList());
 
         // Act
-        List<ProductListItem> result = productService.findAllProducts();
+        List<ProductListDTO> result = productService.findAllProducts();
 
         // Assert
         assertThat(result).isEmpty();
@@ -114,12 +114,12 @@ class ProductServiceTest {
         when(productRepository.findAll()).thenReturn(productsFromRepo);
 
         // Act
-        List<ProductListItem> result = productService.findAllProducts();
+        List<ProductListDTO> result = productService.findAllProducts();
 
         // Assert
         assertThat(result).hasSize(1);
-        ProductListItem dto = result.get(0);
-        assertThat(dto.getProductId()).isEqualTo(productWithNullFields.getProductId());
+        ProductListDTO dto = result.get(0);
+        assertThat(dto.getId()).isEqualTo(productWithNullFields.getId());
         assertThat(dto.getName()).isEqualTo(productWithNullFields.getName());
         assertThat(dto.getPrice()).isEqualTo(productWithNullFields.getPrice());
         assertThat(dto.getImageUrl()).isNull(); // imageUrlがnullであることを確認
@@ -139,16 +139,16 @@ class ProductServiceTest {
         when(productRepository.findById(productId)).thenReturn(Optional.of(product1));
 
         // Act
-        ProductDetail result = productService.findProductById(productId);
+        ProductDTO result = productService.findProductById(productId);
 
         // Assert
         assertThat(result).isNotNull();
         // 全フィールドが正しくマッピングされているか検証
-        assertThat(result.getProductId()).isEqualTo(product1.getProductId());
+        assertThat(result.getId()).isEqualTo(product1.getId());
         assertThat(result.getName()).isEqualTo(product1.getName());
         assertThat(result.getPrice()).isEqualTo(product1.getPrice());
         assertThat(result.getDescription()).isEqualTo(product1.getDescription());
-        assertThat(result.getStock()).isEqualTo(product1.getStock());
+        assertThat(result.getStockQuantity()).isEqualTo(product1.getStockQuantity());
         assertThat(result.getImageUrl()).isEqualTo(product1.getImageUrl());
 
         // Verify
@@ -164,7 +164,7 @@ class ProductServiceTest {
         when(productRepository.findById(productId)).thenReturn(Optional.empty());
 
         // Act
-        ProductDetail result = productService.findProductById(productId);
+        ProductDTO result = productService.findProductById(productId);
 
         // Assert
         assertThat(result).isNull();
@@ -182,14 +182,14 @@ class ProductServiceTest {
         when(productRepository.findById(productId)).thenReturn(Optional.of(productWithNullFields));
 
         // Act
-        ProductDetail result = productService.findProductById(productId);
+        ProductDTO result = productService.findProductById(productId);
 
         // Assert
         assertThat(result).isNotNull();
-        assertThat(result.getProductId()).isEqualTo(productWithNullFields.getProductId());
+        assertThat(result.getId()).isEqualTo(productWithNullFields.getId());
         assertThat(result.getName()).isEqualTo(productWithNullFields.getName());
         assertThat(result.getPrice()).isEqualTo(productWithNullFields.getPrice());
-        assertThat(result.getStock()).isEqualTo(productWithNullFields.getStock());
+        assertThat(result.getStockQuantity()).isEqualTo(productWithNullFields.getStockQuantity());
         assertThat(result.getDescription()).isNull(); // descriptionがnullであることを確認
         assertThat(result.getImageUrl()).isNull();    // imageUrlがnullであることを確認
 
@@ -211,7 +211,7 @@ class ProductServiceTest {
         // when(productRepository.findById(nullProductId)).thenThrow(new IllegalArgumentException("ID cannot be null"));
 
         // Act
-        ProductDetail result = productService.findProductById(nullProductId);
+        ProductDTO result = productService.findProductById(nullProductId);
 
         // Assert
         // Optional.empty() を返すように定義したので、結果は null になるはず
