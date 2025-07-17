@@ -396,7 +396,7 @@ alert('商品の取得に失敗しました');
         }
     }
     
-　　// カートをクリアする関数
+   // カートをクリアする関数
 async function clearCart() {
     try {
         const response = await fetch(`${API_BASE}/cart/clear`, {
