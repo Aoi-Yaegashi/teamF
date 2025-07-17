@@ -205,12 +205,17 @@ document.addEventListener('DOMContentLoaded', function() {
   // 商品を論理削除する関数
   async function deleteProduct(id) {
 
+    const deleteData = {
+      isDeleted: true.valueOf
+    }
+
     try {
         const response = await fetch(`${API_BASE}/admin/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
             },
+            body: JSON.stringify(deleteData)
         });
         
         if (!response.ok) {
@@ -272,7 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
           
           try{
 
-            productModal.hide();
+            createModal.hide();
             alert('登録が完了しました');
 
           } catch (error) {
