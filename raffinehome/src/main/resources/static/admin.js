@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
         createProduct();
     });
 
+    // 商品削除ボタンクリックイベント
+    deleteProduct();
+
   //商品一覧を取得して表示する関数
   async function fetchProducts() {
     try {
@@ -128,6 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         </form>
                 <button class="btn btn-primary update-product" id=update-product data-id="${product.id}">確定</button>
+                <button class="btn btn-primary delete-product" id=delete-product data-id="${product.id}">削除</button>
             </div>
         </div>
     `;
@@ -136,6 +140,11 @@ document.addEventListener('DOMContentLoaded', function() {
       modalBody.querySelector('.update-product').addEventListener('click', function() {
           /*const quantity = parseInt(document.getElementById('quantity').value);*/
           updateProduct(product.id);
+      });
+
+      //削除ボタンのイベント設定
+      modalBody.querySelector('.delete-product').addEventListener('click', function() {
+          deleteProduct(product.id);
       });
 
     productModal.show();
@@ -190,6 +199,40 @@ document.addEventListener('DOMContentLoaded', function() {
     } catch (error) {
             console.error('Error:', error);
             alert('更新に失敗しました');
+      }   
+  }
+
+  // 商品を論理削除する関数
+  async function deleteProduct(id) {
+
+    try {
+        const response = await fetch(`${API_BASE}/admin/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+        
+        if (!response.ok) {
+            throw new Error('削除に失敗しました');
+        }
+        
+        //const deleteflag = await response.json();
+        //productModal.isdeleted = deleteflag;
+
+        try{
+
+          productModal.hide();
+          alert('削除が完了しました');
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('削除に失敗しました');
+        }
+
+    } catch (error) {
+            console.error('Error:', error);
+            alert('削除に失敗しました');
       }   
   }
 
