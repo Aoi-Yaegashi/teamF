@@ -42,9 +42,12 @@ document.addEventListener('DOMContentLoaded', function() {
             displayProducts(products);
         } catch (error) {
             console.error('Error:', error);
-            alert('商品の読み込みに失敗しました');
+             const pathname = window.location.pathname;
+             if (pathname === '/products.html') {
+              alert('商品の読み込みに失敗しました');
         }
     }
+}
     
     // 商品一覧を表示する関数
     function displayProducts(products) {
@@ -139,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const cart = await response.json();
-            updateCartBadge(cart.totalQuantity);
+            updateCartBadge(cart.itemCount);
             
             productModal.hide();
             alert('商品をカートに追加しました');
@@ -157,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error('カート情報の取得に失敗しました');
             }
             const cart = await response.json();
-            updateCartBadge(cart.totalQuantity);
+            updateCartBadge(cart.itemCount);
         } catch (error) {
             console.error('Error:', error);
         }
@@ -247,6 +250,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
             
+　　　　　　　// クリアボタンイベントの設定
+            const clearCartBtn = document.getElementById('clearCartBtn');
+　　　　　　　if (clearCartBtn) {
+    　　　　　clearCartBtn.addEventListener('click', async function () {
+        　　　if (!confirm('カートをすべて削除しますか？')) return;
+
+        　　　try {
+            　const response = await fetch(`${API_BASE}/cart/clear`, {
+                method: 'DELETE'
+            　});
+
+            　if (!response.ok) {
+                throw new Error('カートのクリアに失敗しました');
+            　}
+
+            　alert('カートをクリアしました');
+            　updateCartModalContent(); // カート表示更新
+            　updateCartBadge(0); // バッジも更新
+        　　} catch (error) {
+            　console.error(error);
+            　alert('カートのクリア中にエラーが発生しました');
+        　　}
+    　　});
+　　}
+
+
             // 注文ボタンの有効化
             document.getElementById('checkout-btn').disabled = false;
         } else {
@@ -256,14 +285,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // カート内の商品数量を更新する関数
-    async function updateItemQuantity(itemId, quantity) {
+    async function updateItemQuantity(productId, quantity) {
         try {
-            const response = await fetch(`${API_BASE}/cart/items/${itemId}`, {
+            const response = await fetch(`${API_BASE}/cart/update`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
+                    productId: productId,
                     quantity: parseInt(quantity)
                 })
             });
@@ -274,7 +304,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const cart = await response.json();
             displayCart(cart);
-            updateCartBadge(cart.totalQuantity);
+            updateCartBadge(cart.itemCount);
         } catch (error) {
             console.error('Error:', error);
             alert('数量の更新に失敗しました');
@@ -283,9 +313,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // カート内の商品を削除する関数
-    async function removeItem(itemId) {
+    async function removeItem(productId) {
         try {
-            const response = await fetch(`${API_BASE}/cart/items/${itemId}`, {
+            const response = await fetch(`${API_BASE}/cart/remove/${productId}`, {
                 method: 'DELETE'
             });
             
@@ -295,13 +325,32 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const cart = await response.json();
             displayCart(cart);
-            updateCartBadge(cart.totalQuantity);
+            updateCartBadge(cart.itemCount);
         } catch (error) {
             console.error('Error:', error);
             alert('商品の削除に失敗しました');
         }
     }
     
+　　// カートをクリアする関数
+async function clearCart() {
+    try {
+        const response = await fetch(`${API_BASE}/cart/clear`, {
+            method: 'DELETE'
+        });
+        if (!response.ok) throw new Error('カートのクリアに失敗しました');
+        alert('カートをクリアしました');
+        location.reload();
+        const cart = await response.json();
+            displayCart(cart);
+            updateCartBadge(0);
+    } catch (error) {
+        console.error(error);
+        alert('カートのクリア中にエラーが発生しました');
+    }
+}
+
+
     // 注文を確定する関数
     async function submitOrder() {
         const form = document.getElementById('order-form');
@@ -353,7 +402,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 注文完了画面を表示する関数
     function displayOrderComplete(order) {
         document.getElementById('orderCompleteBody').innerHTML = `
-            <p>ご注文ありがとうございます。注文番号は <strong>${order.orderId}</strong> です。</p>
+            <p>ご注文ありがとうございます。注文番号は <strong>${order.id}</strong> です。</p>
             <p>ご注文日時: ${new Date(order.orderDate).toLocaleString()}</p>
             <p>お客様のメールアドレスに注文確認メールをお送りしました。</p>
         `;

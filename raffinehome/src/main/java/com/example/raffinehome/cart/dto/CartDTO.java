@@ -34,17 +34,17 @@ public class CartDTO implements Serializable {
         calculateTotals();
     }
     
-    public void updateQuantity(String itemId, int quantity) {
-        if (items.containsKey(itemId)) {
-            CartItemDTO item = items.get(itemId);
+    public void updateQuantity(String productId, int quantity) {
+        if (items.containsKey(productId)) {
+            CartItemDTO item = items.get(productId);
             item.setQuantity(quantity);
             item.setSubtotal(item.getPrice() * quantity);
             calculateTotals();
         }
     }
     
-    public void removeItem(String itemId) {
-        items.remove(itemId);
+    public void removeItem(String productId) {
+        items.remove(productId);
         calculateTotals();
     }
     
