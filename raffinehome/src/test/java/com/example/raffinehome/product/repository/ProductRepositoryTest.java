@@ -30,10 +30,11 @@ class ProductRepositoryTest {
     private Product product2;
 
     // テストデータ準備用のヘルパーメソッド
-    private Product createProduct(String name, int price, int stock) {
+    private Product createProduct(String name, int price, int salePrice, int stock) {
         Product product = new Product();
         product.setName(name);
         product.setPrice(price);
+        product.setSalePrice(price - (price / 10)); // 10%オフのセール価格
         product.setStockQuantity(stock);
         product.setDescription(name + "の説明です。");
         product.setImageUrl("/images/" + name.toLowerCase() + ".jpg");
@@ -44,8 +45,8 @@ class ProductRepositoryTest {
     @BeforeEach
     void setUp() {
         // 各テストメソッド実行前に共通のデータを準備
-        product1 = createProduct("商品A", 1000, 10);
-        product2 = createProduct("商品B", 2000, 5);
+        product1 = createProduct("商品A", 1000, 900, 10);
+        product2 = createProduct("商品B", 2000, 1800, 5);
         entityManager.persist(product1); // TestEntityManagerで永続化
         entityManager.persist(product2);
         entityManager.flush(); // DBに即時反映
@@ -56,7 +57,7 @@ class ProductRepositoryTest {
     @DisplayName("商品を正常に保存し、IDで検索できる")
     void saveAndFindById_Success() {
         // Arrange
-        Product newProduct = createProduct("新商品C", 3000, 20);
+        Product newProduct = createProduct("新商品C", 3000, 2700, 20);
 
         // Act
         Product savedProduct = productRepository.save(newProduct); // リポジトリ経由で保存
@@ -72,6 +73,7 @@ class ProductRepositoryTest {
         assertThat(foundProduct.getId()).isEqualTo(savedId); // IDが一致する
         assertThat(foundProduct.getName()).isEqualTo(newProduct.getName()); // 名前が一致する
         assertThat(foundProduct.getPrice()).isEqualTo(newProduct.getPrice()); // 価格が一致する
+        assertThat(foundProduct.getSalePrice()).isEqualTo(newProduct.getSalePrice()); // セール価格が一致する
         assertThat(foundProduct.getStockQuantity()).isEqualTo(newProduct.getStockQuantity()); // 在庫が一致する
         assertThat(foundProduct.getCreatedAt()).isNotNull(); // @PrePersist で createdAt が設定されている
         assertThat(foundProduct.getUpdatedAt()).isEqualTo(foundProduct.getCreatedAt()); // 作成時は updatedAt も createdAt と同じ
@@ -79,7 +81,7 @@ class ProductRepositoryTest {
 
     @Test
     @DisplayName("存在するIDで商品を検索できる")
-    void findById_WhenProductExists_ShouldReturnProduct() {
+    void findById_WhenProductsExists_ShouldReturnProducts() {
         // Arrange: setUpでproduct1が保存されている。IDは product1.getProductId() で取得可能。
 
         // Act
@@ -92,7 +94,7 @@ class ProductRepositoryTest {
 
     @Test
     @DisplayName("存在しないIDで商品を検索するとOptional.emptyが返る")
-    void findById_WhenProductNotExists_ShouldReturnEmpty() {
+    void findById_WhenProductsNotExists_ShouldReturnEmpty() {
         // Arrange
         Integer nonExistingId = 999; // 存在しないであろうID
 
@@ -136,7 +138,7 @@ class ProductRepositoryTest {
 
     @Test
     @DisplayName("商品を更新できる")
-    void updateProduct_ShouldReflectChanges() {
+    void updateProducts_ShouldReflectChanges() {
         // Arrange
         Integer productId = product1.getId(); // 更新対象のID
         LocalDateTime initialUpdatedAt = product1.getUpdatedAt(); // 更新前のタイムスタンプ
@@ -164,7 +166,7 @@ class ProductRepositoryTest {
 
     @Test
     @DisplayName("商品を削除できる")
-    void deleteProduct_ShouldRemoveFromDatabase() {
+    void deleteProducts_ShouldRemoveFromDatabase() {
         // Arrange
         Integer productId = product1.getId();
         // 削除前に存在することを確認
@@ -315,7 +317,7 @@ class ProductRepositoryTest {
     @DisplayName("必須項目(price)がnullで保存しようとすると例外発生")
     void saveProduct_WithNullPrice_ShouldThrowException() {
         // Arrange
-        Product product = createProduct("価格Null商品", 0, 1); // 一旦ダミーで作成
+        Product product = createProduct("価格Null商品", 0, 0, 1); // 一旦ダミーで作成
         product.setPrice(null); // 価格をnullに
 
         // Act & Assert
@@ -331,7 +333,7 @@ class ProductRepositoryTest {
     @DisplayName("必須項目(stock)がnullで保存しようとすると例外発生")
     void saveProduct_WithNullStock_ShouldThrowException() {
         // Arrange
-        Product product = createProduct("在庫Null商品", 500, 0); // 一旦ダミーで作成
+        Product product = createProduct("在庫Null商品", 500,450, 0); // 一旦ダミーで作成
         product.setStockQuantity(null); // 在庫をnullに
 
         // Act & Assert
