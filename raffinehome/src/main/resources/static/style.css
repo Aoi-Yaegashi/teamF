@@ -98,7 +98,7 @@ header nav {
 }
 
 #humOpen img { display: block; }
-#humClose, nav {
+#humClose, .humNav {
   position: fixed;
   left: 0;
   top: 0;
@@ -113,7 +113,7 @@ header nav {
   transition: 0.5s;
 }
 
-nav {
+.humNav {
   z-index: 3;
   width: 330px;
   background: white;
@@ -122,25 +122,25 @@ nav {
 }
 
 #humCheck:checked ~ #humClose { display: block; }
-#humCheck:checked ~ nav {
+#humCheck:checked ~ .humNav {
   transform: translateX(0);
 }
 
-nav ul{
+.humNav ul{
 overflow: hidden;
 list-style: none;
 }
 
-nav li{
+.humNav li{
   padding: 15px 0;
   margin: 10px 0;
 }
 
-nav li:hover{
+.humNav li:hover{
   opacity: 0.5;
 }
 
-nav li a{
+.humNav li a{
   font-size: 20px;
   text-decoration: none;
   font-size: 20px;
@@ -148,7 +148,7 @@ nav li a{
 }
 
   @media screen and (max-width: 768px) {
-    desktop-container {
+    .desktop-container {
       display: none;
     }
   }
