@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchProducts();
 
     //編集ボタンクリックイベント
+    updateProduct();
 
     //商品一覧を取得して表示する関数
     async function fetchProducts() {
@@ -89,29 +90,33 @@ document.addEventListener('DOMContentLoaded', function() {
                   </div>
 
           <!-- 商品情報編集フォーム -->
-          <form class="form-area">
+          <form class="form-area" id=update-form>
               <div class="form-group">
-              <label for="product-name" class="form-label">新しい商品名</label>
-              <input type="text" id="product-name" class="form-input" placeholder="新しい商品名を入力" />
+                <label for="product-name" class="form-label">新しい商品名</label>
+                <input type="text" id="product-name" class="form-input" placeholder="新しい商品名を入力" />
               </div>
               <div class="form-group">
-              <label for="product-desc" class="form-label">新しい商品説明</label>
-              <textarea id="product-desc" class="form-textarea" placeholder="新しい商品の説明を入力"></textarea>
+                <label for="product-description" class="form-label">新しい商品説明</label>
+                <textarea id="product-description" class="form-textarea" placeholder="新しい商品の説明を入力"></textarea>
               </div>
               <div class="form-group">
-              <label for="product-price" class="form-label">新しい販売価格</label>
-              <input type="number" id="product-price" class="form-input" placeholder="例: 2980" min="0" />
+                <label for="product-price" class="form-label">新しい販売価格</label>
+                <input type="number" id="product-price" class="form-input" placeholder="例: 2980" min="0" />
               </div>
               <div class="form-group">
-              <label for="product-saleprice" class="form-label">新しいセール価格</label>
-              <input type="number" id="product-saleprice" class="form-input" placeholder="例: 1980" min="0" />
+                <label for="product-saleprice" class="form-label">新しいセール価格</label>
+                <input type="number" id="product-saleprice" class="form-input" placeholder="例: 1980" min="0" />
               </div>
               <div class="form-group">
-              <span class="form-file-label">商品の新しい画像ファイル</span>
-              <input type="file" id="product-image" class="form-file" accept="image/*" />
+                <label for="product-stockquantity" class="form-label">新しい在庫量</label>
+                <input type="number" id="product-stockquantity" class="form-input" placeholder="例: 10" min="0" />
+              </div>
+              <div class="form-group">
+                <span class="form-file-label">商品の新しい画像ファイル</span>
+                <input type="file" id="product-image" class="form-file" accept="image/*" />
               </div>
           </form>
-                  <button class="btn btn-primary update-product" data-id="${product.id}">確定</button>
+                  <button class="btn btn-primary update-product" id=update-product data-id="${product.id}">確定</button>
               </div>
           </div>
       `;
@@ -119,35 +124,63 @@ document.addEventListener('DOMContentLoaded', function() {
        // 確定ボタンのイベント設定
         modalBody.querySelector('.update-product').addEventListener('click', function() {
             /*const quantity = parseInt(document.getElementById('quantity').value);*/
-            updateProduct(product.id,product);
+            updateProduct(product.id);
         });
 
       productModal.show();
   }
 
   // 商品更新を確定する関数
-    async function updateProduct(id,product) {
-        try {
-            const response = await fetch(`${API_BASE}/admin/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(id,product)
-            });
-            
-            if (!response.ok) {
-                throw new Error('更新に失敗しました');
-            }
-            
-            const cart = await response.json();
-            
+    async function updateProduct(id) {
+      const form = document.getElementById('update-form');
+
+      // フォームバリデーション
+      if (!form.checkValidity()) {
+          form.classList.add('was-validated');
+          return;
+      }
+
+      const updateData = {
+        //formInfo: {
+          name: document.getElementById('product-name').value,
+          description: document.getElementById('product-description').value,
+          price: document.getElementById('product-price').value,
+          salePrice: document.getElementById('product-saleprice').value,
+          stockQuantity: document.getElementById('product-stockquantity').value,
+          imageUrl: document.getElementById('product-image').value
+        //}
+      };
+
+      try {
+          const response = await fetch(`${API_BASE}/admin/${id}`, {
+              method: 'PUT',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(updateData)
+          });
+          
+          if (!response.ok) {
+              throw new Error('更新に失敗しました');
+          }
+          
+          try{
+
             productModal.hide();
             alert('更新が完了しました');
-        } catch (error) {
+
+          } catch (error) {
+              console.error('Error:', error);
+              alert('更新に失敗しました');
+          }
+
+      form.reset();
+      form.classList.remove('was-validated');
+    } catch (error) {
             console.error('Error:', error);
             alert('更新に失敗しました');
         }
-    }
+      
+  }
 
 });
