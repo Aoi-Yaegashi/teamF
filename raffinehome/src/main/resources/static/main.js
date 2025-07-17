@@ -15,8 +15,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const API_BASE = '/api';
     
     // 商品一覧の取得と表示
-    fetchProducts();
-    
+    if (window.location.pathname !== '/products.html' ) {
+        fetchProducts();
+    }
+
     // カート情報の取得と表示
     updateCartDisplay();
     
@@ -49,26 +51,32 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-    // トップページから検索してproduct.htmlに遷移した時の処理
-    if (window.location.pathname === '/products.html') {
-            alert('トップページから遷移しました');
+        // product.htmlの処理
+        if (window.location.pathname === '/products.html' ) {
             const params = new URLSearchParams(window.location.search);
             const keyword = params.get('keyword');
-alert('キーワード'+keyword);
-            if (keyword) {
-            // 検索処理を呼び出す（例: fetch API などでバックエンド検索）
-                console.log("検索キーワード:", keyword);
-                searchProducts(keyword);
-            }
+            
+            //このあたり修正
+            //fetchProductsしてからsearchする
+            fetchProducts().then(() => {
+                if (keyword) {
+                    searchProducts(keyword);
+                }
+            });
+
+            // if (keyword) {
+            // // 検索処理を呼び出す（例: fetch API などでバックエンド検索）
+            //     console.log("検索キーワード:", keyword);
+            //     searchProducts(keyword);
+            // }
+        }else{
+            fetchProducts();
         }
 
     // 検索処理（商品名と説明の両方対象）
     function searchProducts(keyword) {
-    alert('searchProductsstart');
-       alert(allProducts);
     if (!keyword) {
             displayProducts(allProducts);
-            alert('全件表示');
             return;
         }
 
@@ -76,24 +84,23 @@ alert('キーワード'+keyword);
             product.name.toLowerCase().includes(keyword) ||
             product.description.toLowerCase().includes(keyword)
         );
-alert(filtered);
         displayProducts(filtered);
 
         if (filtered.length === 0) {
             document.getElementById('products-container').innerHTML =
                 '<p class="text-center">検索結果が見つかりませんでした。</p>';
         }
-   alert('searchProductsend');
     }
 
 
     // 商品一覧を取得して表示する関数
     async function fetchProducts() {
-    alert('fetchProducts');
         try {
         const response = await fetch(`${API_BASE}/products`);
         if (!response.ok) {
+alert('商品の取得に失敗しました');
             throw new Error('商品の取得に失敗しました');
+
         }
         const products = await response.json();
         allProducts = products;
