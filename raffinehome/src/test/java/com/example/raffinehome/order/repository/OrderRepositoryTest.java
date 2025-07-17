@@ -92,7 +92,7 @@ class OrderRepositoryTest {
         Order order = createSampleOrder("顧客1");
 
         // Act
-        Order savedOrder = orderRepository.save(order); // Orderを保存 (CascadeType.ALLによりOrderDetailも保存されるはず)
+        Order savedOrder = orderRepository.save(order); // Orderを保存 (CascadeType.ALLによりOrderItemも保存されるはず)
         entityManager.flush(); // DBへ反映
         entityManager.clear(); // 永続化コンテキストキャッシュをクリアし、DBからの取得を確実にする
 
