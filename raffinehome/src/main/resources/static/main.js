@@ -250,30 +250,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
             
-　　　　　　　// クリアボタンイベントの設定
+            // クリアボタンイベントの設定
             const clearCartBtn = document.getElementById('clearCartBtn');
-　　　　　　　if (clearCartBtn) {
-    　　　　　clearCartBtn.addEventListener('click', async function () {
-        　　　if (!confirm('カートをすべて削除しますか？')) return;
+            if (clearCartBtn) {
+                clearCartBtn.addEventListener('click', async function () {
+                    if (!confirm('カートをすべて削除しますか？')) return;
 
-        　　　try {
-            　const response = await fetch(`${API_BASE}/cart/clear`, {
-                method: 'DELETE'
-            　});
+                    try {
+                        const response = await fetch(`${API_BASE}/cart/clear`, {
+                            method: 'DELETE'
+                        });
 
-            　if (!response.ok) {
+                        if (!response.ok) {
                 throw new Error('カートのクリアに失敗しました');
-            　}
+            }
 
-            　alert('カートをクリアしました');
-            　updateCartModalContent(); // カート表示更新
-            　updateCartBadge(0); // バッジも更新
-        　　} catch (error) {
-            　console.error(error);
-            　alert('カートのクリア中にエラーが発生しました');
-        　　}
-    　　});
-　　}
+            alert('カートをクリアしました');
+            updateCartModalContent(); // カート表示更新
+            updateCartBadge(0); // バッジも更新
+             } catch (error) {
+            console.error(error);
+            alert('カートのクリア中にエラーが発生しました');
+        }
+    });
+}
 
 
             // 注文ボタンの有効化
