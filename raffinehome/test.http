@@ -27,6 +27,12 @@ content-type: application/json
   "phoneNumber": "123"
 }
 
+### 商品一覧（管理者）
+GET http://localhost:8080/api/admin
+
+### 商品詳細（管理者）
+GET http://localhost:8080/api/admin/1
+
 ### 商品登録
 
 POST http://localhost:8080/api/admin
