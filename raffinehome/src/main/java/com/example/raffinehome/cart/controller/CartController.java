@@ -60,10 +60,11 @@ public class CartController {
      * カートをクリア
      */
     @DeleteMapping("/clear")
-    public ResponseEntity<Void> clearCart(HttpSession session) {
-        cartService.clearCart(session);
-        return ResponseEntity.ok().build();
-    }
+public ResponseEntity<Void> clearCart(HttpSession session) {
+    session.removeAttribute("cart"); // ← これで完全にサーバーのセッションから消える
+    return ResponseEntity.ok().build();
+}
+
 
     /**
      * カート内商品点数を取得

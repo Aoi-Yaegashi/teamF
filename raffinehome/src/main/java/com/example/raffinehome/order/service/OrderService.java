@@ -50,6 +50,11 @@ public class OrderService {
 
         // 在庫確認
         for (CartItemDTO cartItem : cart.getItems().values()) {
+
+            if (cartItem.getQuantity() <= 0) {
+                throw new IllegalArgumentException("注文数は1以上でなければなりません: " + cartItem.getName());
+            }
+
             Optional<Product> productOpt = productRepository.findById(cartItem.getProductId());
             if (productOpt.isEmpty() || productOpt.get().getStockQuantity() < cartItem.getQuantity()) {
                 throw new RuntimeException("在庫不足または商品未存在: " + cartItem.getName());

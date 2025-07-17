@@ -44,8 +44,8 @@ public ResponseEntity<List<ProductListDTO>> getAllProducts(){
 }
 
 @GetMapping("/{id}")
-public ResponseEntity<ProductDTO> getProductById(@PathVariable Integer productId){
-    ProductDTO product = productService.findProductById(productId);
+public ResponseEntity<ProductDTO> getProductById(@PathVariable Integer id){
+    ProductDTO product = productService.findProductById(id);
     if (product == null){
         return ResponseEntity.notFound().build();
     }
