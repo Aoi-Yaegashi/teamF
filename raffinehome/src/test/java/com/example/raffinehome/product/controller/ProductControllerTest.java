@@ -73,12 +73,12 @@ class ProductControllerTest {
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON)) // Content-TypeがJSON
                     .andExpect(jsonPath("$", hasSize(2))) // ルート配列のサイズが2
                     // 1番目の要素の全フィールドを検証
-                    .andExpect(jsonPath("$[0].productId", is(productListItem1.getId())))
+                    .andExpect(jsonPath("$[0].id", is(productListItem1.getId())))
                     .andExpect(jsonPath("$[0].name", is(productListItem1.getName())))
                     .andExpect(jsonPath("$[0].price", is(productListItem1.getPrice())))
                     .andExpect(jsonPath("$[0].imageUrl", is(productListItem1.getImageUrl())))
                     // 2番目の要素の全フィールドを検証
-                    .andExpect(jsonPath("$[1].productId", is(productListItem2.getId())))
+                    .andExpect(jsonPath("$[1].id", is(productListItem2.getId())))
                     .andExpect(jsonPath("$[1].name", is(productListItem2.getName())))
                     .andExpect(jsonPath("$[1].price", is(productListItem2.getPrice())))
                     .andExpect(jsonPath("$[1].imageUrl", is(productListItem2.getImageUrl())));
@@ -139,11 +139,11 @@ class ProductControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     // 全フィールドを検証
-                    .andExpect(jsonPath("$.productId", is(productDetail1.getId())))
+                    .andExpect(jsonPath("$.id", is(productDetail1.getId())))
                     .andExpect(jsonPath("$.name", is(productDetail1.getName())))
                     .andExpect(jsonPath("$.price", is(productDetail1.getPrice())))
                     .andExpect(jsonPath("$.description", is(productDetail1.getDescription())))
-                    .andExpect(jsonPath("$.stock", is(productDetail1.getStockQuantity())))
+                    .andExpect(jsonPath("$.stockQuantity", is(productDetail1.getStockQuantity())))
                     .andExpect(jsonPath("$.imageUrl", is(productDetail1.getImageUrl())));
 
             verify(productService, times(1)).findProductById(productId);
@@ -161,11 +161,11 @@ class ProductControllerTest {
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.productId", is(productDetailWithNulls.getId())))
+                    .andExpect(jsonPath("$.id", is(productDetailWithNulls.getId())))
                     .andExpect(jsonPath("$.name", is(productDetailWithNulls.getName())))
                     .andExpect(jsonPath("$.price", is(productDetailWithNulls.getPrice())))
                     .andExpect(jsonPath("$.description", is(nullValue()))) // descriptionがnull
-                    .andExpect(jsonPath("$.stock", is(productDetailWithNulls.getStockQuantity())))
+                    .andExpect(jsonPath("$.stockQuantity", is(productDetailWithNulls.getStockQuantity())))
                     .andExpect(jsonPath("$.imageUrl", is(nullValue()))); // imageUrlがnull
 
             verify(productService, times(1)).findProductById(productId);
@@ -196,7 +196,7 @@ class ProductControllerTest {
             // Act & Assert
             // 現在のGlobalExceptionHandlerは型ミスマッチをRuntimeExceptionとして扱い500を返すため、
             // テストの期待値もそれに合わせる。
-            mockMvc.perform(get("/api/products/{productId}", invalidProductId)
+            mockMvc.perform(get("/api/products/{id}", invalidProductId)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isInternalServerError())
                     // オプション： GlobalExceptionHandlerが返すエラーメッセージの内容も検証する
@@ -215,7 +215,7 @@ class ProductControllerTest {
             when(productService.findProductById(productId)).thenThrow(new RuntimeException("サービスエラー"));
 
             // Act & Assert
-            mockMvc.perform(get("/api/products/{productId}", productId)
+            mockMvc.perform(get("/api/products", productId)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isInternalServerError())
                     // GlobalExceptionHandler が有効ならエラーメッセージを含むJSONが返る可能性がある
