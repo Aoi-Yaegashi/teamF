@@ -362,10 +362,10 @@ class OrderRepositoryTest {
         order.setOrderDetails(List.of(item));
 
         order.setOrderDate(LocalDateTime.now());
-        order.setCustomerName("検証用顧客");
+        order.setCustomerName("テスト顧客");
         order.setCustomerEmail("test@example.com");
         order.setShippingAddress("東京都千代田区");
-        order.setPhoneNumber("090-0000-0000");
+        order.setPhoneNumber("090-1234-5678");
         order.setOrderStatus("PENDING");
         order.setTotalAmount(2400);
 
