@@ -11,6 +11,7 @@ import com.example.raffinehome.product.entity.Product;
 import com.example.raffinehome.order.repository.OrderItemRepository; // 不要だがモックは用意
 import com.example.raffinehome.order.repository.OrderRepository;
 import com.example.raffinehome.product.repository.ProductRepository;
+import com.example.raffinehome.cart.service.CartService;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,7 +47,7 @@ class OrderServiceTest {
     @Mock
     private ProductRepository productRepository;
     @Mock
-    private CartItemDTO cartService;
+    private CartService cartService;
 
     @InjectMocks
     private OrderService orderService;
@@ -57,6 +58,7 @@ class OrderServiceTest {
     private Product product2;
     private OrderItem orderRequest;
     private Order customerInfo;
+    private OrderCreateDTO orderCreateDTO; // 注文リクエストのモック
 
     // OrderServiceTest.java の setUp メソッドを修正
 
@@ -96,6 +98,14 @@ class OrderServiceTest {
         customerInfo.setShippingAddress("東京都テスト区1-2-3");
         customerInfo.setPhoneNumber("03-1111-2222");
         orderRequest.setOrder(customerInfo);
+        orderRequest.setProduct(product1); // 商品1を注文リクエストに設定
+        orderCreateDTO = new OrderCreateDTO();
+        orderCreateDTO.getCustomerInfo(); // 注文リクエストに顧客情報を設定
+        orderCreateDTO.setCustomerName("山田 太郎");
+        orderCreateDTO.setCustomerEmail("yamada@test.co.jp");
+        orderCreateDTO.setShippingAddress("東京都テスト区1-2-3");
+        orderCreateDTO.setPhoneNumber("03-1111-2222");
+        
 
         // --- Mockito leninent 設定 ---
         lenient().when(productRepository.findById(1)).thenReturn(Optional.of(product1));
@@ -125,7 +135,7 @@ class OrderServiceTest {
         when(productRepository.decreaseStock(eq(2), eq(1))).thenReturn(1);
 
         // Act
-        Order response = orderService.placeOrder(cart, orderCreateDTO, session);
+        OrderDTO response = orderService.placeOrder(cart, orderCreateDTO, session);
 
         // Assert: 結果の検証
         assertThat(response).isNotNull();
@@ -193,7 +203,7 @@ class OrderServiceTest {
         // when(productRepository.decreaseStock(eq(1), eq(3))).thenReturn(1);
 
         // Act
-        OrderItem response = orderService.placeOrder(singleItemCart, orderRequest, session);
+        OrderDTO response = orderService.placeOrder(cart, orderCreateDTO, session);
 
         // Assert
         assertThat(response).isNotNull();
@@ -220,7 +230,7 @@ class OrderServiceTest {
         CartDTO nullCart = null;
 
         // Act
-        OrderItem response = orderService.placeOrder(nullCart, orderRequest, session);
+        OrderDTO response = orderService.placeOrder(cart, orderCreateDTO, session);
 
         // Assert
         assertThat(response).isNull();
@@ -237,7 +247,7 @@ class OrderServiceTest {
         CartDTO emptyCart = new CartDTO();
 
         // Act
-        OrderItem response = orderService.placeOrder(emptyCart, orderRequest, session);
+        OrderDTO response = orderService.placeOrder(cart, orderCreateDTO, session);
 
         // Assert
         assertThat(response).isNull();
@@ -255,7 +265,7 @@ class OrderServiceTest {
 
         // Act & Assert
         // CustomerInfoへのアクセスでNPEが発生する
-        assertThatThrownBy(() -> orderService.placeOrder(cart, nullRequest, session))
+        assertThatThrownBy(() -> orderService.placeOrder(cart, orderCreateDTO, session))
                 .isInstanceOf(NullPointerException.class);
 
         // 念のため、副作用がないことも確認
@@ -271,7 +281,7 @@ class OrderServiceTest {
         when(productRepository.findById(2)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThatThrownBy(() -> orderService.placeOrder(cart, orderRequest, session))
+        assertThatThrownBy(() -> orderService.placeOrder(cart, orderCreateDTO, session))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("在庫不足または商品未存在: " + "注文テスト商品2"); // サービス内のメッセージを確認
 
@@ -291,7 +301,7 @@ class OrderServiceTest {
         when(productRepository.findById(1)).thenReturn(Optional.of(product1)); // 更新されたproduct1を返すように再設定
 
         // Act & Assert
-        assertThatThrownBy(() -> orderService.placeOrder(cart, orderRequest, session))
+        assertThatThrownBy(() -> orderService.placeOrder(cart, orderCreateDTO, session))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("在庫不足または商品未存在: " + product1.getName()); // 例外メッセージを確認
 
@@ -314,7 +324,7 @@ class OrderServiceTest {
 
         // Act & Assert
         // IllegalStateException がスローされることを検証
-        assertThatThrownBy(() -> orderService.placeOrder(cart, orderRequest, session))
+        assertThatThrownBy(() -> orderService.placeOrder(cart, orderCreateDTO, session))
                 .isInstanceOf(IllegalStateException.class)
                 // ★ スローされる例外メッセージに期待する内容が含まれているか検証
                 .hasMessageContaining("在庫の更新に失敗しました")
@@ -345,7 +355,7 @@ class OrderServiceTest {
 
         // Act & Assert
         // placeOrder内で発生した例外がそのままスローされることを確認
-        assertThatThrownBy(() -> orderService.placeOrder(cart, orderRequest, session))
+        assertThatThrownBy(() -> orderService.placeOrder(cart, orderCreateDTO, session))
                 .isInstanceOf(RuntimeException.class)
                 .isEqualTo(dbException); // スローされた例外がモックしたものと同じか確認
 
@@ -375,7 +385,7 @@ class OrderServiceTest {
 
         // Act & Assert
         // placeOrder内で発生した例外がそのままスローされることを確認
-        assertThatThrownBy(() -> orderService.placeOrder(cart, orderRequest, session))
+        assertThatThrownBy(() -> orderService.placeOrder(cart, orderCreateDTO, session))
                 .isInstanceOf(RuntimeException.class)
                 .isEqualTo(clearCartException);
 

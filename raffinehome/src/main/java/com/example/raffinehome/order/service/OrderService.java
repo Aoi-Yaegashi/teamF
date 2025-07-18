@@ -66,10 +66,10 @@ public class OrderService {
         OrderCreateDTO customerInfo = orderCreateDTO.getCustomerInfo();
         order.setOrderDate(LocalDateTime.now());
         order.setTotalAmount(cart.getTotalPrice());
-        order.setCustomerName(customerInfo.getCustomerName());
-        order.setCustomerEmail(customerInfo.getCustomerEmail());
-        order.setShippingAddress(customerInfo.getShippingAddress());
-        order.setPhoneNumber(customerInfo.getPhoneNumber());
+        order.setCustomerName(orderCreateDTO.getCustomerName());
+        order.setCustomerEmail(orderCreateDTO.getCustomerEmail());
+        order.setShippingAddress(orderCreateDTO.getShippingAddress());
+        order.setPhoneNumber(orderCreateDTO.getPhoneNumber());
         order.setOrderStatus("PENDING");
 
         // 注文明細作成と在庫減算
