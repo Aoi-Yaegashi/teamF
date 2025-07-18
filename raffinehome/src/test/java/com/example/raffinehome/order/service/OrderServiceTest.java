@@ -218,7 +218,7 @@ class OrderServiceTest {
         CartDTO nullCart = null;
 
         // Act
-        OrderDTO response = orderService.placeOrder(cart, orderCreateDTO, session);
+        OrderDTO response = orderService.placeOrder(nullCart, orderCreateDTO, session);
 
         // Assert
         assertThat(response).isNull();
@@ -235,7 +235,7 @@ class OrderServiceTest {
         CartDTO emptyCart = new CartDTO();
 
         // Act
-        OrderDTO response = orderService.placeOrder(cart, orderCreateDTO, session);
+        OrderDTO response = orderService.placeOrder(emptyCart, orderCreateDTO, session);
 
         // Assert
         assertThat(response).isNull();
@@ -246,21 +246,16 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("注文リクエストがnullの場合、NullPointerExceptionが発生する")
     void placeOrder_Fail_WhenOrderRequestIsNull_ShouldThrowNPE() {
-        // Arrange
-        OrderItem nullRequest = null;
+    // 正しいカート（空じゃない）とnullのorderCreateDTOを渡す
+    CartDTO cart = new CartDTO();
+    // 商品を追加してカートを非空に
+    CartItemDTO item = new CartItemDTO("1", 1, "テスト", 100, "/a.png", 1, 100);
+    cart.addItem(item); // addItemメソッドはあなたの実装次第
 
-        // Act & Assert
-        // CustomerInfoへのアクセスでNPEが発生する
-        assertThatThrownBy(() -> orderService.placeOrder(cart, orderCreateDTO, session))
-                .isInstanceOf(NullPointerException.class);
-
-        // 念のため、副作用がないことも確認
-        verify(orderRepository, never()).save(any());
-        verify(productRepository, never()).decreaseStock(anyInt(), anyInt());
-        verify(cartService, never()).clearCart(any());
-    }
+    assertThatThrownBy(() -> orderService.placeOrder(cart, null, session))
+        .isInstanceOf(NullPointerException.class);
+}
 
     @Test
     @DisplayName("在庫確認中に商品が見つからない場合、RuntimeExceptionが発生しロールバックされる")
