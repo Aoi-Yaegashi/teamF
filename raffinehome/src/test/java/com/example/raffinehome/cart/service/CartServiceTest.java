@@ -428,7 +428,7 @@ class CartServiceTest {
 
     @Test
     @DisplayName("カートをクリアすると、セッションから cart 属性が削除される")
-    void clearCart_ShouldRemoveCartAttributeFromSession() {
+    void clearCart_WhenCartHasItems_ShouldClearAllItemsAndResetTotals() {
         // Arrange
         when(productRepository.findById(1)).thenReturn(Optional.of(product1));
         cartService.addToCart(1, 1, session); // 事前にカートにアイテムを追加
@@ -443,6 +443,26 @@ class CartServiceTest {
         assertThat(cart.getItems()).isEmpty();
         assertThat(cart.getItemCount()).isZero();
         assertThat(cart.getTotalPrice()).isZero();
+    }
+
+
+    @Test
+    @DisplayName("カートがすでに空の場合、clearCartを呼んでも状態は変わらない")
+    void clearCart_WhenCartAlreadyEmpty_ShouldDoNothing(){
+        // Arrange
+        CartDTO emptyCart = new CartDTO();
+        session.setAttribute("cart", emptyCart);
+        CartDTO beforeClear = cloneCart(emptyCart);
+
+        // Act
+        cartService.clearCart(session);
+
+        // Assert
+        CartDTO afterClear = (CartDTO) session.getAttribute("cart");
+        assertThat("cart").isNotNull();
+        assertThat(afterClear.getItems()).isEmpty();
+        assertThat(afterClear.getItemCount()).isZero();
+        assertThat(afterClear.getTotalPrice()).isZero();
     }
 
 
