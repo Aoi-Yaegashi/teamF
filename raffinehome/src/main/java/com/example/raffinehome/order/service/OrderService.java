@@ -43,7 +43,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderDTO placeOrder(CartDTO cart, OrderCreateDTO orederCreateDTO, HttpSession session) {
+    public OrderDTO placeOrder(CartDTO cart, OrderCreateDTO orderCreateDTO, HttpSession session) {
         if (cart == null || cart.getItems().isEmpty()) {
             return null;
         }
@@ -63,7 +63,7 @@ public class OrderService {
 
         // 注文エンティティ作成
         Order order = new Order();
-        OrderCreateDTO customerInfo = orederCreateDTO.getCustomerInfo();
+        OrderCreateDTO customerInfo = orderCreateDTO.getCustomerInfo();
         order.setOrderDate(LocalDateTime.now());
         order.setTotalAmount(cart.getTotalPrice());
         order.setCustomerName(customerInfo.getCustomerName());
