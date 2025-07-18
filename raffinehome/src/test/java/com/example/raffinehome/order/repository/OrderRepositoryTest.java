@@ -121,6 +121,13 @@ class OrderRepositoryTest {
         OrderItem foundDetail1 = entityManager.find(OrderItem.class, foundOrder.getOrderDetails().get(0).getId());
         assertThat(foundDetail1).isNotNull();
         assertThat(foundDetail1.getOrder().getId()).isEqualTo(foundOrder.getId()); // Orderへの関連が設定されている
+
+        //// 保存時に createdAt と updatedAt が自動で設定されることを確認
+        assertThat(foundOrder.getCreatedAt()).isNotNull();
+        assertThat(foundOrder.getUpdatedAt()).isNotNull();
+
+        // createdAt / updatedAt が保存時に自動設定されるかの確認
+        assertThat(foundOrder.getCreatedAt()).isEqualTo(foundOrder.getUpdatedAt());
     }
 
     @Test
@@ -312,7 +319,8 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void 注文と注文商品が正常に保存される() {
+    @DisplayName("注文と注文商品が正常に保存される")
+    void saveOrderWithSingleItem_Success() {
         Product product = createProduct("マグカップ", 1200);
 
         Order order = new Order();
@@ -342,7 +350,8 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void 商品がnullだと保存に失敗する() {
+    @DisplayName("商品がnullだと保存に失敗する")
+    void saveOrder_WhenProductIsNull_ShouldFail() {
         Order order = new Order();
         order.setOrderDate(LocalDateTime.now());
         order.setCustomerName("テスト顧客");
@@ -377,7 +386,7 @@ class OrderRepositoryTest {
 
     @Test
     @DisplayName("数量が0やマイナスだと不正（現状はDB制約なし、将来的にバリデーション検討）")
-    void 数量が0やマイナスだと不正() {
+    void saveOrderWithZeroOrNegativeQuantity_SucceedsButInvalid() {
         Product product = createProduct("タオル", 800);
 
         Order order = new Order();
@@ -408,7 +417,7 @@ class OrderRepositoryTest {
 
     @Test
     @DisplayName("小計が単価と数量に一致しない場合の挙動（現状はDB制約なし、将来的にサービス層での整合性チェック推奨）")
-    void 小計が単価と数量に一致しないと不正() {
+    void saveOrderWithMismatchedSubtotal_SucceedsButInvalid() {
         Product product = createProduct("ノート", 500);
 
         Order order = new Order();
@@ -439,7 +448,8 @@ class OrderRepositoryTest {
     }
 
         @Test
-        void 複数商品が正しく保存される() {
+        @DisplayName("複数商品が正しく保存される")
+        void multipleProductsAreSavedCorrectly() {
         Product p1 = createProduct("皿", 1000);
         Product p2 = createProduct("フォーク", 300);
 
@@ -476,7 +486,8 @@ class OrderRepositoryTest {
     }
 
         @Test
-        void createdAtが自動で設定される() {
+        @DisplayName("createdAtが自動で設定される")
+        void orderItem_createdAt_isAutomaticallySet() {
         Product product = createProduct("時計", 3000);
 
         Order order = new Order();
