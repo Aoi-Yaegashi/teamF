@@ -91,6 +91,7 @@ public class CartService {
             cart.getItems().remove(key);
         }
     }
+    cart.calculateTotals();
     }
     //うまくできてないかな
 public void validateProductStock(int productId, int quantity) {
