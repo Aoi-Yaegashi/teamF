@@ -52,7 +52,7 @@ class CartControllerTest {
 
         // --- テストデータ準備 ---
         cartWithOneItem = new CartDTO();
-        CartItem item1 = new CartDTO("1", 1, "カート商品1", 1000, "/c1.png", 2, 2000);
+        CartItemDTO item1 = new CartItemDTO("1", 1, "カート商品1", 1000, "/c1.png", 2, 2000);
         cartWithOneItem.setItems(Map.of("1", item1));
         cartWithOneItem.calculateTotals(); // totalQuantity=2, totalPrice=2000
 
@@ -80,7 +80,7 @@ class CartControllerTest {
                             .accept(MediaType.APPLICATION_JSON)) // Acceptヘッダーを追加
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.totalQuantity", is(cartWithOneItem.getTotalQuantity())))
+                    .andExpect(jsonPath("$.itemCount", is(cartWithOneItem.getItemCount())))
                     .andExpect(jsonPath("$.totalPrice", is(cartWithOneItem.getTotalPrice())))
                     .andExpect(jsonPath("$.items", hasKey("1"))) // item "1" が存在するか
                     .andExpect(jsonPath("$.items.1.productId", is(1)))
@@ -103,7 +103,7 @@ class CartControllerTest {
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.totalQuantity", is(0)))
+                    .andExpect(jsonPath("$.itemCount", is(0)))
                     .andExpect(jsonPath("$.totalPrice", is(0)))
                     .andExpect(jsonPath("$.items", anEmptyMap())); // itemsが空のMapか
 
@@ -126,7 +126,7 @@ class CartControllerTest {
                     .andExpect(jsonPath("$.message", containsString("サービスエラー")));
 
 
-            verify(cartService, times(1)).getCartFromSession(any(HttpSession.class));
+            verify(cartService, times(1)).getCart(any(HttpSession.class));
             verifyNoMoreInteractions(cartService);
         }
     }
@@ -154,7 +154,7 @@ class CartControllerTest {
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.totalQuantity", is(cartWithOneItem.getTotalQuantity())))
+                    .andExpect(jsonPath("$.itemCount", is(cartWithOneItem.getItemCount())))
                     .andExpect(jsonPath("$.totalPrice", is(cartWithOneItem.getTotalPrice())))
                     .andExpect(jsonPath("$.items.1.quantity", is(2)));
 
@@ -281,11 +281,11 @@ class CartControllerTest {
             CartUpdateDTO dto = new CartUpdateDTO();
             dto.setQuantity(5);
 
-            CartUpdateDTO updatedCart = new CartUpdateDTO(); // 更新後のカート (ダミー)
-            CartItem dto = new CartUpdateDTO("1", 1, "カート商品1", 1000, "/c1.png", 5, 5000);
-            updatedCart.addItem(updatedItem); // totalQuantity=5, totalPrice=5000
+            CartDTO updatedCart = new CartDTO(); // 更新後のカート (ダミー)
+            CartItemDTO updatedItem = new CartItemDTO("1", 1, "カート商品1", 1000, "/c1.png", 5, 5000);
+            updatedCart.calculateTotals(); // itemCount=5, totalPrice=5000
 
-            when(cartService.updateItemQuantity(eq(itemId), eq(quantityDto.getQuantity()), any(HttpSession.class)))
+            when(cartService.updateCartItem(eq(productId), eq(dto.getQuantity()), any(HttpSession.class)))
                     .thenReturn(updatedCart);
 
             // Act & Assert
@@ -296,11 +296,11 @@ class CartControllerTest {
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.totalQuantity", is(updatedCart.getTotalQuantity())))
+                    .andExpect(jsonPath("$.totalQuantity", is(updatedCart.getItemCount())))
                     .andExpect(jsonPath("$.totalPrice", is(updatedCart.getTotalPrice())))
                     .andExpect(jsonPath("$.items.1.quantity", is(5))); // 更新された数量を確認
 
-            verify(cartService, times(1)).updateCartItem(eq(productId), eq(quantityDto.getQuantity()), any(HttpSession.class));
+            verify(cartService, times(1)).updateCartItem(eq(productId), eq(dto.getQuantity()), any(HttpSession.class));
             verifyNoMoreInteractions(cartService);
         }
 
@@ -310,8 +310,8 @@ class CartControllerTest {
         void updateItem_WithNullQuantity_ShouldReturnBadRequest() throws Exception {
             // Arrange
             String productId = "1";
-            CartUpateDTO dto = new CartUpdateDTO();
-            quantityDto.setQuantity(null); // NotNull違反
+            CartUpdateDTO dto = new CartUpdateDTO();
+            dto.setQuantity(null); // NotNull違反
 
             // Act & Assert
             mockMvc.perform(put("/api/cart/update", productId)
@@ -330,14 +330,14 @@ class CartControllerTest {
         void updateItem_WithZeroQuantity_ShouldReturnBadRequest() throws Exception {
             // Arrange
             String productId = "1";
-            CartUpdateDTO dto = new CartUpateDTO();
-            quantityDto.setQuantity(0); // Min(1)違反
+            CartUpdateDTO dto = new CartUpdateDTO();
+            dto.setQuantity(0); // Min(1)違反
 
             // Act & Assert
             mockMvc.perform(put("/api/cart/update", productId)
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(quantityDto))
+                            .content(objectMapper.writeValueAsString(dto))
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.quantity", is("数量は1以上である必要があります")));
@@ -349,15 +349,15 @@ class CartControllerTest {
         @DisplayName("quantityが負数の場合、400 Bad Requestとエラーメッセージを返す")
         void updateItem_WithNegativeQuantity_ShouldReturnBadRequest() throws Exception {
             // Arrange
-            String itemId = "1";
-            CartItemQuantityDto quantityDto = new CartItemQuantityDto();
-            quantityDto.setQuantity(-5); // Min(1)違反
+            String productId = "1";
+            CartUpdateDTO dto = new CartUpdateDTO();
+            dto.setQuantity(-5); // Min(1)違反
 
             // Act & Assert
-            mockMvc.perform(put("/api/cart/items/{itemId}", itemId)
+            mockMvc.perform(put("/api/cart/items/{itemId}", productId)
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(quantityDto))
+                            .content(objectMapper.writeValueAsString(dto))
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.quantity", is("数量は1以上である必要があります")));
@@ -366,21 +366,21 @@ class CartControllerTest {
         }
     }
 
-    // === DELETE /api/cart/items/{itemId} ===
+    // === DELETE /api/cart/clear ===
     @Nested
-    @DisplayName("DELETE /api/cart/items/{itemId}")
+    @DisplayName("DELETE /api/cart/clear")
     class RemoveItemTests {
         @Test
-        @DisplayName("存在するitemIdの場合、カートから商品を削除し更新されたカートを200 OKで返す")
+        @DisplayName("存在するproductIdの場合、カートから商品を削除し更新されたカートを200 OKで返す")
         void removeItem_WhenItemExists_ShouldReturnUpdatedCartWithStatusOk() throws Exception {
             // Arrange
-            String itemId = "1";
+            String productId = "1";
             // 削除後のカート（空）
-            when(cartService.removeItemFromCart(eq(itemId), any(HttpSession.class)))
+            when(cartService.removeFromCart(eq(productId), any(HttpSession.class)))
                     .thenReturn(emptyCart);
 
             // Act & Assert
-            mockMvc.perform(delete("/api/cart/items/{itemId}", itemId)
+            mockMvc.perform(delete("/api/cart/clear", productId)
                             .session(mockSession)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
@@ -389,7 +389,7 @@ class CartControllerTest {
                     .andExpect(jsonPath("$.totalPrice", is(0)))
                     .andExpect(jsonPath("$.items", anEmptyMap())); // itemsが空であることを確認
 
-            verify(cartService, times(1)).removeItemFromCart(eq(itemId), any(HttpSession.class));
+            verify(cartService, times(1)).removeFromCart(eq(productId), any(HttpSession.class));
             verifyNoMoreInteractions(cartService);
         }
 
@@ -399,7 +399,7 @@ class CartControllerTest {
             // Arrange
             String nonExistingItemId = "99";
             // 存在しないIDで削除しても、サービスは現在の（変化しない）カートを返す想定
-            when(cartService.removeItemFromCart(eq(nonExistingItemId), any(HttpSession.class)))
+            when(cartService.removeFromCart(eq(nonExistingItemId), any(HttpSession.class)))
                     .thenReturn(cartWithOneItem); // 例えば、削除前と同じカートが返る
 
             // Act & Assert
@@ -407,9 +407,9 @@ class CartControllerTest {
                             .session(mockSession)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk()) // 正常終了
-                    .andExpect(jsonPath("$.totalQuantity", is(cartWithOneItem.getTotalQuantity()))); // カート内容は変わらないはず
+                    .andExpect(jsonPath("$.totalQuantity", is(cartWithOneItem.getItemCount()))); // カート内容は変わらないはず
 
-            verify(cartService, times(1)).removeItemFromCart(eq(nonExistingItemId), any(HttpSession.class));
+            verify(cartService, times(1)).removeFromCart(eq(nonExistingItemId), any(HttpSession.class));
             verifyNoMoreInteractions(cartService);
         }
     }
