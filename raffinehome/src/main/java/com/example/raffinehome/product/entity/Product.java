@@ -41,8 +41,8 @@ public class Product {
     return stockQuantity;
     }
 
-    public void setStockQuantity(Integer stockQuantity) {
-    this.stockQuantity = stockQuantity;
+    public void setStockQuantity(Integer StockQuantity) {
+    this.stockQuantity = StockQuantity;
     }
 
     @Column(nullable = false)
