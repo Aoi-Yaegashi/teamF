@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // モーダル要素の取得
     const productModal = new bootstrap.Modal(document.getElementById('productModal'));
     const createModal = new bootstrap.Modal(document.getElementById('createModal'));
-  
+
   //APIのベースURL
     const API_BASE = '/api';
 
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function displayProducts(products) {
     const container = document.getElementById('products-container');
     container.innerHTML = '';
-    
+
     products.forEach(product => {
       const card = document.createElement('div');
       card.className = 'col';
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
       `;
       container.appendChild(card);
-      
+
       // 編集ボタンのイベント設定
       card.querySelector('.view-product').addEventListener('click', function() {
           fetchProductDetail(product.id);
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // 商品詳細を表示する関数
   function displayProductDetail(product) {
     document.getElementById('productModalTitle').textContent = product.name;
-    
+
     const modalBody = document.getElementById('productModalBody');
     modalBody.innerHTML = `
         <div class="row">
@@ -179,11 +179,11 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify(updateData)
         });
-        
+
         if (!response.ok) {
             throw new Error('更新に失敗しました');
         }
-        
+
         try{
 
           productModal.hide();
@@ -217,11 +217,11 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify(deleteData)
         });
-        
+
         if (!response.ok) {
             throw new Error('削除に失敗しました');
         }
-        
+
         //const deleteflag = await response.json();
         //productModal.isdeleted = deleteflag;
 
@@ -270,11 +270,11 @@ document.addEventListener('DOMContentLoaded', function() {
               },
               body: JSON.stringify(createData)
           });
-          
+
           if (!response.ok) {
               throw new Error('登録に失敗しました');
           }
-          
+
           try{
 
             createModal.hide();

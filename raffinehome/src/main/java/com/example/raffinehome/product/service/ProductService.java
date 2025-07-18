@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +23,16 @@ public class ProductService {
         this.productRepository = ProductRepository;
     }
     
+    // 追加　by K.K
+    //論理削除してない、有効な商品だけを全件検索する
+    public List<ProductListDTO> findAllActiveProducts(){
+        return productRepository.findAllActiveProducts().stream()
+                .map(this::convertToListItem)
+                .collect(Collectors.toList());
+    }
+
+
+    //論理削除してあるかに関係なくすべての商品を全件検索する
     public List<ProductListDTO> findAllProducts() {
         return productRepository.findAll().stream()
                 .map(this::convertToListItem)
