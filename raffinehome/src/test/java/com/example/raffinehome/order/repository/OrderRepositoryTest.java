@@ -7,7 +7,6 @@ import com.example.raffinehome.product.repository.ProductRepository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException; // 制約違反用
-import jakarta.persistence.EntityManager;
 
 
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +23,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.doNothing;
+
 
 @DataJpaTest // JPA関連のテストに特化した設定（インメモリDB使用、関連Beanのみロード）
 class OrderRepositoryTest {
@@ -34,11 +36,8 @@ class OrderRepositoryTest {
     @Autowired
     private OrderRepository orderRepository; // テスト対象のリポジトリ
 
-    @Autowired
-    private ProductRepository productRepository;
-
     @Autowired // OrderItemの削除確認用にインジェクト
-    private OrderItemRepository orderDetailRepository;
+    private OrderItemRepository orderItemRepository;
 
     @Autowired // テストデータ準備用にインジェクト
     private ProductRepository productRepository;
@@ -61,15 +60,13 @@ class OrderRepositoryTest {
         product1.setName("商品A");
         product1.setPrice(1000);
         product1.setStockQuantity(10);
-        entityManager.persist(product1); // TestEntityManagerで永続化
+        product1 = productRepository.save(product1);
 
         product2 = new Product();
         product2.setName("商品B");
         product2.setPrice(2000);
         product2.setStockQuantity(5);
-        entityManager.persist(product2);
-
-        entityManager.flush(); // DBに即時反映させ、IDなどを確定させる
+        product2 = productRepository.save(product2);
     }
 
     // テスト用のOrderオブジェクトを作成するヘルパーメソッド
@@ -131,22 +128,24 @@ class OrderRepositoryTest {
     }
 
     @Test
-    @DisplayName("存在するIDで注文を検索できる")
-    void findById_WhenOrderExists_ShouldReturnOrder() {
+    @DisplayName("存在するIDで注文を検索でき、関連エンティティも取得できる")
+    void findById_WhenOrderExists_ShouldReturnOrderWithDetails() {
         // Arrange
-        Order order1 = createSampleOrder("検索用顧客");
-        Order savedOrder = entityManager.persistFlushFind(order1); // persist + flush + find を一括実行
+        Order order = createSampleOrder("検索用顧客");
+        Order savedOrder = entityManager.persistFlushFind(order); // persist + flush + find を一括実行
         entityManager.clear();
 
         // Act
-        Optional<Order> foundOrderOpt = orderRepository.findById(savedOrder.getId()); // リポジトリ経由で検索
+        Optional<Order> foundOrderOpt = orderRepository.findById(savedOrder.getId());
 
         // Assert
-        assertThat(foundOrderOpt).isPresent(); // Optionalが値を持つ
+        assertThat(foundOrderOpt).isPresent();
         Order foundOrder = foundOrderOpt.get();
+
         assertThat(foundOrder.getId()).isEqualTo(savedOrder.getId());
-        assertThat(foundOrder.getCustomerName()).isEqualTo(order1.getCustomerName());
-        // 関連エンティティ(OrderDetails)が取得できるかも確認（FetchTypeに依存するが、@DataJpaTest環境では通常取得可能）
+        assertThat(foundOrder.getCustomerName()).isEqualTo(order.getCustomerName());
+
+        // もし関連エンティティの取得もテストしたければ
         assertThat(foundOrder.getOrderDetails()).hasSize(2);
     }
 
@@ -162,6 +161,7 @@ class OrderRepositoryTest {
         // Assert
         assertThat(foundOrderOpt).isNotPresent(); // Optionalが空であること
     }
+    
 
     @Test
     @DisplayName("すべての注文を取得できる")
@@ -182,6 +182,31 @@ class OrderRepositoryTest {
         // 顧客名などで内容を簡易的に確認
         assertThat(orders).extracting(Order::getCustomerName)
                          .containsExactlyInAnyOrder(order1.getCustomerName(), order2.getCustomerName());
+    }
+
+    @Test
+    @DisplayName("注文日より後の注文を取得できること")
+    void testFindByOrderDateAfter() {
+       // Arrange
+       LocalDateTime now = LocalDateTime.now();
+       Order recentOrder = new Order();
+       recentOrder.setOrderDate(now.plusDays(1)); // 未来日
+       recentOrder.setTotalAmount(3000);
+       recentOrder.setCustomerName("未来の注文");
+
+       Order oldOrder = new Order();
+       oldOrder.setOrderDate(now.minusDays(1)); // 過去日
+       oldOrder.setTotalAmount(1000);
+       oldOrder.setCustomerName("過去の注文");
+
+       orderRepository.saveAll(List.of(recentOrder, oldOrder));
+
+       // Act
+       List<Order> result = orderRepository.findByOrderDateAfter(now);
+
+       // Assert
+       assertThat(result).hasSize(1);
+       assertThat(result.get(0).getCustomerName()).isEqualTo("未来の注文");
     }
 
     @Test
@@ -244,7 +269,7 @@ class OrderRepositoryTest {
         // Act
         // 削除前に存在することを確認
         assertThat(orderRepository.findById(orderId)).isPresent();
-        assertThat(orderDetailRepository.findById(detailIds.get(0))).isPresent();
+        assertThat(orderItemRepository.findById(detailIds.get(0))).isPresent();
 
         orderRepository.deleteById(orderId); // IDで削除
         entityManager.flush(); // DBに反映
@@ -255,7 +280,7 @@ class OrderRepositoryTest {
         assertThat(orderRepository.findById(orderId)).isNotPresent();
         // 関連するOrderDetailも削除されていることを確認 (Orderエンティティの CascadeType.ALL と orphanRemoval = true による)
         for (Integer detailId : detailIds) {
-             assertThat(orderDetailRepository.findById(detailId)).isNotPresent();
+             assertThat(orderItemRepository.findById(detailId)).isNotPresent();
              // entityManager.findでも確認可能
              // assertThat(entityManager.find(OrderDetail.class, detailId)).isNull();
         }
@@ -280,7 +305,7 @@ class OrderRepositoryTest {
         // .hasMessageContaining("NULL not allowed for column \"CUSTOMER_NAME\""); // DB依存のエラーメッセージ確認は脆い場合がある
     }
 
-        @Test
+    @Test
     void 注文と注文商品が正常に保存される() {
         Product product = createProduct("マグカップ", 1200);
 
@@ -292,14 +317,14 @@ class OrderRepositoryTest {
         item.setUnitPrice(product.getPrice());
         item.setQuantity(2);
         item.setSubtotal(2400);
-        order.setOrderItems(List.of(item));
+        order.setOrderDetails(List.of(item));
 
         Order saved = orderRepository.save(order);
         entityManager.flush();
 
         assertThat(saved.getId()).isPositive();
-        assertThat(saved.getOrderItems()).hasSize(1);
-        assertThat(saved.getOrderItems().get(0).getSubtotal()).isEqualTo(2400);
+        assertThat(saved.getOrderDetails()).hasSize(1);
+        assertThat(saved.getOrderDetails().get(0).getSubtotal()).isEqualTo(2400);
     }
 
     @Test
@@ -312,15 +337,18 @@ class OrderRepositoryTest {
         item.setUnitPrice(1200);
         item.setQuantity(2);
         item.setSubtotal(2400);
-        order.setOrderItems(List.of(item));
+        order.setOrderDetails(List.of(item));
+
+        Class<? extends Throwable> expected = PersistenceException.class;
 
         assertThatThrownBy(() -> {
             orderRepository.save(order);
             entityManager.flush();
-        }).hasRootCauseInstanceOf(javax.persistence.PersistenceException.class);
+        }).hasRootCauseInstanceOf(expected);
     }
 
-        @Test
+    @Test
+    @DisplayName("数量が0やマイナスだと不正（現状はDB制約なし、将来的にバリデーション検討）")
     void 数量が0やマイナスだと不正() {
         Product product = createProduct("タオル", 800);
 
@@ -330,18 +358,20 @@ class OrderRepositoryTest {
         item.setProduct(product);
         item.setProductName(product.getName());
         item.setUnitPrice(product.getPrice());
-        item.setQuantity(0); // 無効
+        item.setQuantity(0); // 無効な数量（0）
         item.setSubtotal(0);
-        order.setOrderItems(List.of(item));
+        order.setOrderDetails(List.of(item));
 
         Order saved = orderRepository.save(order);
         entityManager.flush();
 
-        // DBエラーにはならないが、ビジネスルール的に失敗としたい場合はバリデーション追加が必要
-        assertThat(saved.getOrderItems().get(0).getQuantity()).isEqualTo(0);
-    }
+        // DB制約では弾かれないがビジネスルールとしては数量は1以上が望ましい
+        // 将来的にはサービス層またはバリデーションアノテーションで制御する予定
+        assertThat(saved.getOrderDetails().get(0).getQuantity()).isEqualTo(0);
+}
 
-        @Test
+    @Test
+    @DisplayName("小計が単価と数量に一致しない場合の挙動（現状はDB制約なし、将来的にサービス層での整合性チェック推奨）")
     void 小計が単価と数量に一致しないと不正() {
         Product product = createProduct("ノート", 500);
 
@@ -352,18 +382,20 @@ class OrderRepositoryTest {
         item.setProductName(product.getName());
         item.setUnitPrice(500);
         item.setQuantity(3);
-        item.setSubtotal(1000); // 本来は1500
-        order.setOrderItems(List.of(item));
+        item.setSubtotal(1000); // 本来は 1500 であるべきところ不一致の値
+        order.setOrderDetails(List.of(item));
 
         Order saved = orderRepository.save(order);
         entityManager.flush();
 
-        assertThat(saved.getOrderItems().get(0).getSubtotal()).isNotEqualTo(1500);
-        // ビジネスルール違反。ここで弾きたいなら @PrePersist or Serviceレイヤで対応必要。
-    }
+        // DB制約では弾かれないがビジネスルールとしては
+        // 単価 * 数量 と小計は一致しているべき
+        // 将来的にはサービス層での整合性チェックやバリデーション追加を検討する必要がある
+        assertThat(saved.getOrderDetails().get(0).getSubtotal()).isNotEqualTo(1500);
+}
 
         @Test
-    void 複数商品が正しく保存される() {
+        void 複数商品が正しく保存される() {
         Product p1 = createProduct("皿", 1000);
         Product p2 = createProduct("フォーク", 300);
 
@@ -385,15 +417,15 @@ class OrderRepositoryTest {
         i2.setQuantity(2);
         i2.setSubtotal(600);
 
-        order.setOrderItems(List.of(i1, i2));
+        order.setOrderDetails(List.of(i1, i2));
         Order saved = orderRepository.save(order);
         entityManager.flush();
 
-        assertThat(saved.getOrderItems()).hasSize(2);
+        assertThat(saved.getOrderDetails()).hasSize(2);
     }
 
         @Test
-    void createdAtが自動で設定される() {
+        void createdAtが自動で設定される() {
         Product product = createProduct("時計", 3000);
 
         Order order = new Order();
@@ -404,12 +436,12 @@ class OrderRepositoryTest {
         item.setUnitPrice(product.getPrice());
         item.setQuantity(1);
         item.setSubtotal(3000);
-        order.setOrderItems(List.of(item));
+        order.setOrderDetails(List.of(item));
 
         Order saved = orderRepository.save(order);
         entityManager.flush();
 
-        assertThat(saved.getOrderItems().get(0).getCreatedAt()).isNotNull();
+        assertThat(saved.getOrderDetails().get(0).getCreatedAt()).isNotNull();
     }
 
 }
