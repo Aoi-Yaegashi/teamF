@@ -232,12 +232,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         } catch (error) {
             console.error('Error:', error);
+            
             alert('削除に失敗しました');
         }
 
     } catch (error) {
             console.error('Error:', error);
+            if (window.location.pathname === '/products.html') {
             alert('削除に失敗しました');
+            }
       }   
   }
 
