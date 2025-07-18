@@ -7,7 +7,6 @@ import com.example.raffinehome.product.repository.ProductRepository;
 
 import jakarta.persistence.PersistenceException; // 制約違反用
 
-import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,8 +21,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doNothing;
 
 
 @DataJpaTest // JPA関連のテストに特化した設定（インメモリDB使用、関連Beanのみロード）
@@ -238,7 +235,7 @@ class OrderRepositoryTest {
         Order savedOrder = entityManager.persistFlushFind(order);
         Integer orderId = savedOrder.getId();
         LocalDateTime initialUpdatedAt = savedOrder.getUpdatedAt(); // 初期の更新日時
-        entityManager.detach(savedOrder); // 一度永続化コンテキストから切り離し、取得から行う状況を模倣
+        entityManager.detach(savedOrder); 
 
         // Act
         // 更新対象のOrderを取得
@@ -247,7 +244,7 @@ class OrderRepositoryTest {
         String newAddress = "更新後の住所"; // 新しい住所
         orderToUpdate.setOrderStatus(newStatus); // ステータスを変更
         orderToUpdate.setShippingAddress(newAddress); // 住所を変更
-        orderRepository.save(orderToUpdate); // 更新処理 (IDが存在するためUPDATE文が発行される)
+        orderRepository.save(orderToUpdate); // 更新処理 
         entityManager.flush();
         entityManager.clear();
 
@@ -349,7 +346,7 @@ class OrderRepositoryTest {
         Order order = new Order();
         order.setOrderDate(LocalDateTime.now());
         order.setCustomerName("テスト顧客");
-        order.setCustomerEmail("test@example.com"); // ✅ これを忘れない
+        order.setCustomerEmail("test@example.com");
         order.setShippingAddress("東京都千代田区");
         order.setPhoneNumber("090-1234-5678");
         order.setOrderStatus("PENDING");
@@ -386,7 +383,7 @@ class OrderRepositoryTest {
         Order order = new Order();
         order.setOrderDate(LocalDateTime.now());
         order.setCustomerName("テスト顧客");
-        order.setCustomerEmail("test@example.com"); // ✅ これを忘れない
+        order.setCustomerEmail("test@example.com"); 
         order.setShippingAddress("東京都千代田区");
         order.setPhoneNumber("090-1234-5678");
         order.setOrderStatus("PENDING");
@@ -417,7 +414,7 @@ class OrderRepositoryTest {
         Order order = new Order();
         order.setOrderDate(LocalDateTime.now());
         order.setCustomerName("テスト顧客");
-        order.setCustomerEmail("test@example.com"); // ✅ これを忘れない
+        order.setCustomerEmail("test@example.com"); 
         order.setShippingAddress("東京都千代田区");
         order.setPhoneNumber("090-1234-5678");
         order.setOrderStatus("PENDING");
@@ -449,7 +446,7 @@ class OrderRepositoryTest {
         Order order = new Order();
         order.setOrderDate(LocalDateTime.now());
         order.setCustomerName("テスト顧客");
-        order.setCustomerEmail("test@example.com"); // ✅ これを忘れない
+        order.setCustomerEmail("test@example.com"); 
         order.setShippingAddress("東京都千代田区");
         order.setPhoneNumber("090-1234-5678");
         order.setOrderStatus("PENDING");
@@ -485,7 +482,7 @@ class OrderRepositoryTest {
         Order order = new Order();
         order.setOrderDate(LocalDateTime.now());
         order.setCustomerName("テスト顧客");
-        order.setCustomerEmail("test@example.com"); // ✅ これを忘れない
+        order.setCustomerEmail("test@example.com"); 
         order.setShippingAddress("東京都千代田区");
         order.setPhoneNumber("090-1234-5678");
         order.setOrderStatus("PENDING");
