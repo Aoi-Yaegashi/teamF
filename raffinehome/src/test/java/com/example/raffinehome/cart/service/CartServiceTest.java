@@ -93,18 +93,18 @@ class CartServiceTest {
         assertThat(cart.getItems().get("1")).isEqualTo(existingItem);
     }
 
-    // --- addItemToCart のテスト ---
+    // --- addToCart のテスト ---
 
     @Test
     @DisplayName("存在する商品をカートに初めて追加すると、カートとセッションが更新される")
-    void addItemToCart_WhenProductExistsAndCartIsEmpty_ShouldAddToCartAndUpdateSession() {
+    void addToCart_WhenProductExistsAndCartIsEmpty_ShouldAddToCartAndUpdateSession() {
         // Arrange
         Integer productId = 1;
         Integer quantity = 2;
         when(productRepository.findById(productId)).thenReturn(Optional.of(product1));
 
         // Act
-        CartDTO cart = cartService.addItemToCart(productId, quantity, session);
+        CartDTO cart = cartService.addToCart(productId, quantity, session);
         CartDTO cartFromSession = (CartDTO) session.getAttribute("cart");
 
         // Assert
@@ -127,17 +127,17 @@ class CartServiceTest {
 
     @Test
     @DisplayName("既にカートにある商品を追加すると、数量と合計金額が正しく更新される")
-    void addItemToCart_WhenAddingExistingProduct_ShouldIncreaseQuantityAndUpdateTotals() {
+    void addToCart_WhenAddingExistingProduct_ShouldIncreaseQuantityAndUpdateTotals() {
         // Arrange
         Integer productId = 1;
         Integer initialQuantity = 1;
         Integer addQuantity = 3;
         when(productRepository.findById(productId)).thenReturn(Optional.of(product1));
         // 事前に商品1を1つ追加
-        cartService.addItemToCart(productId, initialQuantity, session);
+        cartService.addToCart(productId, initialQuantity, session);
 
         // Act: 同じ商品1をさらに3つ追加
-        CartDTO cart = cartService.addItemToCart(productId, addQuantity, session);
+        CartDTO cart = cartService.addToCart(productId, addQuantity, session);
         CartDTO cartFromSession = (CartDTO) session.getAttribute("cart");
 
         // Assert
@@ -158,14 +158,14 @@ class CartServiceTest {
 
     @Test
     @DisplayName("存在しない商品を追加しようとすると、nullが返されカートは作成/更新されない")
-    void addItemToCart_WhenProductNotExists_ShouldReturnNullAndNotUpdateCart() {
+    void addToCart_WhenProductNotExists_ShouldReturnNullAndNotUpdateCart() {
         // Arrange
         Integer nonExistingProductId = 99;
         Integer quantity = 1;
         when(productRepository.findById(nonExistingProductId)).thenReturn(Optional.empty()); // 商品が見つからない場合
 
         // Act
-        CartDTO cart = cartService.addItemToCart(nonExistingProductId, quantity, session);
+        CartDTO cart = cartService.addToCart(nonExistingProductId, quantity, session);
 
         // Assert
         assertThat(cart).isNull(); // nullが返される
@@ -175,12 +175,12 @@ class CartServiceTest {
     }
 
     @Test
-    @DisplayName("addItemToCart に null の productId を渡すと null が返される")
-    void addItemToCart_WithNullProductId_ShouldReturnNull() {
+    @DisplayName("addToCart に null の productId を渡すと null が返される")
+    void addToCart_WithNullProductId_ShouldReturnNull() {
         when(productRepository.findById(null)).thenReturn(Optional.empty());
     
         // 戻り値がnullであることを検証する
-        CartDTO result = cartService.addItemToCart(null, 1, session);
+        CartDTO result = cartService.addToCart(null, 1, session);
     
         // Assert
         assertThat(result).isNull(); // 戻り値がnullであることを確認
@@ -194,36 +194,36 @@ class CartServiceTest {
     }
 
     @Test
-    @DisplayName("addItemToCart に null の quantity を渡すと NullPointerException が発生する")
-    void addItemToCart_WithNullQuantity_ShouldThrowNPE() {
+    @DisplayName("addToCart に null の quantity を渡すと NullPointerException が発生する")
+    void addToCart_WithNullQuantity_ShouldThrowNPE() {
         // Arrange
         Integer productId = 1;
         when(productRepository.findById(productId)).thenReturn(Optional.of(product1));
 
         // Act & Assert
         // Cart.addItem 内での計算時に NPE が発生する可能性
-        assertThatThrownBy(() -> cartService.addItemToCart(productId, null, session))
+        assertThatThrownBy(() -> cartService.addToCart(productId, null, session))
                 .isInstanceOf(NullPointerException.class);
     }
 
-    // --- updateItemQuantity のテスト ---
+    // --- updateCartItem のテスト ---
 
     @Test
     @DisplayName("カート内の商品の数量を正しく更新でき、合計も再計算される")
-    void updateItemQuantity_WhenItemExists_ShouldUpdateQuantityAndTotals() {
+    void updateCartItem_WhenItemExists_ShouldUpdateQuantityAndTotals() {
         // Arrange
         Integer productId1 = 1;
         Integer productId2 = 2;
         when(productRepository.findById(productId1)).thenReturn(Optional.of(product1));
         when(productRepository.findById(productId2)).thenReturn(Optional.of(product2));
-        cartService.addItemToCart(productId1, 2, session); // 商品1 x 2 (1000円)
-        cartService.addItemToCart(productId2, 1, session); // 商品2 x 1 (1000円)
+        cartService.addToCart(productId1, 2, session); // 商品1 x 2 (1000円)
+        cartService.addToCart(productId2, 1, session); // 商品2 x 1 (1000円)
         // 初期状態: Total Qty=3, Total Price=2000
         String itemIdToUpdate = String.valueOf(productId1);
         Integer newQuantity = 5;
 
         // Act
-        CartDTO cart = cartService.updateItemQuantity(itemIdToUpdate, newQuantity, session);
+        CartDTO cart = cartService.updateCartItem(itemIdToUpdate, newQuantity, session);
         CartDTO cartFromSession = (CartDTO) session.getAttribute("cart");
 
         // Assert
@@ -247,16 +247,16 @@ class CartServiceTest {
 
     @Test
     @DisplayName("存在しない itemId で数量を更新しようとしてもカートは変化しない")
-    void updateItemQuantity_WhenItemIdNotExists_ShouldNotChangeCart() {
+    void updateCartItem_WhenItemIdNotExists_ShouldNotChangeCart() {
         // Arrange
         when(productRepository.findById(1)).thenReturn(Optional.of(product1));
-        CartDTO initialCart = cartService.addItemToCart(1, 1, session);
+        CartDTO initialCart = cartService.addToCart(1, 1, session);
         CartDTO initialCartState = cloneCart(initialCart); // 変更前の状態をクローン
         String nonExistingItemId = "99";
         Integer newQuantity = 5;
 
         // Act
-        CartDTO cart = cartService.updateItemQuantity(nonExistingItemId, newQuantity, session);
+        CartDTO cart = cartService.updateCartItem(nonExistingItemId, newQuantity, session);
         CartDTO cartFromSession = (CartDTO) session.getAttribute("cart");
 
         // Assert
@@ -269,15 +269,15 @@ class CartServiceTest {
 
     @Test
     @DisplayName("数量に0を指定して更新すると、数量と小計、合計が0になる")
-    void updateItemQuantity_WithZeroQuantity_ShouldUpdateToZero() {
+    void updateCartItem_WithZeroQuantity_ShouldUpdateToZero() {
         // Arrange
         Integer productId = 1;
         String itemId = String.valueOf(productId);
         when(productRepository.findById(productId)).thenReturn(Optional.of(product1));
-        cartService.addItemToCart(productId, 3, session);
+        cartService.addToCart(productId, 3, session);
 
         // Act
-        CartDTO cart = cartService.updateItemQuantity(itemId, 0, session);
+        CartDTO cart = cartService.updateCartItem(itemId, 0, session);
 
         // Assert
         assertThat(cart.getItems().get(itemId).getQuantity()).isZero();
@@ -288,16 +288,16 @@ class CartServiceTest {
 
     @Test
     @DisplayName("数量に負数を指定して更新すると、そのままセットされ合計も計算される（バリデーションは別）")
-    void updateItemQuantity_WithNegativeQuantity_ShouldUpdateAsIs() {
+    void updateCartItem_WithNegativeQuantity_ShouldUpdateAsIs() {
         // Arrange
         Integer productId = 1;
         String itemId = String.valueOf(productId);
         when(productRepository.findById(productId)).thenReturn(Optional.of(product1));
-        cartService.addItemToCart(productId, 3, session);
+        cartService.addToCart(productId, 3, session);
         int negativeQuantity = -2;
 
         // Act
-        CartDTO cart = cartService.updateItemQuantity(itemId, negativeQuantity, session);
+        CartDTO cart = cartService.updateCartItem(itemId, negativeQuantity, session);
 
         // Assert
         assertThat(cart.getItems().get(itemId).getQuantity()).isEqualTo(negativeQuantity);
@@ -309,16 +309,16 @@ class CartServiceTest {
     }
 
     @Test
-    @DisplayName("updateItemQuantity に null の itemId を渡してもカートは変化しない") 
-    void updateItemQuantity_WithNullItemId_ShouldNotChangeCart() {
+    @DisplayName("updateCartItem に null の itemId を渡してもカートは変化しない") 
+    void updateCartItem_WithNullItemId_ShouldNotChangeCart() {
         when(productRepository.findById(1)).thenReturn(Optional.of(product1));
-        cartService.addItemToCart(1, 1, session);
+        cartService.addToCart(1, 1, session);
         // 変更前の状態をディープコピーしておく
         CartDTO initialCartState = cloneCart(cartService.getCartSession(session));
         assertThat(initialCartState.getItems()).hasSize(1); // 初期状態の確認
 
-        // null の itemId で updateItemQuantity を呼び出す
-        CartDTO cart = cartService.updateItemQuantity(null, 5, session);
+        // null の itemId で updateCartItem を呼び出す
+        CartDTO cart = cartService.updateCartItem(null, 5, session);
 
         assertThat(cart).isNotNull(); // メソッドはカートオブジェクトを返すはず
 
@@ -333,37 +333,37 @@ class CartServiceTest {
     }
 
     @Test
-    @DisplayName("updateItemQuantity に null の quantity を渡すと NullPointerException が発生する")
-    void updateItemQuantity_WithNullQuantity_ShouldThrowNPE() {
+    @DisplayName("updateCartItem に null の quantity を渡すと NullPointerException が発生する")
+    void updateCartItem_WithNullQuantity_ShouldThrowNPE() {
         // Arrange
         Integer productId = 1;
         String itemId = String.valueOf(productId);
         when(productRepository.findById(productId)).thenReturn(Optional.of(product1));
-        cartService.addItemToCart(productId, 1, session);
+        cartService.addToCart(productId, 1, session);
 
         // Act & Assert
         // Cart.updateQuantity 内での計算時に NPE が発生する可能性
-        assertThatThrownBy(() -> cartService.updateItemQuantity(itemId, null, session))
+        assertThatThrownBy(() -> cartService.updateCartItem(itemId, null, session))
                 .isInstanceOf(NullPointerException.class);
     }
 
-    // --- removeItemFromCart のテスト ---
+    // --- removeFromCart のテスト ---
 
     @Test
     @DisplayName("カートから商品を削除すると、その商品がなくなり合計が再計算される")
-    void removeItemFromCart_WhenItemExists_ShouldRemoveItemAndRecalculateTotals() {
+    void removeFromCart_WhenItemExists_ShouldRemoveItemAndRecalculateTotals() {
         // Arrange
         Integer productId1 = 1;
         Integer productId2 = 2;
         when(productRepository.findById(productId1)).thenReturn(Optional.of(product1));
         when(productRepository.findById(productId2)).thenReturn(Optional.of(product2));
-        cartService.addItemToCart(productId1, 2, session); // 商品1 x 2 (1000円)
-        cartService.addItemToCart(productId2, 1, session); // 商品2 x 1 (1000円)
+        cartService.addToCart(productId1, 2, session); // 商品1 x 2 (1000円)
+        cartService.addToCart(productId2, 1, session); // 商品2 x 1 (1000円)
         // 初期状態: Total Qty=3, Total Price=2000
         String itemIdToRemove = String.valueOf(productId1);
 
         // Act
-        CartDTO cart = cartService.removeItemFromCart(itemIdToRemove, session);
+        CartDTO cart = cartService.removeFromCart(itemIdToRemove, session);
         CartDTO cartFromSession = (CartDTO) session.getAttribute("cart");
 
         // Assert
@@ -380,15 +380,15 @@ class CartServiceTest {
 
     @Test
     @DisplayName("存在しない itemId で商品を削除しようとしてもカートは変化しない")
-    void removeItemFromCart_WhenItemIdNotExists_ShouldNotChangeCart() {
+    void removeFromCart_WhenItemIdNotExists_ShouldNotChangeCart() {
         // Arrange
         when(productRepository.findById(1)).thenReturn(Optional.of(product1));
-        CartDTO initialCart = cartService.addItemToCart(1, 1, session);
+        CartDTO initialCart = cartService.addToCart(1, 1, session);
         CartDTO initialCartState = cloneCart(initialCart); // 変更前の状態を保存
         String nonExistingItemId = "99";
 
         // Act
-        CartDTO cart = cartService.removeItemFromCart(nonExistingItemId, session);
+        CartDTO cart = cartService.removeFromCart(nonExistingItemId, session);
         CartDTO cartFromSession = (CartDTO) session.getAttribute("cart");
 
         // Assert
@@ -400,17 +400,17 @@ class CartServiceTest {
     }
 
     @Test
-    @DisplayName("removeItemFromCart に null の itemId を渡しても例外は発生せずカートは変化しない")
-    void removeItemFromCart_WithNullItemId_ShouldNotThrowAndCartUnchanged() {
+    @DisplayName("removeFromCart に null の itemId を渡しても例外は発生せずカートは変化しない")
+    void removeFromCart_WithNullItemId_ShouldNotThrowAndCartUnchanged() {
         when(productRepository.findById(1)).thenReturn(Optional.of(product1));
-        cartService.addItemToCart(1, 1, session); // 事前にアイテムを追加しておく
+        cartService.addToCart(1, 1, session); // 事前にアイテムを追加しておく
 
         // 比較のために初期状態をクローンしておく
         CartDTO initialCartState = cloneCart(cartService.getCartSession(session));
         assertThat(initialCartState.getItems()).hasSize(1); // 初期状態を確認
     
         // null itemIdでメソッドを実行
-        CartDTO resultCart = cartService.removeItemFromCart(null, session);
+        CartDTO resultCart = cartService.removeFromCart(null, session);
     
         // Assert
         // 戻り値のカートとセッション内のカートが同一であることを確認
@@ -431,14 +431,18 @@ class CartServiceTest {
     void clearCart_ShouldRemoveCartAttributeFromSession() {
         // Arrange
         when(productRepository.findById(1)).thenReturn(Optional.of(product1));
-        cartService.addItemToCart(1, 1, session); // 事前にカートにアイテムを追加
+        cartService.addToCart(1, 1, session); // 事前にカートにアイテムを追加
         assertThat(session.getAttribute("cart")).isNotNull(); // カートが存在することを確認
 
         // Act
         cartService.clearCart(session);
 
         // Assert
-        assertThat(session.getAttribute("cart")).isNull(); // セッションからカートが削除されている
+        CartDTO cart = (CartDTO) session.getAttribute("cart");
+        assertThat("cart").isNotNull();
+        assertThat(cart.getItems()).isEmpty();
+        assertThat(cart.getItemCount()).isZero();
+        assertThat(cart.getTotalPrice()).isZero();
     }
 
 
