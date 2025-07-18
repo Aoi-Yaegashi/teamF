@@ -5,10 +5,9 @@ import com.example.raffinehome.order.entity.OrderItem;
 import com.example.raffinehome.product.entity.Product;
 import com.example.raffinehome.product.repository.ProductRepository;
 
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException; // 制約違反用
 
-
+import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -339,12 +338,12 @@ class OrderRepositoryTest {
         item.setSubtotal(2400);
         order.setOrderDetails(List.of(item));
 
-        Class<? extends Throwable> expected = PersistenceException.class;
+        Class<? extends Throwable> expected = JdbcSQLIntegrityConstraintViolationException;
 
         assertThatThrownBy(() -> {
             orderRepository.save(order);
             entityManager.flush();
-        }).hasRootCauseInstanceOf(expected);
+        }).hasRootCauseInstanceOf(org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException.class);
     }
 
     @Test
@@ -392,7 +391,7 @@ class OrderRepositoryTest {
         // 単価 * 数量 と小計は一致しているべき
         // 将来的にはサービス層での整合性チェックやバリデーション追加を検討する必要がある
         assertThat(saved.getOrderDetails().get(0).getSubtotal()).isNotEqualTo(1500);
-}
+    }
 
         @Test
         void 複数商品が正しく保存される() {
