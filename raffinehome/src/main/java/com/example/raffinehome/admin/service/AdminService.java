@@ -55,7 +55,7 @@ public class AdminService {
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
             // productの処理
-            product.setDeleted(true);
+            product.isDeleted();
             return productRepository.save(product);
             
         } else {

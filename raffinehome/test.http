@@ -34,6 +34,7 @@ GET http://localhost:8080/api/admin
 GET http://localhost:8080/api/admin/1
 
 ### 商品登録
+
 POST http://localhost:8080/api/admin
 content-type: application/json
 
@@ -45,11 +46,7 @@ content-type: application/json
     "imageUrl":"a.png"}
 
 ### 削除
-DELETE http://localhost:8080/api/admin/2
-content-type: application/json
-
-{   "isDeleted": true}
-
+DELETE http://localhost:8080/api/admin/1
 
 ### 商品編集
 PUT http://localhost:8080/api/admin/3
