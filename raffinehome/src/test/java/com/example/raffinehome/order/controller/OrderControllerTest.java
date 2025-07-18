@@ -2,7 +2,7 @@ package com.example.raffinehome.order.controller;
 
 import com.example.raffinehome.cart.dto.CartDTO;
 import com.example.raffinehome.cart.dto.CartItemDTO; // Cartの初期化に使用
-import com.example.raffinehome.order.dto.OrederCreateDTO;
+import com.example.raffinehome.order.dto.OrderCreateDTO;
 import com.example.raffinehome.order.dto.OrderItemDTO;
 import com.example.raffinehome.order.dto.OrderDTO;
 import com.example.raffinehome.cart.service.CartService;
@@ -50,7 +50,7 @@ class OrderControllerTest {
     private CartDTO cartWithItems;
     private CartDTO emptyCart;
     private OrderItemDTO validOrderRequest;
-    private OrederCreateDTO validCustomerInfo;
+    private OrderCreateDTO validCustomerInfo;
     private OrderDTO sampleOrderResponse;
 
     @BeforeEach
@@ -66,7 +66,7 @@ class OrderControllerTest {
 
         // --- 注文リクエスト準備 ---
         validOrderRequest = new OrderItemDTO();
-        validCustomerInfo = new OrederCreateDTO();
+        validCustomerInfo = new OrderCreateDTO();
         validCustomerInfo.setCustomerName("Test User");
         validCustomerInfo.setCustomerEmail("test@example.com");
         validCustomerInfo.setShippingAddress("Test Address");
@@ -78,7 +78,7 @@ class OrderControllerTest {
 
         // --- Serviceメソッドのデフォルトモック設定 (lenient) ---
         lenient().when(cartService.getCart(any(HttpSession.class))).thenReturn(cartWithItems); // デフォルトはアイテムあり
-        lenient().when(orderService.placeOrder(any(CartDTO.class), any(OrederCreateDTO.class), any(HttpSession.class)))
+        lenient().when(orderService.placeOrder(any(CartDTO.class), any(OrderCreateDTO.class), any(HttpSession.class)))
                 .thenReturn(sampleOrderResponse); // デフォルトは成功
     }
 
@@ -183,7 +183,7 @@ class OrderControllerTest {
         @DisplayName("CustomerInfo.nameが空の場合、400 Bad Requestとエラーメッセージを返す")
         void placeOrder_WithBlankName_ShouldReturnBadRequest() throws Exception {
             // CustomerInfoを生成し、セッターで値を設定
-            OrederCreateDTO invalidCustomer = new OrederCreateDTO();
+            OrderCreateDTO invalidCustomer = new OrderCreateDTO();
             invalidCustomer.setCustomerName(""); // @NotBlank 違反
             invalidCustomer.setCustomerEmail("test@example.com");
             invalidCustomer.setShippingAddress("Addr");
@@ -198,7 +198,7 @@ class OrderControllerTest {
         @DisplayName("CustomerInfo.emailが空の場合、400 Bad Requestとエラーメッセージを返す")
         void placeOrder_WithBlankEmail_ShouldReturnBadRequest() throws Exception {
             // CustomerInfoを生成し、セッターで値を設定
-            OrederCreateDTO invalidCustomer = new OrederCreateDTO();
+            OrderCreateDTO invalidCustomer = new OrderCreateDTO();
             invalidCustomer.setCustomerName("Name");
             invalidCustomer.setCustomerEmail(""); // @NotBlank 違反
             invalidCustomer.setShippingAddress("Addr");
@@ -213,7 +213,7 @@ class OrderControllerTest {
         @DisplayName("CustomerInfo.emailが無効な形式の場合、400 Bad Requestとエラーメッセージを返す")
         void placeOrder_WithInvalidEmailFormat_ShouldReturnBadRequest() throws Exception {
             // CustomerInfoを生成し、セッターで値を設定
-            OrederCreateDTO invalidCustomer = new OrederCreateDTO();
+            OrderCreateDTO invalidCustomer = new OrderCreateDTO();
             invalidCustomer.setCustomerName("Name");
             invalidCustomer.setCustomerEmail("invalid-email"); // @Email 違反
             invalidCustomer.setShippingAddress("Addr");
@@ -228,7 +228,7 @@ class OrderControllerTest {
         @DisplayName("CustomerInfo.addressが空の場合、400 Bad Requestとエラーメッセージを返す")
         void placeOrder_WithBlankAddress_ShouldReturnBadRequest() throws Exception {
              // CustomerInfoを生成し、セッターで値を設定
-            OrederCreateDTO invalidCustomer = new OrederCreateDTO();
+            OrderCreateDTO invalidCustomer = new OrderCreateDTO();
             invalidCustomer.setCustomerName("Name");
             invalidCustomer.setCustomerEmail("test@example.com");
             invalidCustomer.setShippingAddress(""); // @NotBlank 違反
@@ -243,7 +243,7 @@ class OrderControllerTest {
         @DisplayName("CustomerInfo.phoneNumberが空の場合、400 Bad Requestとエラーメッセージを返す")
         void placeOrder_WithBlankPhoneNumber_ShouldReturnBadRequest() throws Exception {
              // CustomerInfoを生成し、セッターで値を設定
-            OrederCreateDTO invalidCustomer = new OrederCreateDTO();
+            OrderCreateDTO invalidCustomer = new OrderCreateDTO();
             invalidCustomer.setCustomerName("Name");
             invalidCustomer.setCustomerEmail("test@example.com");
             invalidCustomer.setShippingAddress("Addr");
@@ -283,7 +283,7 @@ class OrderControllerTest {
         void placeOrder_WhenOrderServiceThrowsRuntimeException_ShouldReturnInternalServerError() throws Exception {
             // Arrange
             RuntimeException serviceException = new RuntimeException("在庫処理エラーなどの内部エラー");
-            when(orderService.placeOrder(any(CartDTO.class), any(OrederCreateDTO.class), any(HttpSession.class)))
+            when(orderService.placeOrder(any(CartDTO.class), any(OrderCreateDTO.class), any(HttpSession.class)))
                     .thenThrow(serviceException); // サービスが例外をスロー
     
             // Act & Assert
@@ -305,7 +305,7 @@ class OrderControllerTest {
             // Arrange
             // OrderServiceが在庫不足時に特定の例外 (ここでは例としてIllegalStateException) をスローすると仮定
             IllegalStateException serviceException = new IllegalStateException("在庫が不足しています: 商品X");
-            when(orderService.placeOrder(any(CartDTO.class), any(OrederCreateDTO.class), any(HttpSession.class)))
+            when(orderService.placeOrder(any(CartDTO.class), any(OrderCreateDTO.class), any(HttpSession.class)))
                     .thenThrow(serviceException);
     
             // Act & Assert

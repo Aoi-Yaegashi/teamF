@@ -125,7 +125,7 @@ class OrderServiceTest {
         when(productRepository.decreaseStock(eq(2), eq(1))).thenReturn(1);
 
         // Act
-        Order response = orderService.savedOrder(cart, OrderCreateDTO, session);
+        Order response = orderService.placeOrder(cart, orderCreateDTO, session);
 
         // Assert: 結果の検証
         assertThat(response).isNotNull();
