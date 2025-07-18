@@ -36,7 +36,7 @@ public class Product {
     private int salePrice;
     
     @Column(nullable = false)
-    private Integer stockQuantity;
+    private int stockQuantity;
     public Integer getStockQuantity() {
     return stockQuantity;
     }
