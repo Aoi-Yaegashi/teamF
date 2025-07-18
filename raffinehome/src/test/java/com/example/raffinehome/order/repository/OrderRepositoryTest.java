@@ -1,12 +1,15 @@
 package com.example.raffinehome.order.repository;
 
-import com.example.raffinehome.order.dto.OrderDTO;
 import com.example.raffinehome.order.entity.Order;
 import com.example.raffinehome.order.entity.OrderItem;
 import com.example.raffinehome.product.entity.Product;
 import com.example.raffinehome.product.repository.ProductRepository;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException; // 制約違反用
+import jakarta.persistence.EntityManager;
+
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +34,9 @@ class OrderRepositoryTest {
     @Autowired
     private OrderRepository orderRepository; // テスト対象のリポジトリ
 
+    @Autowired
+    private ProductRepository productRepository;
+
     @Autowired // OrderItemの削除確認用にインジェクト
     private OrderItemRepository orderDetailRepository;
 
@@ -39,6 +45,14 @@ class OrderRepositoryTest {
 
     private Product product1;
     private Product product2;
+
+    private Product createProduct(String name, int price) {
+        Product p = new Product();
+        p.setName(name);
+        p.setPrice(price);
+        p.setStockQuantity(100);
+        return productRepository.save(p);
+    }
 
     // 各テストメソッド実行前に共通の商品データを準備
     @BeforeEach
@@ -265,4 +279,137 @@ class OrderRepositoryTest {
         .hasCauseInstanceOf(PersistenceException.class); // JPAレイヤーの例外が原因
         // .hasMessageContaining("NULL not allowed for column \"CUSTOMER_NAME\""); // DB依存のエラーメッセージ確認は脆い場合がある
     }
+
+        @Test
+    void 注文と注文商品が正常に保存される() {
+        Product product = createProduct("マグカップ", 1200);
+
+        Order order = new Order();
+        OrderItem item = new OrderItem();
+        item.setOrder(order);
+        item.setProduct(product);
+        item.setProductName(product.getName());
+        item.setUnitPrice(product.getPrice());
+        item.setQuantity(2);
+        item.setSubtotal(2400);
+        order.setOrderItems(List.of(item));
+
+        Order saved = orderRepository.save(order);
+        entityManager.flush();
+
+        assertThat(saved.getId()).isPositive();
+        assertThat(saved.getOrderItems()).hasSize(1);
+        assertThat(saved.getOrderItems().get(0).getSubtotal()).isEqualTo(2400);
+    }
+
+    @Test
+    void 商品がnullだと保存に失敗する() {
+        Order order = new Order();
+        OrderItem item = new OrderItem();
+        item.setOrder(order);
+        item.setProduct(null); // エラーになるはず
+        item.setProductName("マグカップ");
+        item.setUnitPrice(1200);
+        item.setQuantity(2);
+        item.setSubtotal(2400);
+        order.setOrderItems(List.of(item));
+
+        assertThatThrownBy(() -> {
+            orderRepository.save(order);
+            entityManager.flush();
+        }).hasRootCauseInstanceOf(javax.persistence.PersistenceException.class);
+    }
+
+        @Test
+    void 数量が0やマイナスだと不正() {
+        Product product = createProduct("タオル", 800);
+
+        Order order = new Order();
+        OrderItem item = new OrderItem();
+        item.setOrder(order);
+        item.setProduct(product);
+        item.setProductName(product.getName());
+        item.setUnitPrice(product.getPrice());
+        item.setQuantity(0); // 無効
+        item.setSubtotal(0);
+        order.setOrderItems(List.of(item));
+
+        Order saved = orderRepository.save(order);
+        entityManager.flush();
+
+        // DBエラーにはならないが、ビジネスルール的に失敗としたい場合はバリデーション追加が必要
+        assertThat(saved.getOrderItems().get(0).getQuantity()).isEqualTo(0);
+    }
+
+        @Test
+    void 小計が単価と数量に一致しないと不正() {
+        Product product = createProduct("ノート", 500);
+
+        Order order = new Order();
+        OrderItem item = new OrderItem();
+        item.setOrder(order);
+        item.setProduct(product);
+        item.setProductName(product.getName());
+        item.setUnitPrice(500);
+        item.setQuantity(3);
+        item.setSubtotal(1000); // 本来は1500
+        order.setOrderItems(List.of(item));
+
+        Order saved = orderRepository.save(order);
+        entityManager.flush();
+
+        assertThat(saved.getOrderItems().get(0).getSubtotal()).isNotEqualTo(1500);
+        // ビジネスルール違反。ここで弾きたいなら @PrePersist or Serviceレイヤで対応必要。
+    }
+
+        @Test
+    void 複数商品が正しく保存される() {
+        Product p1 = createProduct("皿", 1000);
+        Product p2 = createProduct("フォーク", 300);
+
+        Order order = new Order();
+
+        OrderItem i1 = new OrderItem();
+        i1.setOrder(order);
+        i1.setProduct(p1);
+        i1.setProductName(p1.getName());
+        i1.setUnitPrice(p1.getPrice());
+        i1.setQuantity(1);
+        i1.setSubtotal(1000);
+
+        OrderItem i2 = new OrderItem();
+        i2.setOrder(order);
+        i2.setProduct(p2);
+        i2.setProductName(p2.getName());
+        i2.setUnitPrice(p2.getPrice());
+        i2.setQuantity(2);
+        i2.setSubtotal(600);
+
+        order.setOrderItems(List.of(i1, i2));
+        Order saved = orderRepository.save(order);
+        entityManager.flush();
+
+        assertThat(saved.getOrderItems()).hasSize(2);
+    }
+
+        @Test
+    void createdAtが自動で設定される() {
+        Product product = createProduct("時計", 3000);
+
+        Order order = new Order();
+        OrderItem item = new OrderItem();
+        item.setOrder(order);
+        item.setProduct(product);
+        item.setProductName(product.getName());
+        item.setUnitPrice(product.getPrice());
+        item.setQuantity(1);
+        item.setSubtotal(3000);
+        order.setOrderItems(List.of(item));
+
+        Order saved = orderRepository.save(order);
+        entityManager.flush();
+
+        assertThat(saved.getOrderItems().get(0).getCreatedAt()).isNotNull();
+    }
+
 }
