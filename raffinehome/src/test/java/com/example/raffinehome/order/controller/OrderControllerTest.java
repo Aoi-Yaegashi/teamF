@@ -105,7 +105,7 @@ class OrderControllerTest {
             // Verify service calls
             verify(cartService, times(1)).getCart(any(HttpSession.class));
             // eq() を使って渡されたオブジェクトが期待通りか確認
-            verify(orderService, times(1)).placeOrder(eq(cartWithItems), eq(validOrderRequest), any(HttpSession.class));
+            verify(orderService, times(1)).placeOrder(eq(cartWithItems), eq(validCustomerInfo), any(HttpSession.class));
             verifyNoMoreInteractions(cartService, orderService);
         }
     }
@@ -176,7 +176,7 @@ class OrderControllerTest {
         void placeOrder_WithNullCustomerInfo_ShouldReturnBadRequest() throws Exception {
             OrderItemDTO invalidRequest = new OrderItemDTO();
             invalidRequest.setCustomerInfo(null); // NotNull違反
-            performValidationTest(invalidRequest, "customerInfo", "顧客情報は必須です");
+            performValidationTest(sampleOrderResponse, "customerInfo", "顧客情報は必須です");
         }
 
         @Test
@@ -191,7 +191,7 @@ class OrderControllerTest {
 
             OrderItemDTO invalidRequest = new OrderItemDTO();
             invalidRequest.setCustomerInfo(invalidCustomer);
-            performValidationTest(invalidRequest, "customerInfo.name", "お名前は必須です");
+            performValidationTest(sampleOrderResponse, "customerInfo.name", "お名前は必須です");
         }
 
         @Test
@@ -206,7 +206,7 @@ class OrderControllerTest {
 
             OrderItemDTO invalidRequest = new OrderItemDTO();
             invalidRequest.setCustomerInfo(invalidCustomer);
-            performValidationTest(invalidRequest, "customerInfo.email", "メールアドレスは必須です");
+            performValidationTest(sampleOrderResponse, "customerInfo.email", "メールアドレスは必須です");
         }
 
          @Test
@@ -221,7 +221,7 @@ class OrderControllerTest {
 
             OrderItemDTO invalidRequest = new OrderItemDTO();
             invalidRequest.setCustomerInfo(invalidCustomer);
-            performValidationTest(invalidRequest, "customerInfo.email", "有効なメールアドレスを入力してください");
+            performValidationTest(sampleOrderResponse, "customerInfo.email", "有効なメールアドレスを入力してください");
         }
 
         @Test
@@ -236,7 +236,7 @@ class OrderControllerTest {
 
             OrderItemDTO invalidRequest = new OrderItemDTO();
             invalidRequest.setCustomerInfo(invalidCustomer);
-            performValidationTest(invalidRequest, "customerInfo.address", "住所は必須です");
+            performValidationTest(sampleOrderResponse, "customerInfo.address", "住所は必須です");
         }
 
         @Test
@@ -251,7 +251,7 @@ class OrderControllerTest {
 
             OrderItemDTO invalidRequest = new OrderItemDTO();
             invalidRequest.setCustomerInfo(invalidCustomer);
-            performValidationTest(invalidRequest, "customerInfo.phoneNumber", "電話番号は必須です");
+            performValidationTest(sampleOrderResponse, "customerInfo.phoneNumber", "電話番号は必須です");
         }
     }
 
@@ -295,7 +295,7 @@ class OrderControllerTest {
                     .andExpect(status().isInternalServerError()); // 500 Internal Server Error ステータスコードを検証 (これは成功しているはず)
     
             verify(cartService, times(1)).getCart(any(HttpSession.class));
-            verify(orderService, times(1)).placeOrder(eq(cartWithItems), eq(validOrderRequest), any(HttpSession.class));
+            verify(orderService, times(1)).placeOrder(eq(cartWithItems), eq(validCustomerInfo), any(HttpSession.class));
             verifyNoMoreInteractions(cartService, orderService); // この後には何も呼ばれないはず
         }
 
@@ -317,7 +317,7 @@ class OrderControllerTest {
                     .andExpect(status().isInternalServerError()); // 500 Internal Server Error ステータスコードのみ検証
     
             verify(cartService, times(1)).getCart(any(HttpSession.class));
-            verify(orderService, times(1)).placeOrder(eq(cartWithItems), eq(validOrderRequest), any(HttpSession.class));
+            verify(orderService, times(1)).placeOrder(eq(cartWithItems), eq(validCustomerInfo), any(HttpSession.class));
             verifyNoMoreInteractions(cartService, orderService); // この後には何も呼ばれないはず
         }
     }
