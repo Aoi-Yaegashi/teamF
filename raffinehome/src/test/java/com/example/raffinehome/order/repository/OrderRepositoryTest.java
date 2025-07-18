@@ -188,17 +188,27 @@ class OrderRepositoryTest {
     void testFindByOrderDateAfter() {
        // Arrange
        LocalDateTime now = LocalDateTime.now();
+
        Order recentOrder = new Order();
        recentOrder.setOrderDate(now.plusDays(1)); // 未来日
        recentOrder.setTotalAmount(3000);
        recentOrder.setCustomerName("未来の注文");
+       recentOrder.setCustomerEmail("future@example.com");
+       recentOrder.setOrderStatus("PENDING");
+       recentOrder.setPhoneNumber("090-0000-0001");
+       recentOrder.setShippingAddress("東京都未来区1-1-1");
 
        Order oldOrder = new Order();
        oldOrder.setOrderDate(now.minusDays(1)); // 過去日
        oldOrder.setTotalAmount(1000);
        oldOrder.setCustomerName("過去の注文");
+       oldOrder.setCustomerEmail("past@example.com");
+       oldOrder.setOrderStatus("PENDING");
+       oldOrder.setPhoneNumber("090-0000-0002");
+       oldOrder.setShippingAddress("東京都過去区2-2-2");
 
        orderRepository.saveAll(List.of(recentOrder, oldOrder));
+       entityManager.flush();
 
        // Act
        List<Order> result = orderRepository.findByOrderDateAfter(now);
@@ -309,6 +319,14 @@ class OrderRepositoryTest {
         Product product = createProduct("マグカップ", 1200);
 
         Order order = new Order();
+        order.setOrderDate(LocalDateTime.now()); 
+        order.setCustomerName("テスト顧客");
+        order.setCustomerEmail("test@example.com");
+        order.setShippingAddress("東京都新宿区");
+        order.setPhoneNumber("090-1234-5678"); 
+        order.setOrderStatus("PENDING"); 
+        order.setTotalAmount(2400); 
+
         OrderItem item = new OrderItem();
         item.setOrder(order);
         item.setProduct(product);
@@ -329,6 +347,14 @@ class OrderRepositoryTest {
     @Test
     void 商品がnullだと保存に失敗する() {
         Order order = new Order();
+        order.setOrderDate(LocalDateTime.now());
+        order.setCustomerName("テスト顧客");
+        order.setCustomerEmail("test@example.com"); // ✅ これを忘れない
+        order.setShippingAddress("東京都千代田区");
+        order.setPhoneNumber("090-1234-5678");
+        order.setOrderStatus("PENDING");
+        order.setTotalAmount(2400);
+
         OrderItem item = new OrderItem();
         item.setOrder(order);
         item.setProduct(null); // エラーになるはず
@@ -338,7 +364,13 @@ class OrderRepositoryTest {
         item.setSubtotal(2400);
         order.setOrderDetails(List.of(item));
 
-        Class<? extends Throwable> expected = JdbcSQLIntegrityConstraintViolationException;
+        order.setOrderDate(LocalDateTime.now());
+        order.setCustomerName("検証用顧客");
+        order.setCustomerEmail("test@example.com");
+        order.setShippingAddress("東京都千代田区");
+        order.setPhoneNumber("090-0000-0000");
+        order.setOrderStatus("PENDING");
+        order.setTotalAmount(2400);
 
         assertThatThrownBy(() -> {
             orderRepository.save(order);
@@ -352,6 +384,14 @@ class OrderRepositoryTest {
         Product product = createProduct("タオル", 800);
 
         Order order = new Order();
+        order.setOrderDate(LocalDateTime.now());
+        order.setCustomerName("テスト顧客");
+        order.setCustomerEmail("test@example.com"); // ✅ これを忘れない
+        order.setShippingAddress("東京都千代田区");
+        order.setPhoneNumber("090-1234-5678");
+        order.setOrderStatus("PENDING");
+        order.setTotalAmount(2400);
+
         OrderItem item = new OrderItem();
         item.setOrder(order);
         item.setProduct(product);
@@ -375,6 +415,14 @@ class OrderRepositoryTest {
         Product product = createProduct("ノート", 500);
 
         Order order = new Order();
+        order.setOrderDate(LocalDateTime.now());
+        order.setCustomerName("テスト顧客");
+        order.setCustomerEmail("test@example.com"); // ✅ これを忘れない
+        order.setShippingAddress("東京都千代田区");
+        order.setPhoneNumber("090-1234-5678");
+        order.setOrderStatus("PENDING");
+        order.setTotalAmount(2400);
+
         OrderItem item = new OrderItem();
         item.setOrder(order);
         item.setProduct(product);
@@ -399,6 +447,13 @@ class OrderRepositoryTest {
         Product p2 = createProduct("フォーク", 300);
 
         Order order = new Order();
+        order.setOrderDate(LocalDateTime.now());
+        order.setCustomerName("テスト顧客");
+        order.setCustomerEmail("test@example.com"); // ✅ これを忘れない
+        order.setShippingAddress("東京都千代田区");
+        order.setPhoneNumber("090-1234-5678");
+        order.setOrderStatus("PENDING");
+        order.setTotalAmount(2400);
 
         OrderItem i1 = new OrderItem();
         i1.setOrder(order);
@@ -428,6 +483,14 @@ class OrderRepositoryTest {
         Product product = createProduct("時計", 3000);
 
         Order order = new Order();
+        order.setOrderDate(LocalDateTime.now());
+        order.setCustomerName("テスト顧客");
+        order.setCustomerEmail("test@example.com"); // ✅ これを忘れない
+        order.setShippingAddress("東京都千代田区");
+        order.setPhoneNumber("090-1234-5678");
+        order.setOrderStatus("PENDING");
+        order.setTotalAmount(2400);
+
         OrderItem item = new OrderItem();
         item.setOrder(order);
         item.setProduct(product);
