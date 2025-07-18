@@ -58,7 +58,7 @@ public class AdminService {
         ) ;
     }
     // 追加　by K.K
-    public AdminProductDto findProductForAdminById(Integer id) {
+    public AdminProductDto findProductForAdminById(int id) {
         Optional<Product> productOpt = productRepository.findById(id);
         return productOpt.map(this::convertToDetail).orElse(null);
     }
