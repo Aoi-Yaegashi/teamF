@@ -36,13 +36,13 @@ public class Product {
     private int salePrice;
     
     @Column(nullable = false)
-    private int StockQuantity;
+    private int stockQuantity;
     public Integer getStockQuantity() {
-    return StockQuantity;
+    return stockQuantity;
     }
 
-    public void setStockQuantity(Integer StockQuantity) {
-    this.StockQuantity = StockQuantity;
+    public void setStockQuantity(Integer stockQuantity) {
+    this.stockQuantity = stockQuantity;
     }
 
     @Column(nullable = false)
