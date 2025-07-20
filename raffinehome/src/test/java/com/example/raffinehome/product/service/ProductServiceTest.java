@@ -269,11 +269,22 @@ class ProductServiceTest {
     Product active = new Product();
     active.setId(1);
     active.setName("有効");
+    active.setPrice(1000);
+    active.setSalePrice(900);
+    active.setDescription("説明");
+    active.setStockQuantity(10);
+    active.setImageUrl("url");
     active.setDeleted(false); // 論理削除フラグ（無効=有効）
 
     Product deleted = new Product();
     deleted.setId(2);
     deleted.setName("論理削除済");
+    deleted.setPrice(2000);
+    deleted.setImageUrl("deleted_url");
+    deleted.setDescription("削除済み説明");
+    deleted.setStockQuantity(5);
+    deleted.setSalePrice(1800);
+    
     deleted.setDeleted(true); // 論理削除フラグ
 
     // findAllActiveProductsは「deleted=false」なエンティティだけ返すことを想定
@@ -297,12 +308,22 @@ class ProductServiceTest {
     Product active = new Product();
     active.setId(1);
     active.setName("有効");
+    active.setPrice(1000);
+    active.setSalePrice(900);
+    active.setDescription("説明");
+    active.setStockQuantity(10);
+    active.setImageUrl("url");
     active.setDeleted(false);
     // 他のフィールドも必要ならセット
 
     Product deleted = new Product();
     deleted.setId(2);
     deleted.setName("論理削除済");
+    deleted.setPrice(2000);
+    deleted.setSalePrice(1800);
+    deleted.setDescription("削除済み説明");
+    deleted.setStockQuantity(5);
+    deleted.setImageUrl("deleted_url");
     deleted.setDeleted(true);
     // 他のフィールドも必要ならセット
 
