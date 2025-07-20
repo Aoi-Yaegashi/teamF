@@ -1,21 +1,31 @@
 package com.example.raffinehome.product.repository;
 
+import com.example.raffinehome.product.dto.ProductListDTO;
 import com.example.raffinehome.product.entity.Product;
+import com.example.raffinehome.product.repository.ProductRepository;
+import com.example.raffinehome.product.service.ProductService;
 import jakarta.persistence.PersistenceException; // JPA標準の例外
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException; // Spring Data JPAの例外
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @DataJpaTest // JPAリポジトリテストに特化した設定
 class ProductRepositoryTest {
@@ -52,6 +62,18 @@ class ProductRepositoryTest {
         entityManager.flush(); // DBに即時反映
         entityManager.clear(); // 永続化コンテキストキャッシュをクリアし、後続のテストがDBから取得するようにする
     }
+
+    @ExtendWith(MockitoExtension.class)
+    class ProductServiceTest {
+
+    @Mock
+    private ProductRepository productRepository;
+
+    @InjectMocks
+    private ProductService productService;
+
+    //...
+}
 
     @Test
     @DisplayName("商品を正常に保存し、IDで検索できる")
