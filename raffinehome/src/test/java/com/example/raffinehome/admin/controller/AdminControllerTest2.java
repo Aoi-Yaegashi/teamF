@@ -2,7 +2,7 @@ package com.example.raffinehome.admin.controller;
 
 import com.example.raffinehome.product.dto.ProductListDTO;
 import com.example.raffinehome.product.entity.Product;
-import com.example.raffinehome.product.exception.GlobalExceptionHandler;
+import com.example.raffinehome.product.exception.ProductExceptionHandler;
 import com.example.raffinehome.product.service.ProductService;
 import com.example.raffinehome.admin.dto.AdminCreateDTO;
 import com.example.raffinehome.admin.dto.AdminProductDto;

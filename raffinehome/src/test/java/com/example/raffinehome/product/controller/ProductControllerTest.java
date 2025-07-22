@@ -3,6 +3,7 @@ package com.example.raffinehome.product.controller;
 import com.example.raffinehome.product.dto.ProductDTO;
 import com.example.raffinehome.product.dto.ProductListDTO;
 import com.example.raffinehome.product.service.ProductService;
+import com.example.raffinehome.common.exception.GlobalExceptionHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -23,24 +24,13 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.util.Arrays;
 import java.util.Collections; // 空リスト用
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-@ControllerAdvice
-public class GlobalExceptionHandler {
-
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException ex) {
-        Map<String, String> body = new HashMap<>();
-        body.put("message", ex.getMessage());
-        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    // ほかのExceptionHandler...
-}
 
 @WebMvcTest(ProductController.class) // ProductController と関連コンポーネントをテスト
 class ProductControllerTest {
