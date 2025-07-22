@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
@@ -157,7 +158,7 @@ class OrderControllerTest {
     class PlaceOrderValidationErrorTests {
 
         // ヘルパーメソッド：バリデーションテストを実行し、結果を検証する
-        private void performValidationTest(OrderDTO request, String expectedField, String expectedMessage) throws Exception {
+        private void performValidationTest(OrderItemDTO request, String expectedField, String expectedMessage) throws Exception {
             mockMvc.perform(post("/api/orders")
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -176,7 +177,7 @@ class OrderControllerTest {
         void placeOrder_WithNullCustomerInfo_ShouldReturnBadRequest() throws Exception {
             OrderItemDTO invalidRequest = new OrderItemDTO();
             invalidRequest.setCustomerInfo(null); // NotNull違反
-            performValidationTest(sampleOrderResponse, "customerInfo", "顧客情報は必須です");
+            performValidationTest(invalidRequest, "customerInfo", "顧客情報は必須です");
         }
 
         @Test
@@ -191,7 +192,7 @@ class OrderControllerTest {
 
             OrderItemDTO invalidRequest = new OrderItemDTO();
             invalidRequest.setCustomerInfo(invalidCustomer);
-            performValidationTest(sampleOrderResponse, "customerInfo.name", "お名前は必須です");
+            performValidationTest(invalidRequest, "customerInfo.name", "お名前は必須です");
         }
 
         @Test
@@ -206,7 +207,7 @@ class OrderControllerTest {
 
             OrderItemDTO invalidRequest = new OrderItemDTO();
             invalidRequest.setCustomerInfo(invalidCustomer);
-            performValidationTest(sampleOrderResponse, "customerInfo.email", "メールアドレスは必須です");
+            performValidationTest(invalidRequest, "customerInfo.email", "メールアドレスは必須です");
         }
 
          @Test
@@ -221,7 +222,7 @@ class OrderControllerTest {
 
             OrderItemDTO invalidRequest = new OrderItemDTO();
             invalidRequest.setCustomerInfo(invalidCustomer);
-            performValidationTest(sampleOrderResponse, "customerInfo.email", "有効なメールアドレスを入力してください");
+            performValidationTest(invalidRequest, "customerInfo.email", "有効なメールアドレスを入力してください");
         }
 
         @Test
@@ -236,7 +237,7 @@ class OrderControllerTest {
 
             OrderItemDTO invalidRequest = new OrderItemDTO();
             invalidRequest.setCustomerInfo(invalidCustomer);
-            performValidationTest(sampleOrderResponse, "customerInfo.address", "住所は必須です");
+            performValidationTest(invalidRequest, "customerInfo.address", "住所は必須です");
         }
 
         @Test
@@ -251,7 +252,7 @@ class OrderControllerTest {
 
             OrderItemDTO invalidRequest = new OrderItemDTO();
             invalidRequest.setCustomerInfo(invalidCustomer);
-            performValidationTest(sampleOrderResponse, "customerInfo.phoneNumber", "電話番号は必須です");
+            performValidationTest(invalidRequest, "customerInfo.phoneNumber", "電話番号は必須です");
         }
     }
 
