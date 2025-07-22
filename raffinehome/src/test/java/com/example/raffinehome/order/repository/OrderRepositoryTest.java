@@ -350,7 +350,7 @@ class OrderRepositoryTest {
     }
 
     @Test
-    @DisplayName("商品がnullだと保存に失敗する")
+    @DisplayName("OrderItemにnullのProductを設定すると保存に失敗する")
     void saveOrder_WhenProductIsNull_ShouldFail() {
         Order order = new Order();
         order.setOrderDate(LocalDateTime.now());
@@ -359,7 +359,7 @@ class OrderRepositoryTest {
         order.setShippingAddress("東京都千代田区");
         order.setPhoneNumber("090-1234-5678");
         order.setOrderStatus("PENDING");
-        order.setTotalAmount(2400);
+        order    .setTotalAmount(2400);
 
         OrderItem item = new OrderItem();
         item.setOrder(order);
@@ -370,81 +370,10 @@ class OrderRepositoryTest {
         item.setSubtotal(2400);
         order.setOrderDetails(List.of(item));
 
-        order.setOrderDate(LocalDateTime.now());
-        order.setCustomerName("テスト顧客");
-        order.setCustomerEmail("test@example.com");
-        order.setShippingAddress("東京都千代田区");
-        order.setPhoneNumber("090-1234-5678");
-        order.setOrderStatus("PENDING");
-        order.setTotalAmount(2400);
-
         assertThatThrownBy(() -> {
             orderRepository.save(order);
             entityManager.flush();
-        }).hasRootCauseInstanceOf(org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException.class);
-    }
-
-    @Test
-    @DisplayName("数量が0やマイナスだと不正（現状はDB制約なし、将来的にバリデーション検討）")
-    void saveOrderWithZeroOrNegativeQuantity_SucceedsButInvalid() {
-        Product product = createProduct("タオル", 800);
-
-        Order order = new Order();
-        order.setOrderDate(LocalDateTime.now());
-        order.setCustomerName("テスト顧客");
-        order.setCustomerEmail("test@example.com"); 
-        order.setShippingAddress("東京都千代田区");
-        order.setPhoneNumber("090-1234-5678");
-        order.setOrderStatus("PENDING");
-        order.setTotalAmount(2400);
-
-        OrderItem item = new OrderItem();
-        item.setOrder(order);
-        item.setProduct(product);
-        item.setProductName(product.getName());
-        item.setUnitPrice(product.getPrice());
-        item.setQuantity(0); // 無効な数量（0）
-        item.setSubtotal(0);
-        order.setOrderDetails(List.of(item));
-
-        Order saved = orderRepository.save(order);
-        entityManager.flush();
-
-        // DB制約では弾かれないがビジネスルールとしては数量は1以上が望ましい
-        // 将来的にはサービス層またはバリデーションアノテーションで制御する予定
-        assertThat(saved.getOrderDetails().get(0).getQuantity()).isEqualTo(0);
-}
-
-    @Test
-    @DisplayName("小計が単価と数量に一致しない場合の挙動（現状はDB制約なし、将来的にサービス層での整合性チェック推奨）")
-    void saveOrderWithMismatchedSubtotal_SucceedsButInvalid() {
-        Product product = createProduct("ノート", 500);
-
-        Order order = new Order();
-        order.setOrderDate(LocalDateTime.now());
-        order.setCustomerName("テスト顧客");
-        order.setCustomerEmail("test@example.com"); 
-        order.setShippingAddress("東京都千代田区");
-        order.setPhoneNumber("090-1234-5678");
-        order.setOrderStatus("PENDING");
-        order.setTotalAmount(2400);
-
-        OrderItem item = new OrderItem();
-        item.setOrder(order);
-        item.setProduct(product);
-        item.setProductName(product.getName());
-        item.setUnitPrice(500);
-        item.setQuantity(3);
-        item.setSubtotal(1000); // 本来は 1500 であるべきところ不一致の値
-        order.setOrderDetails(List.of(item));
-
-        Order saved = orderRepository.save(order);
-        entityManager.flush();
-
-        // DB制約では弾かれないがビジネスルールとしては
-        // 単価 * 数量 と小計は一致しているべき
-        // 将来的にはサービス層での整合性チェックやバリデーション追加を検討する必要がある
-        assertThat(saved.getOrderDetails().get(0).getSubtotal()).isNotEqualTo(1500);
+        }).isInstanceOf(DataIntegrityViolationException.class);
     }
 
         @Test

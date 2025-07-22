@@ -44,7 +44,7 @@ public class AdminController{
 
 @GetMapping
 public ResponseEntity<List<ProductListDTO>> getAllProducts(){
-    List<ProductListDTO> products = productService.findAllProducts();
+    List<ProductListDTO> products = adminService.findAllProducts();
     return ResponseEntity.ok(products);
 }
 
