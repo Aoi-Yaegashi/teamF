@@ -12,6 +12,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.raffinehome.product.dto.ProductListDTO;
 import com.example.raffinehome.product.dto.ProductDTO;
 import com.example.raffinehome.product.repository.ProductRepository;
+import com.example.raffinehome.admin.dto.AdminCreateDTO;
+import com.example.raffinehome.product.entity.Product;
 
 import jakarta.transaction.TransactionScoped;
 import jakarta.transaction.Transactional;
@@ -19,6 +21,9 @@ import jakarta.transaction.Transactional;
 import com.example.raffinehome.admin.dto.AdminCreateDTO;
 import com.example.raffinehome.admin.dto.AdminUpdateDTO;
 import com.example.raffinehome.admin.dto.AdminDeleteDTO;
+
+    // 追加　by K.K
+import com.example.raffinehome.admin.dto.AdminProductDto;
 
 import lombok.Data;
 
@@ -34,7 +39,47 @@ public class AdminService {
     this.productRepository = productRepository;
     }
 
-    public Product createProduct(Product request){
+    // 追加　by K.K
+    public List<ProductListDTO> findAllProducts() {
+        return productRepository.findAll().stream()
+                .map(this::convertToListItem)
+                .collect(Collectors.toList());
+    }
+    // 追加　by K.K
+    private ProductListDTO convertToListItem(Product product) {
+        return new ProductListDTO(
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getSalePrice(),
+                product.getDescription(),
+                product.getStockQuantity(),
+                product.getImageUrl()
+        ) ;
+    }
+    // 追加　by K.K
+    public AdminProductDto findProductForAdminById(int id) {
+        Optional<Product> productOpt = productRepository.findById(id);
+        return productOpt.map(this::convertToDetail).orElse(null);
+    }
+    // 追加　by K.K
+    private AdminProductDto convertToDetail(Product product) {
+        AdminProductDto dto = new AdminProductDto();
+        dto.setId(product.getId());    
+        dto.setName(product.getName());
+        dto.setPrice(product.getPrice());  
+        dto.setSalePrice(product.getSalePrice());  
+        dto.setDescription(product.getDescription());
+        dto.setStockQuantity(product.getStockQuantity());   
+        dto.setImageUrl(product.getImageUrl()); 
+        dto.setDeleted(product.isDeleted());
+        dto.setCreatedAt(product.getCreatedAt());  
+        dto.setUpdatedAt(product.getUpdatedAt());    
+            
+        return dto;
+    }
+
+    public Product createProduct(AdminCreateDTO request){
         
         Product product = new Product();
         product.setName(request.getName());
@@ -53,7 +98,7 @@ public class AdminService {
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
             // productの処理
-            product.setIs_Deleted(true);
+            product.setDeleted(true);
             return productRepository.save(product);
             
         } else {
@@ -83,5 +128,3 @@ public class AdminService {
         }  
     }
 }
-
-/*Productのどの要素に作用するかをどの記述で決めてる？*/

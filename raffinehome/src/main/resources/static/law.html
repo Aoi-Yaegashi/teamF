@@ -9,22 +9,23 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
 </head>
-<div id="humMenu">
-    <input id="humCheck" type="checkbox">
-    <label id="humOpen" for="humCheck"><img src="images/hum.png" alt="メニュー" width="34" height="28"></label>
-    <label id="humClose" for="humCheck"></label>
 
-    <nav>
-      <ul class="inner">
+    <body>
+        <div id="humMenu">
+       <input id="humCheck" type="checkbox">
+       <label id="humOpen" for="humCheck"><img src="images/hum.png" alt="メニュー" width="34" height="28"></label>
+       <label id="humClose" for="humCheck"></label>
+
+       <nav class="humNav">
+       <ul class="inner">
         <li><a href="index.html">トップページ</a></li>
         <li><a href="products.html">商品一覧</a></li>
         <li><a href="terms.html">利用規約</a></li>
         <li><a href="privacy.html">プライバシーポリシー</a></li>
         <li><a href="faq.html">よくあるご質問</a></li>
-      </ul>
-    </nav>
-</div>
-    <body>
+       </ul>
+       </nav>
+    </div>
         <div class="container">
            <header class="mb-4 border-bottom">
                 <div class="container d-flex justify-content-between align-items-center py-3">
@@ -42,13 +43,13 @@
                     </div>
                 </div>
 
-                <nav class="desktop d-flex justify-content-between px-5 border-top py-2">
-                    <div class="container d-flex justify-content-center py-2">
-                        <a href="index.html" class="nav-link">トップページ</a>
-                        <a href="products.html" class="nav-link">商品一覧</a>
-                        <a href="faq.html" class="nav-link">よくあるご質問</a>
-                    </div>
-                </nav>
+                <div class="desktop-container">
+                   <nav class="desktop d-flex px-5 border-top py-2" style="width: 100%;">
+                    <a href="index.html" class="nav-link" style="flex-basis: 25%; text-align: center;">トップページ</a>
+                    <a href="products.html" class="nav-link" style="flex-basis: 25%; text-align: center;">商品一覧</a>
+                    <a href="faq.html" class="nav-link" style="flex-basis: 25%; text-align: center;">よくあるご質問</a>
+                   </nav>
+                </div>
 
             </header>
 
@@ -112,6 +113,7 @@
                     <!-- カート内容 -->
                 </div>
                 <div class="modal-footer">
+                    <button id="clearCartBtn" class="btn btn-danger">カートをクリア</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">買い物を続ける</button>
                     <button type="button" class="btn btn-primary" id="checkout-btn">注文手続きへ</button>
                 </div>

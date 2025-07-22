@@ -5,7 +5,7 @@ GET http://localhost:8080/api/products
 GET http://localhost:8080/api/products/1
 
 ### カートに追加
-POST http://localhost:8080/api/cart
+POST http://localhost:8080/api/cart/add
 content-type: application/json
 
 {
@@ -20,24 +20,44 @@ GET http://localhost:8080/api/cart
 POST http://localhost:8080/api/orders
 content-type: application/json
 
-{   "name": "テスト",
-    "email": "t@e.com",
-    "address": "住所",
-    "phoneNumber": "123"}
+{
+  "customerName": "テスト",
+  "customerEmail": "t@e.com",
+  "shippingAddress": "住所",
+  "phoneNumber": "123"
+}
+
+### 商品一覧（管理者）
+GET http://localhost:8080/api/admin
+
+### 商品詳細（管理者）
+GET http://localhost:8080/api/admin/1
 
 ### 商品登録
-
 POST http://localhost:8080/api/admin
 content-type: application/json
 
 {   "name": "テスト",
-    "price": "12",
+    "price": "あああ",
     "saleprice": "12",
     "description": "123",
     "stockQuantity":"1",
     "imageUrl":"a.png"}
 
 ### 削除
-DELETE http://localhost:8080/api/product/admin/{1}
+DELETE http://localhost:8080/api/admin/2
+content-type: application/json
+
+{   "isDeleted": true}
+
 
 ### 商品編集
+PUT http://localhost:8080/api/admin/3
+content-type: application/json
+
+{   "name": "テスト",
+    "description": "あああ",
+    "price": "12",
+    "saleprice": "12",
+    "stockQuantity":"1",
+    "imageUrl":"a.png"}

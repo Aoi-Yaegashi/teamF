@@ -22,13 +22,28 @@ public class Product {
     private String description;
     
     @Column(nullable = false)
-    private int price;
+    private Integer price;
 
-     @Column(nullable = false)
+    public Integer getPrice() {
+    return price;
+    }
+
+    public void setPrice(Integer price) {
+    this.price = price;
+    }
+
+    @Column(nullable = false)
     private int salePrice;
     
     @Column(nullable = false)
-    private int stockQuantity;
+    private Integer stockQuantity;
+    public Integer getStockQuantity() {
+    return stockQuantity;
+    }
+
+    public void setStockQuantity(Integer StockQuantity) {
+    this.stockQuantity = StockQuantity;
+    }
 
     @Column(nullable = false)
     private boolean isDeleted;
@@ -48,10 +63,5 @@ public class Product {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
-    }
-
-    public void setIs_Deleted(Object is_Deleted2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setIs_Deleted'");
     }
 }

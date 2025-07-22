@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AdminDeleteDTO{
 
-    private boolean is_Deleted;
+    private int id;
+    private boolean isDeleted;
 
 }

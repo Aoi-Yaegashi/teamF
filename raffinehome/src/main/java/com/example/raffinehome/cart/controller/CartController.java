@@ -5,9 +5,15 @@ import com.example.raffinehome.cart.dto.CartDTO;
 import com.example.raffinehome.cart.dto.CartUpdateDTO;
 import com.example.raffinehome.cart.service.CartService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+
+import java.util.Collections;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @RestController
 @RequestMapping("/api/cart")
@@ -33,8 +39,14 @@ public class CartController {
      * カートに商品を追加
      */
     @PostMapping("/add")
-    public ResponseEntity<CartDTO> addToCart(HttpSession session, @RequestBody CartAddDTO dto) {
+    public ResponseEntity<?> addToCart(HttpSession session, @Valid @RequestBody CartAddDTO dto) {
         CartDTO cartDTO = cartService.addToCart(dto.getProductId(), dto.getQuantity(), session);
+
+        if (cartDTO == null) {
+            // 商品が見つからない、または追加できない場合
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("message", "商品が見つかりません"));
+        }
         return ResponseEntity.ok(cartDTO);
     }
 
@@ -60,10 +72,11 @@ public class CartController {
      * カートをクリア
      */
     @DeleteMapping("/clear")
-    public ResponseEntity<Void> clearCart(HttpSession session) {
-        cartService.clearCart(session);
-        return ResponseEntity.ok().build();
-    }
+public ResponseEntity<Void> clearCart(HttpSession session) {
+    session.removeAttribute("cart"); // ← これで完全にサーバーのセッションから消える
+    return ResponseEntity.ok().build();
+}
+
 
     /**
      * カート内商品点数を取得
