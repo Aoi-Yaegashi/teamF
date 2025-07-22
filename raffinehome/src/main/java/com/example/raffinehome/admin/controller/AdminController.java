@@ -16,8 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.raffinehome.product.dto.ProductDTO;
 import com.example.raffinehome.product.entity.Product;
 import com.example.raffinehome.product.service.ProductService;
+
+import jakarta.validation.Valid;
+
 import com.example.raffinehome.admin.dto.AdminCreateDTO;
 import com.example.raffinehome.admin.dto.AdminUpdateDTO;
+import com.example.raffinehome.admin.dto.AdminDeleteDTO;
+import com.example.raffinehome.admin.dto.AdminProductDto;
 import com.example.raffinehome.admin.service.AdminService;
 import com.example.raffinehome.product.dto.ProductListDTO;
 
@@ -39,13 +44,13 @@ public class AdminController{
 
 @GetMapping
 public ResponseEntity<List<ProductListDTO>> getAllProducts(){
-    List<ProductListDTO> products = productService.findAllProducts();
+    List<ProductListDTO> products = adminService.findAllProducts();
     return ResponseEntity.ok(products);
 }
 
 @GetMapping("/{id}")
-public ResponseEntity<ProductDTO> getProductById(@PathVariable Integer id){
-    ProductDTO product = productService.findProductById(id);
+public ResponseEntity<AdminProductDto> getProductById(@PathVariable Integer id){
+    AdminProductDto product = adminService.findProductForAdminById(id);
     if (product == null){
         return ResponseEntity.notFound().build();
     }

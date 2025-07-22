@@ -1,7 +1,7 @@
 package com.example.raffinehome.order.controller;
 
 import com.example.raffinehome.cart.dto.CartDTO;
-import com.example.raffinehome.order.dto.OrederCreateDTO;
+import com.example.raffinehome.order.dto.OrderCreateDTO;
 import com.example.raffinehome.order.dto.OrderDTO;
 import com.example.raffinehome.cart.service.CartService;
 import com.example.raffinehome.order.service.OrderService;
@@ -30,7 +30,7 @@ public class OrderController {
     
     @PostMapping
     public ResponseEntity<OrderDTO> placeOrder(
-            @Valid @RequestBody OrederCreateDTO orederCreateDTO,
+            @Valid @RequestBody OrderCreateDTO orederCreateDTO,
             HttpSession session) {
 
         
