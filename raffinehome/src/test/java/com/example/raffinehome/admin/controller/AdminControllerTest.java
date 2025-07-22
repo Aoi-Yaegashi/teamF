@@ -185,7 +185,7 @@ class GetAllProductsTests {
                     .andExpect(jsonPath("$.stockQuantity", is(productDetailForAdminWithNulls.getStockQuantity())))
                     .andExpect(jsonPath("$.imageUrl", is(nullValue()))) // imageUrlがnull
                     .andExpect(jsonPath("$.deleted", is(productDetailForAdminWithNulls.isDeleted())))
-                    .andExpect(jsonPath("$.createdAt", is(productDetailForAdminWithNulls.getCreatedAt(LocalTime nou()))))
+                    .andExpect(jsonPath("$.createdAt", is(productDetailForAdminWithNulls.getCreatedAt())))
                     .andExpect(jsonPath("$.updatedAt", is(productDetailForAdminWithNulls.getUpdatedAt())));
 
             verify(adminService, times(3)).findProductForAdminById(id);
