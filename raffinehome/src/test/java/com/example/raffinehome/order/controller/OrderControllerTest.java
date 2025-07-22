@@ -78,7 +78,7 @@ class OrderControllerTest {
         sampleOrderResponse = new OrderDTO(123, LocalDateTime.now());
 
         // --- Serviceメソッドのデフォルトモック設定 (lenient) ---
-        lenient().when(cartService.getCart(any(HttpSession.class))).thenReturn(cartWithItems); // デフォルトはアイテムあり
+        lenient().when(cartService.getCartSession(any(HttpSession.class))).thenReturn(cartWithItems); // デフォルトはアイテムあり
         lenient().when(orderService.placeOrder(any(CartDTO.class), any(OrderCreateDTO.class), any(HttpSession.class)))
                 .thenReturn(sampleOrderResponse); // デフォルトは成功
     }
@@ -91,6 +91,8 @@ class OrderControllerTest {
         @DisplayName("有効なリクエストとカートの場合、注文処理を行い201 Createdと注文情報を返す")
         void placeOrder_WithValidRequestAndCart_ShouldReturnCreated() throws Exception {
             // Arrange (setUpで基本的なモックは設定済み)
+            lenient().when(cartService.getCartSession(any(HttpSession.class)))
+                    .thenReturn(cartWithItems);
 
             // Act & Assert
             mockMvc.perform(post("/api/orders")
@@ -100,11 +102,11 @@ class OrderControllerTest {
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isCreated()) // 201 Created
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.Id", is(sampleOrderResponse.getId())))
+                    .andExpect(jsonPath("$.id", is(sampleOrderResponse.getId())))
                     .andExpect(jsonPath("$.orderDate", is(notNullValue()))); // 日時がnullでないことを確認
 
             // Verify service calls
-            verify(cartService, times(1)).getCart(any(HttpSession.class));
+            verify(cartService, times(1)).getCartSession(any(HttpSession.class));
             // eq() を使って渡されたオブジェクトが期待通りか確認
             verify(orderService, times(1)).placeOrder(eq(cartWithItems), eq(validCustomerInfo), any(HttpSession.class));
             verifyNoMoreInteractions(cartService, orderService);
@@ -119,17 +121,17 @@ class OrderControllerTest {
         @DisplayName("カートが空の場合、400 Bad Requestを返す")
         void placeOrder_WithEmptyCart_ShouldReturnBadRequest() throws Exception {
             // Arrange
-            when(cartService.getCart(any(HttpSession.class))).thenReturn(emptyCart); // 空のカートを返す
+            when(cartService.getCartSession(any(HttpSession.class))).thenReturn(emptyCart); // 空のカートを返す
 
             // Act & Assert
             mockMvc.perform(post("/api/orders")
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(validOrderRequest))
+                            .content(objectMapper.writeValueAsString(validCustomerInfo))
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isBadRequest()); // 400 Bad Request
 
-            verify(cartService, times(1)).getCart(any(HttpSession.class));
+            verify(cartService, times(1)).getCartSession(any(HttpSession.class));
             verifyNoInteractions(orderService); // 注文処理は呼ばれない
         }
 
@@ -137,17 +139,17 @@ class OrderControllerTest {
         @DisplayName("カートがnullの場合、400 Bad Requestを返す")
         void placeOrder_WithNullCart_ShouldReturnBadRequest() throws Exception {
             // Arrange
-            when(cartService.getCart(any(HttpSession.class))).thenReturn(null); // nullを返すケース
+            when(cartService.getCartSession(any(HttpSession.class))).thenReturn(null); // nullを返すケース
 
             // Act & Assert
             mockMvc.perform(post("/api/orders")
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(validOrderRequest))
+                            .content(objectMapper.writeValueAsString(validCustomerInfo))
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isBadRequest()); // 400 Bad Request
 
-            verify(cartService, times(1)).getCart(any(HttpSession.class));
+            verify(cartService, times(1)).getCartSession(any(HttpSession.class));
             verifyNoInteractions(orderService);
         }
     }
@@ -158,7 +160,11 @@ class OrderControllerTest {
     class PlaceOrderValidationErrorTests {
 
         // ヘルパーメソッド：バリデーションテストを実行し、結果を検証する
+<<<<<<< HEAD
         private void performValidationTest(OrderItemDTO request, String expectedField, String expectedMessage) throws Exception {
+=======
+        private void performValidationTest(OrderCreateDTO request, String expectedField, String expectedMessage) throws Exception {
+>>>>>>> e0945bec9a2299564eac579f7b6cccbac05620f7
             mockMvc.perform(post("/api/orders")
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -175,7 +181,7 @@ class OrderControllerTest {
         @Test
         @DisplayName("CustomerInfoがnullの場合、400 Bad Requestとエラーメッセージを返す")
         void placeOrder_WithNullCustomerInfo_ShouldReturnBadRequest() throws Exception {
-            OrderItemDTO invalidRequest = new OrderItemDTO();
+            OrderCreateDTO invalidRequest = new OrderCreateDTO();
             invalidRequest.setCustomerInfo(null); // NotNull違反
             performValidationTest(invalidRequest, "customerInfo", "顧客情報は必須です");
         }
@@ -190,7 +196,7 @@ class OrderControllerTest {
             invalidCustomer.setShippingAddress("Addr");
             invalidCustomer.setPhoneNumber("123");
 
-            OrderItemDTO invalidRequest = new OrderItemDTO();
+            OrderCreateDTO invalidRequest = new OrderCreateDTO();
             invalidRequest.setCustomerInfo(invalidCustomer);
             performValidationTest(invalidRequest, "customerInfo.name", "お名前は必須です");
         }
@@ -205,7 +211,7 @@ class OrderControllerTest {
             invalidCustomer.setShippingAddress("Addr");
             invalidCustomer.setPhoneNumber("123");
 
-            OrderItemDTO invalidRequest = new OrderItemDTO();
+            OrderCreateDTO invalidRequest = new OrderCreateDTO();
             invalidRequest.setCustomerInfo(invalidCustomer);
             performValidationTest(invalidRequest, "customerInfo.email", "メールアドレスは必須です");
         }
@@ -220,7 +226,7 @@ class OrderControllerTest {
             invalidCustomer.setShippingAddress("Addr");
             invalidCustomer.setPhoneNumber("123");
 
-            OrderItemDTO invalidRequest = new OrderItemDTO();
+            OrderCreateDTO invalidRequest = new OrderCreateDTO();
             invalidRequest.setCustomerInfo(invalidCustomer);
             performValidationTest(invalidRequest, "customerInfo.email", "有効なメールアドレスを入力してください");
         }
@@ -235,7 +241,7 @@ class OrderControllerTest {
             invalidCustomer.setShippingAddress(""); // @NotBlank 違反
             invalidCustomer.setPhoneNumber("123");
 
-            OrderItemDTO invalidRequest = new OrderItemDTO();
+            OrderCreateDTO invalidRequest = new OrderCreateDTO();
             invalidRequest.setCustomerInfo(invalidCustomer);
             performValidationTest(invalidRequest, "customerInfo.address", "住所は必須です");
         }
@@ -250,7 +256,7 @@ class OrderControllerTest {
             invalidCustomer.setShippingAddress("Addr");
             invalidCustomer.setPhoneNumber(""); // @NotBlank 違反
 
-            OrderItemDTO invalidRequest = new OrderItemDTO();
+            OrderCreateDTO invalidRequest = new OrderCreateDTO();
             invalidRequest.setCustomerInfo(invalidCustomer);
             performValidationTest(invalidRequest, "customerInfo.phoneNumber", "電話番号は必須です");
         }

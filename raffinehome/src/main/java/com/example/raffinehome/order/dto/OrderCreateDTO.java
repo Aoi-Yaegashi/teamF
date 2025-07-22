@@ -20,8 +20,4 @@ public class OrderCreateDTO {
     
     @NotBlank(message = "電話番号は必須です")
     private String phoneNumber;
-    @JsonBackReference
-public OrderCreateDTO getCustomerInfo(){
-    return this;
-  }
 }

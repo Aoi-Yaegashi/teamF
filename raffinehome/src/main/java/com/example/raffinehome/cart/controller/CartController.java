@@ -89,7 +89,6 @@ public ResponseEntity<Void> clearCart(HttpSession session) {
     }
 
     /**
-    %%いりました
      * カートの在庫検証（例：購入前チェックなど）
      */
     @GetMapping("/validate")
