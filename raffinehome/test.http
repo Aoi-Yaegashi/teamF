@@ -38,7 +38,7 @@ POST http://localhost:8080/api/admin
 content-type: application/json
 
 {   "name": "テスト",
-    "price": "12",
+    "price": "あああ",
     "saleprice": "12",
     "description": "123",
     "stockQuantity":"1",
