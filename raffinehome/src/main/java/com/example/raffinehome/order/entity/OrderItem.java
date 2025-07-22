@@ -44,4 +44,13 @@ public class OrderItem {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
+
+    @Override
+    public String toString() {
+    return "OrderItem{id=" + id
+            + ", product=" + (product != null ? product.getId() : null)
+            // ...他の必要フィールド
+            + ", orderId=" + (order != null ? order.getId() : null)
+            + '}';
+}
 }

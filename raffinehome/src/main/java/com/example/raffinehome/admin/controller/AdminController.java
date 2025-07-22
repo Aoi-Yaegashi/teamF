@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.raffinehome.product.dto.ProductDTO;
 import com.example.raffinehome.product.entity.Product;
 import com.example.raffinehome.product.service.ProductService;
+
+import jakarta.validation.Valid;
+
 import com.example.raffinehome.admin.dto.AdminCreateDTO;
 import com.example.raffinehome.admin.dto.AdminUpdateDTO;
 import com.example.raffinehome.admin.dto.AdminDeleteDTO;

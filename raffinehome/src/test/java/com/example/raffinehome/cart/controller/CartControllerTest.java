@@ -1,10 +1,11 @@
-package com.example.simplezakka.controller;
+package com.example.raffinehome.cart.controller;
 
-import com.example.simplezakka.dto.cart.Cart;
-import com.example.simplezakka.dto.cart.CartItem;
-import com.example.simplezakka.dto.cart.CartAddDTO;
-import com.example.simplezakka.dto.cart.CartUpdateDTO;
-import com.example.simplezakka.service.CartService;
+import com.example.raffinehome.cart.dto.CartAddDTO;
+import com.example.raffinehome.cart.dto.CartDTO;
+import com.example.raffinehome.cart.dto.CartItemDTO;
+import com.example.raffinehome.cart.dto.CartAddDTO;
+import com.example.raffinehome.cart.dto.CartUpdateDTO;
+import com.example.raffinehome.cart.service.CartService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,8 +42,8 @@ class CartControllerTest {
     @MockBean // Service層のモック
     private CartService cartService;
 
-    private Cart cartWithOneItem;
-    private Cart emptyCart;
+    private CartDTO cartWithOneItem;
+    private CartDTO emptyCart;
     private MockHttpSession mockSession;
 
     @BeforeEach
@@ -50,12 +51,12 @@ class CartControllerTest {
         mockSession = new MockHttpSession(); // 各テストで新しいセッション
 
         // --- テストデータ準備 ---
-        cartWithOneItem = new Cart();
-        CartItem item1 = new CartItem("1", 1, "カート商品1", 1000, "/c1.png", 2, 2000);
+        cartWithOneItem = new CartDTO();
+        CartItemDTO item1 = new CartItemDTO("1", 1, "カート商品1", 1000, "/c1.png", 2, 2000);
         cartWithOneItem.setItems(Map.of("1", item1));
         cartWithOneItem.calculateTotals(); // totalQuantity=2, totalPrice=2000
 
-        emptyCart = new Cart(); // items={}, totalQuantity=0, totalPrice=0
+        emptyCart = new CartDTO(); // items={}, totalQuantity=0, totalPrice=0
 
         // --- Serviceメソッドのデフォルトモック設定 (lenient) ---
         // getCart はデフォルトで空のカートを返す
@@ -79,7 +80,7 @@ class CartControllerTest {
                             .accept(MediaType.APPLICATION_JSON)) // Acceptヘッダーを追加
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.totalQuantity", is(cartWithOneItem.getTotalQuantity())))
+                    .andExpect(jsonPath("$.itemCount", is(cartWithOneItem.getItemCount())))
                     .andExpect(jsonPath("$.totalPrice", is(cartWithOneItem.getTotalPrice())))
                     .andExpect(jsonPath("$.items", hasKey("1"))) // item "1" が存在するか
                     .andExpect(jsonPath("$.items.1.productId", is(1)))
@@ -102,7 +103,7 @@ class CartControllerTest {
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.totalQuantity", is(0)))
+                    .andExpect(jsonPath("$.itemCount", is(0)))
                     .andExpect(jsonPath("$.totalPrice", is(0)))
                     .andExpect(jsonPath("$.items", anEmptyMap())); // itemsが空のMapか
 
@@ -125,7 +126,7 @@ class CartControllerTest {
                     .andExpect(jsonPath("$.message", containsString("サービスエラー")));
 
 
-            verify(cartService, times(1)).getCartFromSession(any(HttpSession.class));
+            verify(cartService, times(1)).getCart(any(HttpSession.class));
             verifyNoMoreInteractions(cartService);
         }
     }
@@ -146,18 +147,18 @@ class CartControllerTest {
                     .thenReturn(cartWithOneItem); // 更新後のカートを返すように設定
 
             // Act & Assert
-            mockMvc.perform(post("/api/cart")
+            mockMvc.perform(post("/api/cart/add")
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(itemInfo))
+                            .content(objectMapper.writeValueAsString(dto))
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.totalQuantity", is(cartWithOneItem.getTotalQuantity())))
+                    .andExpect(jsonPath("$.itemCount", is(cartWithOneItem.getItemCount())))
                     .andExpect(jsonPath("$.totalPrice", is(cartWithOneItem.getTotalPrice())))
                     .andExpect(jsonPath("$.items.1.quantity", is(2)));
 
-            verify(cartService, times(1)).addItemToCart(eq(itemInfo.getProductId()), eq(itemInfo.getQuantity()), any(HttpSession.class));
+            verify(cartService, times(1)).addToCart(eq(dto.getProductId()), eq(dto.getQuantity()), any(HttpSession.class));
             verifyNoMoreInteractions(cartService);
         }
 
@@ -165,22 +166,22 @@ class CartControllerTest {
         @DisplayName("CartServiceがnullを返す場合（商品が見つからない等）、404 Not Foundを返す")
         void addItem_WhenServiceReturnsNull_ShouldReturnNotFound() throws Exception {
             // Arrange
-            CartItemInfo itemInfo = new CartItemInfo();
-            itemInfo.setProductId(99); // 存在しない商品ID
-            itemInfo.setQuantity(1);
+            CartAddDTO dto = new CartAddDTO();
+            dto.setProductId(99); // 存在しない商品ID
+            dto.setQuantity(1);
 
-            when(cartService.addItemToCart(eq(itemInfo.getProductId()), eq(itemInfo.getQuantity()), any(HttpSession.class)))
+            when(cartService.addToCart(eq(dto.getProductId()), eq(dto.getQuantity()), any(HttpSession.class)))
                     .thenReturn(null); // サービスがnullを返すケース
 
             // Act & Assert
-            mockMvc.perform(post("/api/cart")
+            mockMvc.perform(post("/api/cart/add")
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(itemInfo))
+                            .content(objectMapper.writeValueAsString(dto))
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNotFound()); // 404 Not Found
 
-            verify(cartService, times(1)).addItemToCart(eq(itemInfo.getProductId()), eq(itemInfo.getQuantity()), any(HttpSession.class));
+            verify(cartService, times(1)).addToCart(eq(dto.getProductId()), eq(dto.getQuantity()), any(HttpSession.class));
             verifyNoMoreInteractions(cartService);
         }
 
@@ -189,15 +190,15 @@ class CartControllerTest {
         @DisplayName("productIdがnullの場合、400 Bad Requestとエラーメッセージを返す")
         void addItem_WithNullProductId_ShouldReturnBadRequest() throws Exception {
             // Arrange
-            CartItemInfo itemInfo = new CartItemInfo();
-            itemInfo.setProductId(null); // NotNull違反
-            itemInfo.setQuantity(1);
+            CartAddDTO dto = new CartAddDTO();
+            dto.setProductId(null); // NotNull違反
+            dto.setQuantity(1);
 
             // Act & Assert
-            ResultActions result = mockMvc.perform(post("/api/cart")
+            ResultActions result = mockMvc.perform(post("/api/cart/add")
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(itemInfo))
+                            .content(objectMapper.writeValueAsString(dto))
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isBadRequest()); // 400 Bad Request
 
@@ -211,15 +212,15 @@ class CartControllerTest {
         @DisplayName("quantityがnullの場合、400 Bad Requestとエラーメッセージを返す")
         void addItem_WithNullQuantity_ShouldReturnBadRequest() throws Exception {
             // Arrange
-            CartItemInfo itemInfo = new CartItemInfo();
-            itemInfo.setProductId(1);
-            itemInfo.setQuantity(null); // NotNull違反
+            CartAddDTO dto = new CartAddDTO();
+            dto.setProductId(1);
+            dto.setQuantity(null); // NotNull違反
 
             // Act & Assert
-            mockMvc.perform(post("/api/cart")
+            mockMvc.perform(post("/api/cart/add")
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(itemInfo))
+                            .content(objectMapper.writeValueAsString(dto))
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.quantity", is("数量は必須です")));
@@ -231,15 +232,15 @@ class CartControllerTest {
         @DisplayName("quantityが0の場合、400 Bad Requestとエラーメッセージを返す")
         void addItem_WithZeroQuantity_ShouldReturnBadRequest() throws Exception {
             // Arrange
-            CartItemInfo itemInfo = new CartItemInfo();
-            itemInfo.setProductId(1);
-            itemInfo.setQuantity(0); // Min(1)違反
+            CartAddDTO dto = new CartAddDTO();
+            dto.setProductId(1);
+            dto.setQuantity(0); // Min(1)違反
 
             // Act & Assert
-            mockMvc.perform(post("/api/cart")
+            mockMvc.perform(post("/api/cart/add")
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(itemInfo))
+                            .content(objectMapper.writeValueAsString(dto))
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.quantity", is("数量は1以上である必要があります")));
@@ -251,15 +252,15 @@ class CartControllerTest {
         @DisplayName("quantityが負数の場合、400 Bad Requestとエラーメッセージを返す")
         void addItem_WithNegativeQuantity_ShouldReturnBadRequest() throws Exception {
             // Arrange
-            CartItemInfo itemInfo = new CartItemInfo();
-            itemInfo.setProductId(1);
-            itemInfo.setQuantity(-1); // Min(1)違反
+            CartAddDTO dto = new CartAddDTO();
+            dto.setProductId(1);
+            dto.setQuantity(-1); // Min(1)違反
 
             // Act & Assert
-            mockMvc.perform(post("/api/cart")
+            mockMvc.perform(post("/api/cart/add")
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(itemInfo))
+                            .content(objectMapper.writeValueAsString(dto))
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.quantity", is("数量は1以上である必要があります")));
@@ -268,38 +269,38 @@ class CartControllerTest {
         }
     }
 
-    // === PUT /api/cart/items/{itemId} ===
+    // === PUT /api/cart/update ===
     @Nested
-    @DisplayName("PUT /api/cart/items/{itemId}")
+    @DisplayName("PUT /api/cart/update")
     class UpdateItemTests {
         @Test
         @DisplayName("有効な数量の場合、カートを更新し更新されたカートを200 OKで返す")
         void updateItem_WithValidData_ShouldReturnUpdatedCartWithStatusOk() throws Exception {
             // Arrange
-            String itemId = "1";
-            CartItemQuantityDto quantityDto = new CartItemQuantityDto();
-            quantityDto.setQuantity(5);
+            String productId = "1";
+            CartUpdateDTO dto = new CartUpdateDTO();
+            dto.setQuantity(5);
 
-            Cart updatedCart = new Cart(); // 更新後のカート (ダミー)
-            CartItem updatedItem = new CartItem("1", 1, "カート商品1", 1000, "/c1.png", 5, 5000);
-            updatedCart.addItem(updatedItem); // totalQuantity=5, totalPrice=5000
+            CartDTO updatedCart = new CartDTO(); // 更新後のカート (ダミー)
+            CartItemDTO updatedItem = new CartItemDTO("1", 1, "カート商品1", 1000, "/c1.png", 5, 5000);
+            updatedCart.calculateTotals(); // itemCount=5, totalPrice=5000
 
-            when(cartService.updateItemQuantity(eq(itemId), eq(quantityDto.getQuantity()), any(HttpSession.class)))
+            when(cartService.updateCartItem(eq(productId), eq(dto.getQuantity()), any(HttpSession.class)))
                     .thenReturn(updatedCart);
 
             // Act & Assert
-            mockMvc.perform(put("/api/cart/items/{itemId}", itemId)
+            mockMvc.perform(put("/api/cart/update", productId)
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(quantityDto))
+                            .content(objectMapper.writeValueAsString(dto))
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.totalQuantity", is(updatedCart.getTotalQuantity())))
+                    .andExpect(jsonPath("$.totalQuantity", is(updatedCart.getItemCount())))
                     .andExpect(jsonPath("$.totalPrice", is(updatedCart.getTotalPrice())))
                     .andExpect(jsonPath("$.items.1.quantity", is(5))); // 更新された数量を確認
 
-            verify(cartService, times(1)).updateItemQuantity(eq(itemId), eq(quantityDto.getQuantity()), any(HttpSession.class));
+            verify(cartService, times(1)).updateCartItem(eq(productId), eq(dto.getQuantity()), any(HttpSession.class));
             verifyNoMoreInteractions(cartService);
         }
 
@@ -308,15 +309,15 @@ class CartControllerTest {
         @DisplayName("quantityがnullの場合、400 Bad Requestとエラーメッセージを返す")
         void updateItem_WithNullQuantity_ShouldReturnBadRequest() throws Exception {
             // Arrange
-            String itemId = "1";
-            CartItemQuantityDto quantityDto = new CartItemQuantityDto();
-            quantityDto.setQuantity(null); // NotNull違反
+            String productId = "1";
+            CartUpdateDTO dto = new CartUpdateDTO();
+            dto.setQuantity(null); // NotNull違反
 
             // Act & Assert
-            mockMvc.perform(put("/api/cart/items/{itemId}", itemId)
+            mockMvc.perform(put("/api/cart/update", productId)
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(quantityDto)) // 不正なボディ
+                            .content(objectMapper.writeValueAsString(dto)) // 不正なボディ
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.quantity", is("数量は必須です")));
@@ -328,15 +329,15 @@ class CartControllerTest {
         @DisplayName("quantityが0の場合、400 Bad Requestとエラーメッセージを返す")
         void updateItem_WithZeroQuantity_ShouldReturnBadRequest() throws Exception {
             // Arrange
-            String itemId = "1";
-            CartItemQuantityDto quantityDto = new CartItemQuantityDto();
-            quantityDto.setQuantity(0); // Min(1)違反
+            String productId = "1";
+            CartUpdateDTO dto = new CartUpdateDTO();
+            dto.setQuantity(0); // Min(1)違反
 
             // Act & Assert
-            mockMvc.perform(put("/api/cart/items/{itemId}", itemId)
+            mockMvc.perform(put("/api/cart/update", productId)
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(quantityDto))
+                            .content(objectMapper.writeValueAsString(dto))
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.quantity", is("数量は1以上である必要があります")));
@@ -348,15 +349,15 @@ class CartControllerTest {
         @DisplayName("quantityが負数の場合、400 Bad Requestとエラーメッセージを返す")
         void updateItem_WithNegativeQuantity_ShouldReturnBadRequest() throws Exception {
             // Arrange
-            String itemId = "1";
-            CartItemQuantityDto quantityDto = new CartItemQuantityDto();
-            quantityDto.setQuantity(-5); // Min(1)違反
+            String productId = "1";
+            CartUpdateDTO dto = new CartUpdateDTO();
+            dto.setQuantity(-5); // Min(1)違反
 
             // Act & Assert
-            mockMvc.perform(put("/api/cart/items/{itemId}", itemId)
+            mockMvc.perform(put("/api/cart/items/{itemId}", productId)
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(quantityDto))
+                            .content(objectMapper.writeValueAsString(dto))
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isBadRequest())
                     .andExpect(jsonPath("$.quantity", is("数量は1以上である必要があります")));
@@ -365,21 +366,21 @@ class CartControllerTest {
         }
     }
 
-    // === DELETE /api/cart/items/{itemId} ===
+    // === DELETE /api/cart/clear ===
     @Nested
-    @DisplayName("DELETE /api/cart/items/{itemId}")
+    @DisplayName("DELETE /api/cart/clear")
     class RemoveItemTests {
         @Test
-        @DisplayName("存在するitemIdの場合、カートから商品を削除し更新されたカートを200 OKで返す")
+        @DisplayName("存在するproductIdの場合、カートから商品を削除し更新されたカートを200 OKで返す")
         void removeItem_WhenItemExists_ShouldReturnUpdatedCartWithStatusOk() throws Exception {
             // Arrange
-            String itemId = "1";
+            String productId = "1";
             // 削除後のカート（空）
-            when(cartService.removeItemFromCart(eq(itemId), any(HttpSession.class)))
+            when(cartService.removeFromCart(eq(productId), any(HttpSession.class)))
                     .thenReturn(emptyCart);
 
             // Act & Assert
-            mockMvc.perform(delete("/api/cart/items/{itemId}", itemId)
+            mockMvc.perform(delete("/api/cart/clear", productId)
                             .session(mockSession)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
@@ -388,7 +389,7 @@ class CartControllerTest {
                     .andExpect(jsonPath("$.totalPrice", is(0)))
                     .andExpect(jsonPath("$.items", anEmptyMap())); // itemsが空であることを確認
 
-            verify(cartService, times(1)).removeItemFromCart(eq(itemId), any(HttpSession.class));
+            verify(cartService, times(1)).removeFromCart(eq(productId), any(HttpSession.class));
             verifyNoMoreInteractions(cartService);
         }
 
@@ -398,7 +399,7 @@ class CartControllerTest {
             // Arrange
             String nonExistingItemId = "99";
             // 存在しないIDで削除しても、サービスは現在の（変化しない）カートを返す想定
-            when(cartService.removeItemFromCart(eq(nonExistingItemId), any(HttpSession.class)))
+            when(cartService.removeFromCart(eq(nonExistingItemId), any(HttpSession.class)))
                     .thenReturn(cartWithOneItem); // 例えば、削除前と同じカートが返る
 
             // Act & Assert
@@ -406,9 +407,9 @@ class CartControllerTest {
                             .session(mockSession)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk()) // 正常終了
-                    .andExpect(jsonPath("$.totalQuantity", is(cartWithOneItem.getTotalQuantity()))); // カート内容は変わらないはず
+                    .andExpect(jsonPath("$.totalQuantity", is(cartWithOneItem.getItemCount()))); // カート内容は変わらないはず
 
-            verify(cartService, times(1)).removeItemFromCart(eq(nonExistingItemId), any(HttpSession.class));
+            verify(cartService, times(1)).removeFromCart(eq(nonExistingItemId), any(HttpSession.class));
             verifyNoMoreInteractions(cartService);
         }
     }

@@ -62,4 +62,14 @@ public class Order {
         orderDetails.add(orderDetail);
         orderDetail.setOrder(this);
     }
+
+    @Override
+    public String toString() {
+    return "Order{id=" + id
+            + ", customerName='" + customerName + '\''
+            // ...他の必要フィールド
+            + ", orderDetails.size=" + (orderDetails != null ? orderDetails.size() : 0)
+            + '}';
 }
+}
+

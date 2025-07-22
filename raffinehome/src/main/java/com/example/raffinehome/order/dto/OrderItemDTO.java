@@ -8,7 +8,7 @@ import lombok.Data;
 public class OrderItemDTO {
     @Valid
     @NotNull(message = "顧客情報は必須です")
-    private OrederCreateDTO customerInfo;
+    private OrderCreateDTO customerInfo;
     private String customerName;
     private String customerEmail;
     private String shippingAddress;
