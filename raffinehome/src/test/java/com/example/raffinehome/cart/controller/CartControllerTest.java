@@ -316,8 +316,8 @@ class CartControllerTest {
         void updateItem_WithNonExistingId_ShouldReturnOkAndUnchangedCart() throws Exception {
             // Arrange
             CartUpdateDTO dto = new CartUpdateDTO();
-            dto.setProductId(9999);
-            dto.setQuantity(3);
+            dto.setProductId(99);
+            dto.setQuantity(5);
 
             // 既存の状態を想定
             CartDTO cart = new CartDTO();
@@ -325,7 +325,7 @@ class CartControllerTest {
             cart.setItems(Map.of("1", existing));
             cart.calculateTotals(); // itemCount=2 totalPrice=2000
 
-            when(cartService.updateCartItem(eq("9999"), eq(3), any(HttpSession.class)))
+            when(cartService.updateCartItem(eq("99"), eq(5), any(HttpSession.class)))
                     .thenReturn(cart); // 変更なしで返す
 
             // Act & Assert
