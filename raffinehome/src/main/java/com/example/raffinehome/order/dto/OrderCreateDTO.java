@@ -1,5 +1,7 @@
 package com.example.raffinehome.order.dto;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -18,7 +20,7 @@ public class OrderCreateDTO {
     
     @NotBlank(message = "電話番号は必須です")
     private String phoneNumber;
-
+    @JsonBackReference
 public OrderCreateDTO getCustomerInfo(){
     return this;
   }

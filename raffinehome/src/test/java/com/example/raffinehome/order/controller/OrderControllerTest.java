@@ -66,12 +66,12 @@ class OrderControllerTest {
         emptyCart = new CartDTO();
 
         // --- 注文リクエスト準備 ---
-        validOrderRequest = new OrderItemDTO();
         validCustomerInfo = new OrderCreateDTO();
         validCustomerInfo.setCustomerName("Test User");
         validCustomerInfo.setCustomerEmail("test@example.com");
         validCustomerInfo.setShippingAddress("Test Address");
         validCustomerInfo.setPhoneNumber("0123456789");
+        validOrderRequest = new OrderItemDTO();
         validOrderRequest.setCustomerInfo(validCustomerInfo);
 
         // --- 注文レスポンス準備 ---
