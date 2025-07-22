@@ -100,7 +100,6 @@ class OrderServiceTest {
         orderRequest.setOrder(customerInfo);
         orderRequest.setProduct(product1); // 商品1を注文リクエストに設定
         orderCreateDTO = new OrderCreateDTO();
-        orderCreateDTO.getCustomerInfo(); // 注文リクエストに顧客情報を設定
         orderCreateDTO.setCustomerName("山田 太郎");
         orderCreateDTO.setCustomerEmail("yamada@test.co.jp");
         orderCreateDTO.setShippingAddress("東京都テスト区1-2-3");
