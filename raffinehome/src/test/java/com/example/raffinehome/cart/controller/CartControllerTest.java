@@ -311,6 +311,35 @@ class CartControllerTest {
             verifyNoMoreInteractions(cartService);
         }
 
+         @Test
+        @DisplayName("存在しないproductIdでもエラーにせずカートをそのまま返す") 
+        void updateItem_WithNonExistingId_ShouldReturnOkAndUnchangedCart() throws Exception {
+            // Arrange
+            CartUpdateDTO dto = new CartUpdateDTO();
+            dto.setProductId(9999);
+            dto.setQuantity(3);
+
+            // 既存の状態を想定
+            CartDTO cart = new CartDTO();
+            CartItemDTO existing = new CartItemDTO("1", 1, "カート商品1", 1000, "/c1.png", 2, 2000);
+            cart.setItems(Map.of("1", existing));
+            cart.calculateTotals(); // itemCount=2 totalPrice=2000
+
+            when(cartService.updateCartItem(eq("9999"), eq(3), any(HttpSession.class)))
+                    .thenReturn(cart); // 変更なしで返す
+
+            // Act & Assert
+            mockMvc.perform(put("/api/cart/update")
+                            .session(mockSession)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(dto))
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.itemCount", is(cart.getItemCount())))
+                    .andExpect(jsonPath("$.items", hasKey("1")))
+                    .andExpect(jsonPath("$.items.1.quantity", is(2))); // 変化なし
+        }
+
         // --- バリデーションテスト ---
         @Test
         @DisplayName("quantityがnullの場合、400 Bad Requestとエラーメッセージを返す")
