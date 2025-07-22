@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,6 +21,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections; // 空リスト用
 import java.util.List;
@@ -28,7 +31,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(AdminController.class) // ProductController と関連コンポーネントをテスト
+@WebMvcTest(AdminController.class) // AdminController と関連コンポーネントをテスト
+@ExtendWith(MockitoExtension.class)
 class AdminControllerTest {
 
     @Autowired
@@ -37,7 +41,8 @@ class AdminControllerTest {
     @MockBean // Service層のモック
     private AdminService adminService;
 
-    @MockBean ProductService productService;
+    @MockBean 
+    private ProductService productService;
 
     private ProductListDTO productListItem1;
     private ProductListDTO productListItem2;
@@ -171,7 +176,9 @@ class GetAllProductsTests {
         void getProductForAdminById_WhenProductExistsWithNullFields_ShouldReturnProductDetailForAdminWithNulls() throws Exception {
             // Arrange (setUpのデフォルトモックを使用 - ID:3)
             int id = 3;
-
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
+            String createdDate = productDetailForAdminWithNulls.getCreatedAt().format(formatter);
+            String updatedDate = productDetailForAdminWithNulls.getUpdatedAt().format(formatter);
             // Act & Assert
             mockMvc.perform(get("/api/admin/{id}", id)
                             .accept(MediaType.APPLICATION_JSON))
@@ -185,10 +192,10 @@ class GetAllProductsTests {
                     .andExpect(jsonPath("$.stockQuantity", is(productDetailForAdminWithNulls.getStockQuantity())))
                     .andExpect(jsonPath("$.imageUrl", is(nullValue()))) // imageUrlがnull
                     .andExpect(jsonPath("$.deleted", is(productDetailForAdminWithNulls.isDeleted())))
-                    .andExpect(jsonPath("$.createdAt", is(productDetailForAdminWithNulls.getCreatedAt())))
-                    .andExpect(jsonPath("$.updatedAt", is(productDetailForAdminWithNulls.getUpdatedAt())));
+                    .andExpect(jsonPath("$.createdAt", is(createdDate)))
+                    .andExpect(jsonPath("$.updatedAt", is(updatedDate)));
 
-            verify(adminService, times(3)).findProductForAdminById(id);
+            verify(adminService, times(1)).findProductForAdminById(id);
             verifyNoMoreInteractions(adminService);
         }
 
@@ -235,7 +242,7 @@ class GetAllProductsTests {
             when(adminService.findProductForAdminById(id)).thenThrow(new RuntimeException("サービスエラー"));
 
             // Act & Assert
-            mockMvc.perform(get("/api/admin", id)
+            mockMvc.perform(get("/api/admin/{id}", id)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isInternalServerError())
                     // GlobalExceptionHandler が有効ならエラーメッセージを含むJSONが返る可能性がある
