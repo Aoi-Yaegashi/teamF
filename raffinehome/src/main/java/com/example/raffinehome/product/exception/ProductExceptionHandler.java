@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class ProductExceptionHandler {
 
     // 型変換エラーを500で返す例
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
