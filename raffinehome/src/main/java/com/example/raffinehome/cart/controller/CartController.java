@@ -5,15 +5,15 @@ import com.example.raffinehome.cart.dto.CartDTO;
 import com.example.raffinehome.cart.dto.CartUpdateDTO;
 import com.example.raffinehome.cart.service.CartService;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
-
-import java.util.Collections;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Collections;
+import java.util.Map;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
 
 @RestController
 @RequestMapping("/api/cart")
@@ -47,6 +47,7 @@ public class CartController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Collections.singletonMap("message", "商品が見つかりません"));
         }
+ 
         return ResponseEntity.ok(cartDTO);
     }
 
@@ -63,7 +64,7 @@ public class CartController {
      * カート内商品の数量を更新
      */
     @PutMapping("/update")
-    public ResponseEntity<CartDTO> updateCartItem(HttpSession session, @RequestBody CartUpdateDTO dto) {
+    public ResponseEntity<CartDTO> updateCartItem(HttpSession session, @Valid @RequestBody CartUpdateDTO dto) {
         CartDTO cartDTO = cartService.updateCartItem(String.valueOf(dto.getProductId()), dto.getQuantity(), session);
         return ResponseEntity.ok(cartDTO);
     }
@@ -88,7 +89,7 @@ public ResponseEntity<Void> clearCart(HttpSession session) {
     }
 
     /**
-    %%いらなくね
+    %%いりました
      * カートの在庫検証（例：購入前チェックなど）
      */
     @GetMapping("/validate")
