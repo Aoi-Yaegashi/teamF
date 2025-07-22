@@ -4,6 +4,7 @@ import com.example.raffinehome.admin.service.AdminService;
 import com.example.raffinehome.admin.dto.AdminProductDto;
 import com.example.raffinehome.product.dto.ProductListDTO;
 import com.example.raffinehome.product.service.ProductService;
+import com.example.raffinehome.common.exception.GlobalExceptionHandler;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -116,7 +118,7 @@ class GetAllProductsTests {
             verifyNoMoreInteractions(adminService);
         }
 
-         @Test
+        @Test
         @DisplayName("AdminServiceが例外をスローした場合、500 Internal Server Errorを返す")
         void getAllProducts_WhenServiceThrowsException_ShouldReturnInternalServerError() throws Exception {
             // Arrange
@@ -166,12 +168,12 @@ class GetAllProductsTests {
 
         @Test
         @DisplayName("存在するidで、一部フィールドがnullの商品の場合、nullを含む商品詳細を200 OKで返す")
-        void getProductById_WhenProductExistsWithNullFields_ShouldReturnProductDetailForAdminWithNulls() throws Exception {
+        void getProductForAdminById_WhenProductExistsWithNullFields_ShouldReturnProductDetailForAdminWithNulls() throws Exception {
             // Arrange (setUpのデフォルトモックを使用 - ID:3)
-            Integer productId = 3;
+            int id = 3;
 
             // Act & Assert
-            mockMvc.perform(get("/api/products/{productId}", productId)
+            mockMvc.perform(get("/api/admin/{id}", id)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -179,15 +181,19 @@ class GetAllProductsTests {
                     .andExpect(jsonPath("$.name", is(productDetailForAdminWithNulls.getName())))
                     .andExpect(jsonPath("$.price", is(productDetailForAdminWithNulls.getPrice())))
                     .andExpect(jsonPath("$.description", is(nullValue()))) // descriptionがnull
+                    .andExpect(jsonPath("$.salePrice", is(productDetailForAdminWithNulls.getSalePrice())))
                     .andExpect(jsonPath("$.stockQuantity", is(productDetailForAdminWithNulls.getStockQuantity())))
-                    .andExpect(jsonPath("$.imageUrl", is(nullValue()))); // imageUrlがnull
+                    .andExpect(jsonPath("$.imageUrl", is(nullValue()))) // imageUrlがnull
+                    .andExpect(jsonPath("$.deleted", is(productDetailForAdminWithNulls.isDeleted())))
+                    .andExpect(jsonPath("$.createdAt", is(productDetailForAdminWithNulls.getCreatedAt(LocalTime nou()))))
+                    .andExpect(jsonPath("$.updatedAt", is(productDetailForAdminWithNulls.getUpdatedAt())));
 
-            verify(adminService, times(1)).findProductForAdminById(productId);
+            verify(adminService, times(3)).findProductForAdminById(id);
             verifyNoMoreInteractions(adminService);
         }
 
         @Test
-        @DisplayName("存在しないproductIdの場合、404 Not Foundを返す")
+        @DisplayName("存在しないidの場合、404 Not Foundを返す")
         void getProductById_WhenProductNotExists_ShouldReturnNotFound() throws Exception {
             // Arrange (setUpのデフォルトモックを使用 - ID:99)
             int id = 99;
