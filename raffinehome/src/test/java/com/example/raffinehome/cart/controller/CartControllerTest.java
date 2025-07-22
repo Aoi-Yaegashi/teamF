@@ -3,9 +3,9 @@ package com.example.raffinehome.cart.controller;
 import com.example.raffinehome.cart.dto.CartAddDTO;
 import com.example.raffinehome.cart.dto.CartDTO;
 import com.example.raffinehome.cart.dto.CartItemDTO;
-import com.example.raffinehome.cart.dto.CartAddDTO;
 import com.example.raffinehome.cart.dto.CartUpdateDTO;
 import com.example.raffinehome.cart.service.CartService;
+import com.example.raffinehome.common.exception.GlobalExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,12 +14,15 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions; // ResultActions用
 
+import java.util.LinkedHashMap;
 import java.util.Collections;
 import java.util.Map;
 
@@ -31,6 +34,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(CartController.class) // CartController とその依存関係（バリデーションなど）をテスト
+@AutoConfigureMockMvc(addFilters = false)
+@Import(GlobalExceptionHandler.class)
 class CartControllerTest {
 
     @Autowired
@@ -41,7 +46,6 @@ class CartControllerTest {
 
     @MockBean // Service層のモック
     private CartService cartService;
-
     private CartDTO cartWithOneItem;
     private CartDTO emptyCart;
     private MockHttpSession mockSession;
@@ -57,6 +61,7 @@ class CartControllerTest {
         cartWithOneItem.calculateTotals(); // totalQuantity=2, totalPrice=2000
 
         emptyCart = new CartDTO(); // items={}, totalQuantity=0, totalPrice=0
+        emptyCart.calculateTotals();
 
         // --- Serviceメソッドのデフォルトモック設定 (lenient) ---
         // getCart はデフォルトで空のカートを返す
@@ -133,7 +138,7 @@ class CartControllerTest {
 
     // === POST /api/cart ===
     @Nested
-    @DisplayName("POST /api/cart")
+    @DisplayName("POST /api/cart/add")
     class AddItemTests {
         @Test
         @DisplayName("有効な商品情報の場合、カートに追加し更新されたカートを200 OKで返す")
@@ -279,29 +284,60 @@ class CartControllerTest {
             // Arrange
             String productId = "1";
             CartUpdateDTO dto = new CartUpdateDTO();
+            dto.setProductId(1);
             dto.setQuantity(5);
 
             CartDTO updatedCart = new CartDTO(); // 更新後のカート (ダミー)
             CartItemDTO updatedItem = new CartItemDTO("1", 1, "カート商品1", 1000, "/c1.png", 5, 5000);
+            updatedCart.setItems(Map.of("1", updatedItem)); //ここで商品を追加
             updatedCart.calculateTotals(); // itemCount=5, totalPrice=5000
 
             when(cartService.updateCartItem(eq(productId), eq(dto.getQuantity()), any(HttpSession.class)))
                     .thenReturn(updatedCart);
 
             // Act & Assert
-            mockMvc.perform(put("/api/cart/update", productId)
+            mockMvc.perform(put("/api/cart/update")
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(dto))
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.totalQuantity", is(updatedCart.getItemCount())))
+                    .andExpect(jsonPath("$.itemCount", is(updatedCart.getItemCount())))
                     .andExpect(jsonPath("$.totalPrice", is(updatedCart.getTotalPrice())))
                     .andExpect(jsonPath("$.items.1.quantity", is(5))); // 更新された数量を確認
 
             verify(cartService, times(1)).updateCartItem(eq(productId), eq(dto.getQuantity()), any(HttpSession.class));
             verifyNoMoreInteractions(cartService);
+        }
+
+         @Test
+        @DisplayName("存在しないproductIdでもエラーにせずカートをそのまま返す") 
+        void updateItem_WithNonExistingId_ShouldReturnOkAndUnchangedCart() throws Exception {
+            // Arrange
+            CartUpdateDTO dto = new CartUpdateDTO();
+            dto.setProductId(9999);
+            dto.setQuantity(3);
+
+            // 既存の状態を想定
+            CartDTO cart = new CartDTO();
+            CartItemDTO existing = new CartItemDTO("1", 1, "カート商品1", 1000, "/c1.png", 2, 2000);
+            cart.setItems(Map.of("1", existing));
+            cart.calculateTotals(); // itemCount=2 totalPrice=2000
+
+            when(cartService.updateCartItem(eq("9999"), eq(3), any(HttpSession.class)))
+                    .thenReturn(cart); // 変更なしで返す
+
+            // Act & Assert
+            mockMvc.perform(put("/api/cart/update")
+                            .session(mockSession)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(dto))
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.itemCount", is(cart.getItemCount())))
+                    .andExpect(jsonPath("$.items", hasKey("1")))
+                    .andExpect(jsonPath("$.items.1.quantity", is(2))); // 変化なし
         }
 
         // --- バリデーションテスト ---
@@ -354,7 +390,7 @@ class CartControllerTest {
             dto.setQuantity(-5); // Min(1)違反
 
             // Act & Assert
-            mockMvc.perform(put("/api/cart/items/{itemId}", productId)
+            mockMvc.perform(put("/api/cart/update", productId)
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(dto))
@@ -366,9 +402,9 @@ class CartControllerTest {
         }
     }
 
-    // === DELETE /api/cart/clear ===
+    // === DELETE /api/cart/remove/{productId} ===
     @Nested
-    @DisplayName("DELETE /api/cart/clear")
+    @DisplayName("DELETE /api/cart/remove/{productId}")
     class RemoveItemTests {
         @Test
         @DisplayName("存在するproductIdの場合、カートから商品を削除し更新されたカートを200 OKで返す")
@@ -380,12 +416,12 @@ class CartControllerTest {
                     .thenReturn(emptyCart);
 
             // Act & Assert
-            mockMvc.perform(delete("/api/cart/clear", productId)
+            mockMvc.perform(delete("/api/cart/remove/{productId}", productId)
                             .session(mockSession)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(jsonPath("$.totalQuantity", is(0)))
+                    .andExpect(jsonPath("$.itemCount", is(0)))
                     .andExpect(jsonPath("$.totalPrice", is(0)))
                     .andExpect(jsonPath("$.items", anEmptyMap())); // itemsが空であることを確認
 
@@ -394,7 +430,7 @@ class CartControllerTest {
         }
 
          @Test
-        @DisplayName("存在しないitemIdの場合でも、サービスがカートを返し、それを200 OKで返す")
+        @DisplayName("存在しないproductIdの場合でも、サービスがカートを返し、それを200 OKで返す")
         void removeItem_WhenItemNotExists_ShouldReturnCartFromServiceWithStatusOk() throws Exception {
             // Arrange
             String nonExistingItemId = "99";
@@ -403,14 +439,34 @@ class CartControllerTest {
                     .thenReturn(cartWithOneItem); // 例えば、削除前と同じカートが返る
 
             // Act & Assert
-            mockMvc.perform(delete("/api/cart/items/{itemId}", nonExistingItemId)
+            mockMvc.perform(delete("/api/cart/remove/{productId}", nonExistingItemId)
                             .session(mockSession)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk()) // 正常終了
-                    .andExpect(jsonPath("$.totalQuantity", is(cartWithOneItem.getItemCount()))); // カート内容は変わらないはず
+                    .andExpect(jsonPath("$.itemCount", is(cartWithOneItem.getItemCount()))); // カート内容は変わらないはず
 
             verify(cartService, times(1)).removeFromCart(eq(nonExistingItemId), any(HttpSession.class));
             verifyNoMoreInteractions(cartService);
+        }
+    }
+
+    // === DELETE /api/cart/clear ===
+    @Nested
+    @DisplayName("DELETE /api/cart/clear")
+    class ClearCartTests {
+
+        @Test
+        @DisplayName("カートをクリアすると200 OK（ボディなし）")
+        void clearCart_ShouldReturnOk() throws Exception {
+            // `CartController` の実装は session.removeAttribute("cart") のみで service 不使用
+
+            mockMvc.perform(delete("/api/cart/clear")
+                            .session(mockSession))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(emptyString()));
+
+            // サービスが呼ばれないことを確認
+            verifyNoInteractions(cartService);
         }
     }
 }

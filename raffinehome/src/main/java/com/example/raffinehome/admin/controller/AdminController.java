@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.raffinehome.product.dto.ProductDTO;
 import com.example.raffinehome.product.entity.Product;
 import com.example.raffinehome.product.service.ProductService;
+
+import jakarta.validation.Valid;
+
 import com.example.raffinehome.admin.dto.AdminCreateDTO;
 import com.example.raffinehome.admin.dto.AdminUpdateDTO;
 import com.example.raffinehome.admin.dto.AdminDeleteDTO;
@@ -41,7 +44,7 @@ public class AdminController{
 
 @GetMapping
 public ResponseEntity<List<ProductListDTO>> getAllProducts(){
-    List<ProductListDTO> products = productService.findAllProducts();
+    List<ProductListDTO> products = adminService.findAllProducts();
     return ResponseEntity.ok(products);
 }
 
@@ -55,7 +58,7 @@ public ResponseEntity<AdminProductDto> getProductById(@PathVariable Integer id){
 }
 
 @PostMapping
-public ResponseEntity<String> createProduct(@RequestBody AdminCreateDTO dto) {
+public ResponseEntity<String> createProduct(@Valid @RequestBody AdminCreateDTO dto) {
     adminService.createProduct(dto);
     return ResponseEntity.ok("商品登録が完了しました");
 }
