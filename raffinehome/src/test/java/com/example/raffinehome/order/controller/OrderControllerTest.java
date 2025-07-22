@@ -96,7 +96,7 @@ class OrderControllerTest {
             mockMvc.perform(post("/api/orders")
                             .session(mockSession)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(validOrderRequest))
+                            .content(objectMapper.writeValueAsString(validCustomerInfo))
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isCreated()) // 201 Created
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
