@@ -3,6 +3,7 @@ package com.example.raffinehome.product.controller;
 import com.example.raffinehome.product.dto.ProductDTO;
 import com.example.raffinehome.product.dto.ProductListDTO;
 import com.example.raffinehome.product.service.ProductService;
+import com.example.raffinehome.common.exception.GlobalExceptionHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -10,12 +11,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.ErrorResponse;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.Arrays;
 import java.util.Collections; // 空リスト用
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -47,7 +57,7 @@ class ProductControllerTest {
 
         // --- Serviceメソッドのデフォルトモック設定 (lenient) ---
         // デフォルトではfindAllProductsは2つのアイテムを返す
-        lenient().when(productService.findAllProducts()).thenReturn(Arrays.asList(productListItem1, productListItem2));
+        lenient().when(productService.findAllActiveProducts()).thenReturn(Arrays.asList(productListItem1, productListItem2));
         // デフォルトではfindProductById(1) は productDetail1 を返す
         lenient().when(productService.findProductById(1)).thenReturn(productDetail1);
         // デフォルトでは存在しないID(99)ではnullを返す
@@ -59,7 +69,7 @@ class ProductControllerTest {
     // === GET /api/products ===
     @Nested
     @DisplayName("GET /api/products")
-    class GetAllProductsTests {
+    class GetAllActiveProductsTests {
 
         @Test
         @DisplayName("商品が存在する場合、商品リスト(ProductListItem)を200 OKで返す")
@@ -83,7 +93,7 @@ class ProductControllerTest {
                     .andExpect(jsonPath("$[1].price", is(productListItem2.getPrice())))
                     .andExpect(jsonPath("$[1].imageUrl", is(productListItem2.getImageUrl())));
 
-            verify(productService, times(1)).findAllProducts();
+            verify(productService, times(1)).findAllActiveProducts();
             verifyNoMoreInteractions(productService);
         }
 
@@ -91,7 +101,7 @@ class ProductControllerTest {
         @DisplayName("商品が存在しない場合、空のリストを200 OKで返す")
         void getAllProducts_WhenNoProductsExist_ShouldReturnEmptyList() throws Exception {
             // Arrange
-            when(productService.findAllProducts()).thenReturn(Collections.emptyList()); // 空リストを返すように設定
+            when(productService.findAllActiveProducts()).thenReturn(Collections.emptyList()); // 空リストを返すように設定
 
             // Act & Assert
             mockMvc.perform(get("/api/products")
@@ -100,7 +110,7 @@ class ProductControllerTest {
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                     .andExpect(jsonPath("$", hasSize(0))); // 空の配列であることを確認
 
-            verify(productService, times(1)).findAllProducts();
+            verify(productService, times(1)).findAllActiveProducts();
             verifyNoMoreInteractions(productService);
         }
 
@@ -108,7 +118,7 @@ class ProductControllerTest {
         @DisplayName("ProductServiceが例外をスローした場合、500 Internal Server Errorを返す")
         void getAllProducts_WhenServiceThrowsException_ShouldReturnInternalServerError() throws Exception {
             // Arrange
-            when(productService.findAllProducts()).thenThrow(new RuntimeException("サービスエラー"));
+            when(productService.findAllActiveProducts()).thenThrow(new RuntimeException("サービスエラー"));
 
             // Act & Assert
             mockMvc.perform(get("/api/products")
@@ -117,14 +127,14 @@ class ProductControllerTest {
                     // GlobalExceptionHandler が有効ならエラーメッセージを含むJSONが返る可能性がある
                     .andExpect(jsonPath("$.message", containsString("サービスエラー")));
 
-            verify(productService, times(1)).findAllProducts();
+            verify(productService, times(1)).findAllActiveProducts();
             verifyNoMoreInteractions(productService);
         }
     }
 
-    // === GET /api/products/{productId} ===
+    // === GET /api/products/{id} ===
     @Nested
-    @DisplayName("GET /api/products/{productId}")
+    @DisplayName("GET /api/products/{id}")
     class GetProductByIdTests {
 
         @Test
@@ -134,7 +144,7 @@ class ProductControllerTest {
             Integer productId = 1;
 
             // Act & Assert
-            mockMvc.perform(get("/api/products/{productId}", productId)
+            mockMvc.perform(get("/api/products/{id}", productId)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -157,7 +167,7 @@ class ProductControllerTest {
             Integer productId = 3;
 
             // Act & Assert
-            mockMvc.perform(get("/api/products/{productId}", productId)
+            mockMvc.perform(get("/api/products/{id}", productId)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -179,7 +189,7 @@ class ProductControllerTest {
             Integer productId = 99;
 
             // Act & Assert
-            mockMvc.perform(get("/api/products/{productId}", productId)
+            mockMvc.perform(get("/api/products/{id}", productId)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNotFound()); // ステータスコード404 Not Found
 
@@ -188,42 +198,40 @@ class ProductControllerTest {
         }
 
         @Test
-        @DisplayName("productIdが数値でない場合、500 Internal Server Errorを返す (現在のGlobalExceptionHandlerの実装による)") // DisplayName を変更
-        void getProductById_WithInvalidProductIdFormat_ShouldReturnInternalServerError_DueToExceptionHandler() throws Exception { // メソッド名を変更
+        @DisplayName("Idが数値でない場合、500 Internal Server Errorを返す (現在のGlobalExceptionHandlerの実装による)") // DisplayName を変更
+        void getProductById_WithInvalidIdFormat_ShouldReturnInternalServerError_DueToExceptionHandler() throws Exception { // メソッド名を変更
             // Arrange
-            String invalidProductId = "abc"; // 数値でないパスパラメータ
+            String invalidId = "abc"; // 数値でないパスパラメータ
 
             // Act & Assert
             // 現在のGlobalExceptionHandlerは型ミスマッチをRuntimeExceptionとして扱い500を返すため、
             // テストの期待値もそれに合わせる。
-            mockMvc.perform(get("/api/products/{id}", invalidProductId)
+            mockMvc.perform(get("/api/products/{id}", invalidId)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isInternalServerError())
                     // オプション： GlobalExceptionHandlerが返すエラーメッセージの内容も検証する
-                    .andExpect(jsonPath("$.message", containsString("Failed to convert value of type 'java.lang.String' to required type 'java.lang.Integer'")))
-                    .andExpect(jsonPath("$.message", containsString(invalidProductId))); // 不正な値が含まれていることを確認
+                    .andExpect(jsonPath("$.message", containsString("Failed to convert value of type")))
+                    .andExpect(jsonPath("$.message", containsString(invalidId))); // 不正な値が含まれていることを確認
 
             // この場合、コントローラーメソッドやサービスは呼び出されない
             verifyNoInteractions(productService);
         }
 
-        @Test
-        @DisplayName("ProductServiceが例外をスローした場合、500 Internal Server Errorを返す")
-        void getProductById_WhenServiceThrowsException_ShouldReturnInternalServerError() throws Exception {
-            // Arrange
-            Integer productId = 1;
-            when(productService.findProductById(productId)).thenThrow(new RuntimeException("サービスエラー"));
+@Test
+@DisplayName("ProductServiceが例外をスローした場合、500 Internal Server Errorを返す")
+void getProductById_WhenServiceThrowsException_ShouldReturnInternalServerError() throws Exception {
+    // Arrange
+    Integer productId = 1;
+    when(productService.findProductById(productId)).thenThrow(new RuntimeException("サービスエラー"));
 
-            // Act & Assert
-            mockMvc.perform(get("/api/products", productId)
-                            .accept(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isInternalServerError())
-                    // GlobalExceptionHandler が有効ならエラーメッセージを含むJSONが返る可能性がある
-                    .andExpect(jsonPath("$.message", containsString("サービスエラー")));
+    // Act & Assert
+    mockMvc.perform(get("/api/products/{id}", productId)
+                    .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError())
+            .andExpect(jsonPath("$.message", containsString("サービスエラー")));
 
-
-            verify(productService, times(1)).findProductById(productId);
-            verifyNoMoreInteractions(productService);
-        }
-    }
+    verify(productService, times(1)).findProductById(productId);
+    verifyNoMoreInteractions(productService);
+}
+}
 }

@@ -7,7 +7,7 @@ import com.example.raffinehome.cart.dto.CartDTO;
 import com.example.raffinehome.cart.service.CartService;
 import com.example.raffinehome.order.dto.OrderItemDTO;
 import com.example.raffinehome.order.dto.OrderDTO;
-import com.example.raffinehome.order.dto.OrederCreateDTO;
+import com.example.raffinehome.order.dto.OrderCreateDTO;
 import com.example.raffinehome.order.entity.Order;
 import com.example.raffinehome.order.entity.OrderItem;
 import com.example.raffinehome.product.entity.Product;
@@ -43,7 +43,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderDTO placeOrder(CartDTO cart, OrederCreateDTO orederCreateDTO, HttpSession session) {
+    public OrderDTO placeOrder(CartDTO cart, OrderCreateDTO orderCreateDTO, HttpSession session) {
         if (cart == null || cart.getItems().isEmpty()) {
             return null;
         }
@@ -63,13 +63,13 @@ public class OrderService {
 
         // 注文エンティティ作成
         Order order = new Order();
-        OrederCreateDTO customerInfo = orederCreateDTO.getCustomerInfo();
+        OrderCreateDTO customerInfo = orderCreateDTO.getCustomerInfo();
         order.setOrderDate(LocalDateTime.now());
         order.setTotalAmount(cart.getTotalPrice());
-        order.setCustomerName(customerInfo.getCustomerName());
-        order.setCustomerEmail(customerInfo.getCustomerEmail());
-        order.setShippingAddress(customerInfo.getShippingAddress());
-        order.setPhoneNumber(customerInfo.getPhoneNumber());
+        order.setCustomerName(orderCreateDTO.getCustomerName());
+        order.setCustomerEmail(orderCreateDTO.getCustomerEmail());
+        order.setShippingAddress(orderCreateDTO.getShippingAddress());
+        order.setPhoneNumber(orderCreateDTO.getPhoneNumber());
         order.setOrderStatus("PENDING");
 
         // 注文明細作成と在庫減算
