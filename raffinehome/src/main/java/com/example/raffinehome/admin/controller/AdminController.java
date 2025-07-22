@@ -58,7 +58,7 @@ public ResponseEntity<AdminProductDto> getProductById(@PathVariable Integer id){
 }
 
 @PostMapping
-public ResponseEntity<String> createProduct(@RequestBody AdminCreateDTO dto) {
+public ResponseEntity<String> createProduct(@Valid @RequestBody AdminCreateDTO dto) {
     adminService.createProduct(dto);
     return ResponseEntity.ok("商品登録が完了しました");
 }
