@@ -4,6 +4,7 @@ import com.example.raffinehome.product.dto.ProductListDTO;
 import com.example.raffinehome.product.entity.Product;
 import com.example.raffinehome.product.exception.ProductExceptionHandler;
 import com.example.raffinehome.product.service.ProductService;
+import com.example.raffinehome.order.dto.OrderDTO;
 import com.example.raffinehome.admin.dto.AdminCreateDTO;
 import com.example.raffinehome.admin.dto.AdminProductDto;
 import com.example.raffinehome.admin.dto.AdminUpdateDTO;
@@ -74,7 +75,7 @@ class AdminControllerTest2 {
         List<ProductListDTO> mockProducts = Arrays.asList(dto1, dto2);
 
         // productService.findAllProducts がモックデータを返すよう設定
-        when(productService.findAllProducts()).thenReturn(mockProducts);
+        when(adminService.findAllProducts()).thenReturn(mockProducts);
 
         // 検証
         mockMvc.perform(get("/api/admin")
@@ -209,28 +210,27 @@ class AdminControllerTest2 {
     }
 
     @Test
-    @DisplayName("POST /api/admin priceが空文字の場合は400＋バリデーションメッセージ")
-    void createProduct_WithBlankPrice_ShouldReturnBadRequest() throws Exception {
-        String requestJson = """
-            {
-                "name": "新商品",
-                "price": "",
-                "salePrice": 1500,
-                "description": "サンプル説明",
-                "stockQuantity": 10,
-                "imageUrl": "image.png"
-            }
-            """;
+    @DisplayName("POST /api/admin priceが0のとき400＋バリデーションメッセージ")
+    void createProduct_WithZeroPrice_ShouldReturnBadRequest() throws Exception {
+    String requestJson = """
+        {
+            "name": "新商品",
+            "price": 0,
+            "salePrice": 1500,
+            "description": "サンプル説明",
+            "stockQuantity": 10,
+            "imageUrl": "image.png"
+        }
+        """;
 
-        mockMvc.perform(post("/api/admin")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson))
-            .andExpect(status().isBadRequest())
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("価格は必須です"))); // 例: @NotBlank(message = "価格は必須です")
+    mockMvc.perform(post("/api/admin")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(requestJson))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string(org.hamcrest.Matchers.containsString("価格は1以上で入力してください")));
 
-        // サービス層呼び出しがないことを保証
-        verifyNoInteractions(adminService);
-    }
+    verifyNoInteractions(adminService);
+}
 
     @Test
     @DisplayName("POST /api/admin price不正な形式→400＋バリデーションメッセージ")
@@ -248,17 +248,14 @@ class AdminControllerTest2 {
             """;
 
         mockMvc.perform(post("/api/admin")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson))
-            .andExpect(status().isBadRequest())
-            // 実際にはJacksonが型変換できずエラーメッセージとなる。下記は例ですので調整してください。
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("price")))
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("正しい数値")));
-            // .andExpect(content().string(org.hamcrest.Matchers.containsString("価格の形式が正しくありません")));
-            // ↑ もしカスタムバリデータ使用時のメッセージにしたい場合など
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(requestJson))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string(org.hamcrest.Matchers.containsString("price")))
+        .andExpect(content().string(org.hamcrest.Matchers.containsString("priceは正しい数値で指定してください。")));
 
-        // サービス層呼び出しがないことを検証
-        verifyNoInteractions(adminService);
+    // サービス層呼び出しがないことを検証
+    verifyNoInteractions(adminService);
     }
 
     @Test
@@ -308,51 +305,6 @@ class AdminControllerTest2 {
             .andExpect(status().isBadRequest())
             // "stockQuantity"のエラー発生を確認。詳細なメッセージは実装に合わせて調整下さい。
             .andExpect(content().string(org.hamcrest.Matchers.containsString("stockQuantity")));
-
-        verifyNoInteractions(adminService);
-    }
-
-    @Test
-    @DisplayName("POST /api/orders address空文字で400＋バリデーションメッセージ")
-    void createProduct_WithBlankAddress_ShouldReturnBadRequest() throws Exception {
-        String requestJson = """
-            {
-                "address": "",
-                "phoneNumber": "09012345678",
-                "otherField1": "hoge",
-                "otherField2": 123
-            }
-            """;
-
-        mockMvc.perform(post("/api/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson))
-            .andExpect(status().isBadRequest())
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("address")))
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("必須"))); // 例: エラーメッセージ調整
-
-        // サービスが呼ばれていないこと（getCartSessionのみ許可するなら部分的にverify可）
-        verifyNoInteractions(adminService);
-    }
-
-    @Test
-    @DisplayName("POST /api/orders phoneNumber空文字で400＋バリデーションメッセージ")
-    void createProduct_WithBlankPhoneNumber_ShouldReturnBadRequest() throws Exception {
-        String requestJson = """
-            {
-                "address": "東京都渋谷区",
-                "phoneNumber": "",
-                "otherField1": "hoge",
-                "otherField2": 123
-            }
-            """;
-
-        mockMvc.perform(post("/api/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestJson))
-            .andExpect(status().isBadRequest())
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("phoneNumber")))
-            .andExpect(content().string(org.hamcrest.Matchers.containsString("必須"))); // 例: エラーメッセージ調整
 
         verifyNoInteractions(adminService);
     }

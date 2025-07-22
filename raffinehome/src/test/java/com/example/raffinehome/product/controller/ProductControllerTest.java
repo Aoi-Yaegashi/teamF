@@ -86,11 +86,15 @@ class ProductControllerTest {
                     .andExpect(jsonPath("$[0].id", is(productListItem1.getId())))
                     .andExpect(jsonPath("$[0].name", is(productListItem1.getName())))
                     .andExpect(jsonPath("$[0].price", is(productListItem1.getPrice())))
+                    .andExpect(jsonPath("$[0].salePrice", is(productListItem1.getSalePrice())))
+                    .andExpect(jsonPath("$[0].description", is(productListItem1.getDescription())))
                     .andExpect(jsonPath("$[0].imageUrl", is(productListItem1.getImageUrl())))
                     // 2番目の要素の全フィールドを検証
                     .andExpect(jsonPath("$[1].id", is(productListItem2.getId())))
                     .andExpect(jsonPath("$[1].name", is(productListItem2.getName())))
                     .andExpect(jsonPath("$[1].price", is(productListItem2.getPrice())))
+                    .andExpect(jsonPath("$[1].salePrice", is(productListItem2.getSalePrice())))
+                    .andExpect(jsonPath("$[1].description", is(productListItem2.getDescription())))
                     .andExpect(jsonPath("$[1].imageUrl", is(productListItem2.getImageUrl())));
 
             verify(productService, times(1)).findAllActiveProducts();
