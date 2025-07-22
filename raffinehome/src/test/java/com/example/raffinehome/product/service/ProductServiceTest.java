@@ -175,6 +175,174 @@ class ProductServiceTest {
     }
 
     @Test
+    void findAllActiveProducts_ShouldReturnListOfProductListItems() {
+        // Arrange
+        Product product1 = new Product();
+        product1.setId(1);
+        product1.setName("商品A");
+        product1.setPrice(1000);
+        product1.setSalePrice(900);
+        product1.setDescription("説明A");
+        product1.setStockQuantity(10);
+        product1.setImageUrl("urlA");
+        // ...必要なら isDeleted フィールドを設定 (仮に false assumed)
+
+        Product product2 = new Product();
+        product2.setId(2);
+        product2.setName("商品B");
+        product2.setPrice(2000);
+        product2.setSalePrice(1900);
+        product2.setDescription("説明B");
+        product2.setStockQuantity(5);
+        product2.setImageUrl("urlB");
+        // ...必要なら isDeleted フィールドを設定 (仮に false assumed)
+
+        List<Product> mockedList = Arrays.asList(product1, product2);
+
+        when(productRepository.findAllActiveProducts())
+            .thenReturn(mockedList);
+
+        // Act
+        List<ProductListDTO> result = productService.findAllActiveProducts();
+
+        // Assert
+        verify(productRepository, times(1)).findAllActiveProducts();
+
+        assertThat(result).hasSize(2);
+
+        assertThat(result.get(0)).extracting(
+                ProductListDTO::getId,
+                ProductListDTO::getName,
+                ProductListDTO::getPrice,
+                ProductListDTO::getSalePrice,
+                ProductListDTO::getDescription,
+                ProductListDTO::getStockQuantity,
+                ProductListDTO::getImageUrl
+        ).containsExactly(
+                product1.getId(),
+                product1.getName(),
+                product1.getPrice(),
+                product1.getSalePrice(),
+                product1.getDescription(),
+                product1.getStockQuantity(),
+                product1.getImageUrl()
+        );
+
+        assertThat(result.get(1)).extracting(
+                ProductListDTO::getId,
+                ProductListDTO::getName,
+                ProductListDTO::getPrice,
+                ProductListDTO::getSalePrice,
+                ProductListDTO::getDescription,
+                ProductListDTO::getStockQuantity,
+                ProductListDTO::getImageUrl
+        ).containsExactly(
+                product2.getId(),
+                product2.getName(),
+                product2.getPrice(),
+                product2.getSalePrice(),
+                product2.getDescription(),
+                product2.getStockQuantity(),
+                product2.getImageUrl()
+        );
+    }
+
+    @Test
+    void findAllActiveProducts_WhenRepositoryReturnsEmptyList_ShouldReturnEmptyList() {
+        // Arrange
+        when(productRepository.findAllActiveProducts()).thenReturn(Collections.emptyList());
+
+        // Act
+        List<ProductListDTO> result = productService.findAllActiveProducts();
+
+        // Assert
+        verify(productRepository, times(1)).findAllActiveProducts();
+        assertThat(result).isEmpty(); // Collections.emptyList()とも比較可能
+    }
+
+
+    //全件検索において、論理削除済みのレコードを除外するテスト
+    @Test
+    @DisplayName("論理削除済みを除外してDTOリスト返す")
+    void findAllActiveProducts_ShouldReturnOnlyActiveProducts() {
+    // Arrange
+    Product active = new Product();
+    active.setId(1);
+    active.setName("有効");
+    active.setPrice(1000);
+    active.setSalePrice(900);
+    active.setDescription("説明");
+    active.setStockQuantity(10);
+    active.setImageUrl("url");
+    active.setDeleted(false); // 論理削除フラグ（無効=有効）
+
+    Product deleted = new Product();
+    deleted.setId(2);
+    deleted.setName("論理削除済");
+    deleted.setPrice(2000);
+    deleted.setImageUrl("deleted_url");
+    deleted.setDescription("削除済み説明");
+    deleted.setStockQuantity(5);
+    deleted.setSalePrice(1800);
+    
+    deleted.setDeleted(true); // 論理削除フラグ
+
+    // findAllActiveProductsは「deleted=false」なエンティティだけ返すことを想定
+    when(productRepository.findAllActiveProducts()).thenReturn(List.of(active));
+
+    // Act
+    List<ProductListDTO> result = productService.findAllActiveProducts();
+
+    // Assert
+    assertThat(result).hasSize(1);
+    assertThat(result.get(0).getId()).isEqualTo(active.getId());
+    assertThat(result.get(0).getName()).isEqualTo(active.getName());
+
+    verify(productRepository, times(1)).findAllActiveProducts();
+}
+
+    //論理削除レコードの非返却テスト
+    @Test
+    void findAllActive_ShouldNotReturnDeletedRecords() {
+    // Arrange
+    Product active = new Product();
+    active.setId(1);
+    active.setName("有効");
+    active.setPrice(1000);
+    active.setSalePrice(900);
+    active.setDescription("説明");
+    active.setStockQuantity(10);
+    active.setImageUrl("url");
+    active.setDeleted(false);
+    // 他のフィールドも必要ならセット
+
+    Product deleted = new Product();
+    deleted.setId(2);
+    deleted.setName("論理削除済");
+    deleted.setPrice(2000);
+    deleted.setSalePrice(1800);
+    deleted.setDescription("削除済み説明");
+    deleted.setStockQuantity(5);
+    deleted.setImageUrl("deleted_url");
+    deleted.setDeleted(true);
+    // 他のフィールドも必要ならセット
+
+    // リポジトリのfindAllActiveProductsが削除済みを除外して返す前提
+    when(productRepository.findAllActiveProducts()).thenReturn(Arrays.asList(active)); // 削除済を除外
+
+    // Act
+    List<ProductListDTO> result = productService.findAllActiveProducts();
+
+    // Assert
+    assertThat(result)
+            .extracting(ProductListDTO::getId)
+            .containsOnly(1);
+
+    verify(productRepository, times(1)).findAllActiveProducts();
+}
+
+//以下、削除対象テスト
+    @Test
     @DisplayName("findProductById: 商品エンティティにnullフィールドが含まれる場合、DTOにもnullがマッピングされる")
     void findProductById_WhenProductHasNullFields_ShouldMapNullToDto() {
         // Arrange

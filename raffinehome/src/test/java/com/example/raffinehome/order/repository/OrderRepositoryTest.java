@@ -7,7 +7,6 @@ import com.example.raffinehome.product.repository.ProductRepository;
 
 import jakarta.persistence.PersistenceException; // 制約違反用
 
-import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,8 +21,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.doNothing;
 
 
 @DataJpaTest // JPA関連のテストに特化した設定（インメモリDB使用、関連Beanのみロード）
@@ -124,6 +121,13 @@ class OrderRepositoryTest {
         OrderItem foundDetail1 = entityManager.find(OrderItem.class, foundOrder.getOrderDetails().get(0).getId());
         assertThat(foundDetail1).isNotNull();
         assertThat(foundDetail1.getOrder().getId()).isEqualTo(foundOrder.getId()); // Orderへの関連が設定されている
+
+        //// 保存時に createdAt と updatedAt が自動で設定されることを確認
+        assertThat(foundOrder.getCreatedAt()).isNotNull();
+        assertThat(foundOrder.getUpdatedAt()).isNotNull();
+
+        // createdAt / updatedAt が保存時に自動設定されるかの確認
+        assertThat(foundOrder.getCreatedAt()).isEqualTo(foundOrder.getUpdatedAt());
     }
 
     @Test
@@ -188,17 +192,27 @@ class OrderRepositoryTest {
     void testFindByOrderDateAfter() {
        // Arrange
        LocalDateTime now = LocalDateTime.now();
+
        Order recentOrder = new Order();
        recentOrder.setOrderDate(now.plusDays(1)); // 未来日
        recentOrder.setTotalAmount(3000);
        recentOrder.setCustomerName("未来の注文");
+       recentOrder.setCustomerEmail("future@example.com");
+       recentOrder.setOrderStatus("PENDING");
+       recentOrder.setPhoneNumber("090-0000-0001");
+       recentOrder.setShippingAddress("東京都未来区1-1-1");
 
        Order oldOrder = new Order();
        oldOrder.setOrderDate(now.minusDays(1)); // 過去日
        oldOrder.setTotalAmount(1000);
        oldOrder.setCustomerName("過去の注文");
+       oldOrder.setCustomerEmail("past@example.com");
+       oldOrder.setOrderStatus("PENDING");
+       oldOrder.setPhoneNumber("090-0000-0002");
+       oldOrder.setShippingAddress("東京都過去区2-2-2");
 
        orderRepository.saveAll(List.of(recentOrder, oldOrder));
+       entityManager.flush();
 
        // Act
        List<Order> result = orderRepository.findByOrderDateAfter(now);
@@ -228,7 +242,7 @@ class OrderRepositoryTest {
         Order savedOrder = entityManager.persistFlushFind(order);
         Integer orderId = savedOrder.getId();
         LocalDateTime initialUpdatedAt = savedOrder.getUpdatedAt(); // 初期の更新日時
-        entityManager.detach(savedOrder); // 一度永続化コンテキストから切り離し、取得から行う状況を模倣
+        entityManager.detach(savedOrder); 
 
         // Act
         // 更新対象のOrderを取得
@@ -237,7 +251,7 @@ class OrderRepositoryTest {
         String newAddress = "更新後の住所"; // 新しい住所
         orderToUpdate.setOrderStatus(newStatus); // ステータスを変更
         orderToUpdate.setShippingAddress(newAddress); // 住所を変更
-        orderRepository.save(orderToUpdate); // 更新処理 (IDが存在するためUPDATE文が発行される)
+        orderRepository.save(orderToUpdate); // 更新処理 
         entityManager.flush();
         entityManager.clear();
 
@@ -305,10 +319,19 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void 注文と注文商品が正常に保存される() {
+    @DisplayName("注文と注文商品が正常に保存される")
+    void saveOrderWithSingleItem_Success() {
         Product product = createProduct("マグカップ", 1200);
 
         Order order = new Order();
+        order.setOrderDate(LocalDateTime.now()); 
+        order.setCustomerName("テスト顧客");
+        order.setCustomerEmail("test@example.com");
+        order.setShippingAddress("東京都新宿区");
+        order.setPhoneNumber("090-1234-5678"); 
+        order.setOrderStatus("PENDING"); 
+        order.setTotalAmount(2400); 
+
         OrderItem item = new OrderItem();
         item.setOrder(order);
         item.setProduct(product);
@@ -327,8 +350,17 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void 商品がnullだと保存に失敗する() {
+    @DisplayName("商品がnullだと保存に失敗する")
+    void saveOrder_WhenProductIsNull_ShouldFail() {
         Order order = new Order();
+        order.setOrderDate(LocalDateTime.now());
+        order.setCustomerName("テスト顧客");
+        order.setCustomerEmail("test@example.com");
+        order.setShippingAddress("東京都千代田区");
+        order.setPhoneNumber("090-1234-5678");
+        order.setOrderStatus("PENDING");
+        order.setTotalAmount(2400);
+
         OrderItem item = new OrderItem();
         item.setOrder(order);
         item.setProduct(null); // エラーになるはず
@@ -338,7 +370,13 @@ class OrderRepositoryTest {
         item.setSubtotal(2400);
         order.setOrderDetails(List.of(item));
 
-        Class<? extends Throwable> expected = JdbcSQLIntegrityConstraintViolationException;
+        order.setOrderDate(LocalDateTime.now());
+        order.setCustomerName("テスト顧客");
+        order.setCustomerEmail("test@example.com");
+        order.setShippingAddress("東京都千代田区");
+        order.setPhoneNumber("090-1234-5678");
+        order.setOrderStatus("PENDING");
+        order.setTotalAmount(2400);
 
         assertThatThrownBy(() -> {
             orderRepository.save(order);
@@ -348,10 +386,18 @@ class OrderRepositoryTest {
 
     @Test
     @DisplayName("数量が0やマイナスだと不正（現状はDB制約なし、将来的にバリデーション検討）")
-    void 数量が0やマイナスだと不正() {
+    void saveOrderWithZeroOrNegativeQuantity_SucceedsButInvalid() {
         Product product = createProduct("タオル", 800);
 
         Order order = new Order();
+        order.setOrderDate(LocalDateTime.now());
+        order.setCustomerName("テスト顧客");
+        order.setCustomerEmail("test@example.com"); 
+        order.setShippingAddress("東京都千代田区");
+        order.setPhoneNumber("090-1234-5678");
+        order.setOrderStatus("PENDING");
+        order.setTotalAmount(2400);
+
         OrderItem item = new OrderItem();
         item.setOrder(order);
         item.setProduct(product);
@@ -371,10 +417,18 @@ class OrderRepositoryTest {
 
     @Test
     @DisplayName("小計が単価と数量に一致しない場合の挙動（現状はDB制約なし、将来的にサービス層での整合性チェック推奨）")
-    void 小計が単価と数量に一致しないと不正() {
+    void saveOrderWithMismatchedSubtotal_SucceedsButInvalid() {
         Product product = createProduct("ノート", 500);
 
         Order order = new Order();
+        order.setOrderDate(LocalDateTime.now());
+        order.setCustomerName("テスト顧客");
+        order.setCustomerEmail("test@example.com"); 
+        order.setShippingAddress("東京都千代田区");
+        order.setPhoneNumber("090-1234-5678");
+        order.setOrderStatus("PENDING");
+        order.setTotalAmount(2400);
+
         OrderItem item = new OrderItem();
         item.setOrder(order);
         item.setProduct(product);
@@ -394,11 +448,19 @@ class OrderRepositoryTest {
     }
 
         @Test
-        void 複数商品が正しく保存される() {
+        @DisplayName("複数商品が正しく保存される")
+        void multipleProductsAreSavedCorrectly() {
         Product p1 = createProduct("皿", 1000);
         Product p2 = createProduct("フォーク", 300);
 
         Order order = new Order();
+        order.setOrderDate(LocalDateTime.now());
+        order.setCustomerName("テスト顧客");
+        order.setCustomerEmail("test@example.com"); 
+        order.setShippingAddress("東京都千代田区");
+        order.setPhoneNumber("090-1234-5678");
+        order.setOrderStatus("PENDING");
+        order.setTotalAmount(2400);
 
         OrderItem i1 = new OrderItem();
         i1.setOrder(order);
@@ -424,10 +486,19 @@ class OrderRepositoryTest {
     }
 
         @Test
-        void createdAtが自動で設定される() {
+        @DisplayName("createdAtが自動で設定される")
+        void orderItem_createdAt_isAutomaticallySet() {
         Product product = createProduct("時計", 3000);
 
         Order order = new Order();
+        order.setOrderDate(LocalDateTime.now());
+        order.setCustomerName("テスト顧客");
+        order.setCustomerEmail("test@example.com"); 
+        order.setShippingAddress("東京都千代田区");
+        order.setPhoneNumber("090-1234-5678");
+        order.setOrderStatus("PENDING");
+        order.setTotalAmount(2400);
+
         OrderItem item = new OrderItem();
         item.setOrder(order);
         item.setProduct(product);
