@@ -31,7 +31,7 @@ content-type: application/json
 GET http://localhost:8080/api/admin
 
 ### 商品詳細（管理者）
-GET http://localhost:8080/api/admin/1
+GET http://localhost:8080/api/admin/あ
 
 ### 商品登録
 POST http://localhost:8080/api/admin
