@@ -38,8 +38,8 @@ POST http://localhost:8080/api/admin
 content-type: application/json
 
 {   "name": "テスト",
-    "price": "0",
-    "salePrice": "11",
+    "price": "6",
+    "salePrice": null,
     "description": "あああ",
     "stockQuantity":"1",
     "imageUrl":"a.png"}
@@ -58,6 +58,6 @@ content-type: application/json
 {   "name": null,
     "description": "あああ",
     "price": "12",
-    "salePrice": "12",
-    "stockQuantity":"1",
+    "salePrice": null,
+    "stockQuantity":1,
     "imageUrl":"a.png"}
