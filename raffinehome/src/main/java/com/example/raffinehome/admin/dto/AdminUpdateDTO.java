@@ -20,10 +20,16 @@ public class AdminUpdateDTO{
     private String description;
 
     @NotNull(message = "商品価格は必須です")
+<<<<<<< HEAD
     @Min(value = 1, message = "価格は1以上で入力してください")
     private int price;
 
     @Min(value = 1, message = "セール価格は1以上で入力してください")
+=======
+    @Min(value = 1, message = "価格は1以上である必要があります")
+    private Integer price;
+    
+>>>>>>> f66a4c32614825d4e305dafb793b3a7a0e3ac264
     private int salePrice;
     
     @Min(value = 0, message = "数量は0以上で入力してください")
