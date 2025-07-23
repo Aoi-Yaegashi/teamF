@@ -55,7 +55,7 @@ content-type: application/json
 PUT http://localhost:8080/api/admin/1
 content-type: application/json
 
-{   "name": "テスト",
+{   "name": null,
     "description": "あああ",
     "price": "12",
     "salePrice": "12",
