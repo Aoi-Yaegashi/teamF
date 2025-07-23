@@ -17,7 +17,7 @@ public class AdminCreateDTO {
     @Min(value = 1, message = "価格は1以上で入力してください")
     private Integer price;
     @Min(value = 1, message = "salepriceは正しい値で入力してください")
-    private int salePrice;
+    private Integer salePrice;
     private String description;
     @Min(value = 1, message = "stockQuantityは正しい値で入力してください")
     private int stockQuantity;
