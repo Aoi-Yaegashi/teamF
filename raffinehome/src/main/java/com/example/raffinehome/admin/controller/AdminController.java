@@ -64,7 +64,7 @@ public ResponseEntity<String> createProduct(@Valid @RequestBody AdminCreateDTO d
 }
 
 @PutMapping("/{id}")
-public ResponseEntity<String> updateProduct(@PathVariable("id")int id, @RequestBody AdminUpdateDTO dto){
+public ResponseEntity<String> updateProduct(@PathVariable("id")int id, @Valid @RequestBody AdminUpdateDTO dto){
     adminService.updateProduct(id, dto);
     return ResponseEntity.ok("商品情報を更新しました");
 }

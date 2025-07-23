@@ -31,15 +31,15 @@ content-type: application/json
 GET http://localhost:8080/api/admin
 
 ### 商品詳細（管理者）
-GET http://localhost:8080/api/admin/あ
+GET http://localhost:8080/api/admin/1
 
 ### 商品登録
 POST http://localhost:8080/api/admin
 content-type: application/json
 
 {   "name": "テスト",
-    "price": "0",
-    "salePrice": "11",
+    "price": "6",
+    "salePrice": null,
     "description": "あああ",
     "stockQuantity":"1",
     "imageUrl":"a.png"}
@@ -55,9 +55,9 @@ content-type: application/json
 PUT http://localhost:8080/api/admin/1
 content-type: application/json
 
-{   "name": "テスト",
+{   "name": null,
     "description": "あああ",
     "price": "12",
-    "salePrice": "12",
-    "stockQuantity":"1",
+    "salePrice": null,
+    "stockQuantity":1,
     "imageUrl":"a.png"}
