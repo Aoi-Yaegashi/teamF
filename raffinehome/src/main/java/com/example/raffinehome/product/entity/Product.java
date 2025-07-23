@@ -33,7 +33,7 @@ public class Product {
     }
 
     @Column(nullable = false)
-    private int salePrice;
+    private Integer salePrice;
     
     @Column(nullable = false)
     private Integer stockQuantity;
