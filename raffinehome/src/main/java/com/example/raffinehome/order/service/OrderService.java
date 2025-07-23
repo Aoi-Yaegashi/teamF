@@ -107,6 +107,26 @@ public class OrderService {
         // カートクリア
         cartService.clearCart(session);
 
-        return new OrderDTO(savedOrder.getId(),savedOrder.getOrderDate());
+        // OrderDTOへ必要なフィールドをセット
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setId(savedOrder.getId());
+        orderDTO.setOrderDate(savedOrder.getOrderDate());
+        orderDTO.setCustomerName(savedOrder.getCustomerName());
+        orderDTO.setCustomerEmail(savedOrder.getCustomerEmail());
+        orderDTO.setShippingAddress(savedOrder.getShippingAddress());
+        orderDTO.setPhoneNumber(savedOrder.getPhoneNumber());
+        orderDTO.setTotalAmount(savedOrder.getTotalAmount());
+        orderDTO.setOrderStatus(savedOrder.getOrderStatus());
+        
+        int subtotal = 0;
+        for (OrderItem item : savedOrder.getOrderDetails()) {
+            subtotal += item.getUnitPrice() * item.getQuantity();
+        }
+        orderDTO.setSubtotal(subtotal);
+
+        orderDTO.setCanCancel(true); 
+        orderDTO.setCanShip(false);  
+
+        return orderDTO;
     }
 }
