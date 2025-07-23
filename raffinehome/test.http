@@ -31,33 +31,33 @@ content-type: application/json
 GET http://localhost:8080/api/admin
 
 ### 商品詳細（管理者）
-GET http://localhost:8080/api/admin/1
+GET http://localhost:8080/api/admin/あ
 
 ### 商品登録
 POST http://localhost:8080/api/admin
 content-type: application/json
 
 {   "name": "テスト",
-    "price": "あああ",
-    "saleprice": "12",
-    "description": "123",
+    "price": "0",
+    "salePrice": "11",
+    "description": "あああ",
     "stockQuantity":"1",
     "imageUrl":"a.png"}
 
 ### 削除
-DELETE http://localhost:8080/api/admin/2
+DELETE http://localhost:8080/api/admin/1
 content-type: application/json
 
 {   "isDeleted": true}
 
 
 ### 商品編集
-PUT http://localhost:8080/api/admin/3
+PUT http://localhost:8080/api/admin/1
 content-type: application/json
 
 {   "name": "テスト",
     "description": "あああ",
     "price": "12",
-    "saleprice": "12",
+    "salePrice": "12",
     "stockQuantity":"1",
     "imageUrl":"a.png"}

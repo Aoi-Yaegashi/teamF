@@ -210,6 +210,29 @@ class AdminControllerTest2 {
     }
 
     @Test
+    @DisplayName("POST /api/admin priceがnullのとき400＋バリデーションメッセージ")
+    void createProduct_WithBlankPrice_ShouldReturnBadRequest() throws Exception{
+        String requestJson = """
+            {
+                "name": 新商品,
+                "price": null,
+                "salePrice": 1800,
+                "description": "説明",
+                "stockQuantity": 2,
+                "imageUrl": "a.jpg"
+            }
+            """;
+        
+        mockMvc.perform(post("/api/admin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("リクエスト値の形式が正しくありません"))); // @NotBlankのmessage
+
+        verifyNoInteractions(adminService);
+    }
+
+    @Test
     @DisplayName("POST /api/admin priceが0のとき400＋バリデーションメッセージ")
     void createProduct_WithZeroPrice_ShouldReturnBadRequest() throws Exception {
     String requestJson = """
@@ -311,7 +334,7 @@ class AdminControllerTest2 {
 
     @Test
     @DisplayName("PUT /api/admin/{id} 存在するidを指定した場合 200OK")
-    void updateProduct_WhenIdExists_SholdReturnBadRequest() throws Exception {
+    void updateProduct_WhenIdExists_SholdReturnSuccess() throws Exception {
         int id = 10;
 
         String requestJson = """
@@ -410,6 +433,33 @@ class AdminControllerTest2 {
 
         mockMvc.perform(delete("/api/admin/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isInternalServerError());
+    }
+
+
+        @Test
+    @DisplayName("PUT /api/admin/{id} 名前が空の時エラー返却")
+    void updateProduct_WhenNameEmpty_ShouldReturnError() throws Exception {
+        int id = 5;
+        String requestJson = """
+            {
+                "id": 5,
+                "name": "",
+                "description": "NotFound説明",
+                "price": 100,
+                "salePrice": 90,
+                "stockQuantity": 1,
+                "imageUrl": "none.jpg"
+            }
+            """;
+
+        // IllegalStateExceptionを投げるようにモック
+        when(adminService.updateProduct(anyInt(), any(AdminUpdateDTO.class)))
+            .thenThrow(new IllegalStateException("該当商品が見つかりません"));
+
+        mockMvc.perform(put("/api/admin/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
             .andExpect(status().isInternalServerError());
     }
 }
