@@ -25,6 +25,7 @@ public class AdminUpdateDTO{
     private Integer price;
     
     private int salePrice;
+    @Min(value = 1, message = "数量は1以上である必要があります")
     private int stockQuantity;
     private String imageUrl;
 
