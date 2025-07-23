@@ -210,6 +210,29 @@ class AdminControllerTest2 {
     }
 
     @Test
+    @DisplayName("POST /api/admin priceがnullのとき400＋バリデーションメッセージ")
+    void createProduct_WithBlankPrice_ShouldReturnBadRequest() throws Exception{
+        String requestJson = """
+            {
+                "name": 新商品,
+                "price": null,
+                "salePrice": 1800,
+                "description": "説明",
+                "stockQuantity": 2,
+                "imageUrl": "a.jpg"
+            }
+            """;
+        
+        mockMvc.perform(post("/api/admin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("リクエスト値の形式が正しくありません"))); // @NotBlankのmessage
+
+        verifyNoInteractions(adminService);
+    }
+
+    @Test
     @DisplayName("POST /api/admin priceが0のとき400＋バリデーションメッセージ")
     void createProduct_WithZeroPrice_ShouldReturnBadRequest() throws Exception {
     String requestJson = """
