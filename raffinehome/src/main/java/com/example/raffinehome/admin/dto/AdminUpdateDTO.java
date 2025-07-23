@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -19,9 +20,9 @@ public class AdminUpdateDTO{
     
     private String description;
 
-    @NotBlank(message = "商品価格は必須です")
+    @NotNull(message = "商品価格は必須です")
     @Min(value = 1, message = "価格は1以上である必要があります")
-    private int price;
+    private Integer price;
     
     private int salePrice;
     private int stockQuantity;
