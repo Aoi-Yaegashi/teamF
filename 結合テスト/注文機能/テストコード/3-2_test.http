@@ -13,6 +13,9 @@ content-type: application/json
     "quantity": 2
 }
 
+### 商品詳細取得
+GET http://localhost:8080/api/products/2
+
 ### カートに追加
 POST http://localhost:8080/api/cart/add
 content-type: application/json
