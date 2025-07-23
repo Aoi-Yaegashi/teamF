@@ -20,14 +20,12 @@ public class AdminUpdateDTO{
     private String description;
 
     @NotNull(message = "商品価格は必須です")
-    @Min(value = 1, message = "価格は1以上で入力してください")
-    private int price;
+    @Min(value = 1, message = "価格は1以上である必要があります")
+    private Integer price;
 
-    @Min(value = 1, message = "セール価格は1以上で入力してください")
-    private int salePrice;
-    
-    @Min(value = 0, message = "数量は0以上で入力してください")
-    private int stockQuantity;
+    private Integer salePrice;
+    @NotNull(message = "stockQuantityは正しい数値で指定してください")
+    private Integer stockQuantity;
 
     private String imageUrl;
 
