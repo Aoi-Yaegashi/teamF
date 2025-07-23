@@ -135,7 +135,7 @@ content-type: application/json
 
 ### 2-18
 
-DELETE http://localhost:8080/api/cart/remove/2
+DELETE http://localhost:8080/api/cart/remove/999
 content-type: application/json
 
 {
