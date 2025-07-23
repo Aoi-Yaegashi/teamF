@@ -86,6 +86,11 @@ public class OrderService {
 
             order.addOrderDetail(orderDetail);
 
+            //  結合テスト用　エラー発生させるコード 
+            //  在庫数が注文数以下
+            //  product.getId() -100
+
+
             // 在庫減算処理と結果のチェック
             int updatedRows = productRepository.decreaseStock(product.getId(), cartItem.getQuantity());
 
@@ -101,10 +106,21 @@ public class OrderService {
             }
         }
 
+
+
+    //  結合テスト用　エラー発生させるコード  
+    //　不正な顧客情報      
+    //order.setCustomerName(null);
+
+
         // 注文保存
         Order savedOrder = orderRepository.save(order);
 
         // カートクリア
+
+        //  結合テスト用　エラー発生させるコード
+        //cartService.clearCart(null);
+
         cartService.clearCart(session);
 
         // OrderDTOへ必要なフィールドをセット
