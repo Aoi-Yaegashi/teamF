@@ -58,6 +58,6 @@ content-type: application/json
 {   "name": "テスト",
     "description": "あああ",
     "price": "12",
-    "saleprice": "12",
+    "salePrice": "12",
     "stockQuantity":"1",
     "imageUrl":"a.png"}
