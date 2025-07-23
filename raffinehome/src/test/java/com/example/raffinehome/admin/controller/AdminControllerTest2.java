@@ -334,7 +334,7 @@ class AdminControllerTest2 {
 
     @Test
     @DisplayName("PUT /api/admin/{id} 存在するidを指定した場合 200OK")
-    void updateProduct_WhenIdExists_SholdReturnBadRequest() throws Exception {
+    void updateProduct_WhenIdExists_SholdReturnSuccess() throws Exception {
         int id = 10;
 
         String requestJson = """
