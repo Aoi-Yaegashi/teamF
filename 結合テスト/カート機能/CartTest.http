@@ -1,6 +1,6 @@
 ## カート機能のテスト
-### 2-1 ×
-POST http://localhost:8080/api/cart
+### 2-1 
+POST http://localhost:8080/api/cart/add
 content-type: application/json
 
 {
@@ -14,7 +14,7 @@ content-type: application/json
 
 {
     "productId": 1, 
-    "quantity": 2
+    "quantity": 3
 }
 
 ### 2-3
@@ -32,7 +32,7 @@ content-type: application/json
 
 {
     "productId": 1, 
-    "quantity": 5
+    "quantity": 4
 }
 
 ### 2-5
