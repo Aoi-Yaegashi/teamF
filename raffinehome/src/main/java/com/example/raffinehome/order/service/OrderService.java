@@ -88,7 +88,7 @@ public class OrderService {
 
             //  結合テスト用　エラー発生させるコード 
             //  在庫数が注文数以下
-            //  product.getId() -100
+            //product.setStockQuantity(-100);
 
 
             // 在庫減算処理と結果のチェック
