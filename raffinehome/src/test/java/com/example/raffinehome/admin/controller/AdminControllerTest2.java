@@ -435,4 +435,31 @@ class AdminControllerTest2 {
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isInternalServerError());
     }
+
+
+        @Test
+    @DisplayName("PUT /api/admin/{id} 名前が空の時エラー返却")
+    void updateProduct_WhenNameEmpty_ShouldReturnError() throws Exception {
+        int id = 5;
+        String requestJson = """
+            {
+                "id": 5,
+                "name": "",
+                "description": "NotFound説明",
+                "price": 100,
+                "salePrice": 90,
+                "stockQuantity": 1,
+                "imageUrl": "none.jpg"
+            }
+            """;
+
+        // IllegalStateExceptionを投げるようにモック
+        when(adminService.updateProduct(anyInt(), any(AdminUpdateDTO.class)))
+            .thenThrow(new IllegalStateException("該当商品が見つかりません"));
+
+        mockMvc.perform(put("/api/admin/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+            .andExpect(status().isInternalServerError());
+    }
 }

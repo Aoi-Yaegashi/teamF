@@ -16,10 +16,9 @@ public class AdminCreateDTO {
     @NotNull(message = "価格は必須です")
     @Min(value = 1, message = "価格は1以上で入力してください")
     private Integer price;
-    @Min(value = 1, message = "salepriceは正しい値で入力してください")
     private Integer salePrice;
     private String description;
-    @Min(value = 1, message = "stockQuantityは正しい値で入力してください")
-    private int stockQuantity;
+    @NotNull(message = "stockQuantityは正しい数値で指定してください")
+    private Integer stockQuantity;
     private String imageUrl;
 }

@@ -17,16 +17,16 @@ public class AdminUpdateDTO{
     @NotBlank(message = "商品名は必須です")
     private String name;
 
-    
     private String description;
 
     @NotNull(message = "商品価格は必須です")
     @Min(value = 1, message = "価格は1以上である必要があります")
     private Integer price;
-    
-    private int salePrice;
-    @Min(value = 1, message = "数量は1以上である必要があります")
-    private int stockQuantity;
+
+    private Integer salePrice;
+    @NotNull(message = "stockQuantityは正しい数値で指定してください")
+    private Integer stockQuantity;
+
     private String imageUrl;
 
 }
