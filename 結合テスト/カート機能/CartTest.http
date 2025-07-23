@@ -1,0 +1,44 @@
+## カート機能のテスト
+### 2-1 ×
+POST http://localhost:8080/api/cart
+content-type: application/json
+
+{
+    "productId": 1, 
+    "quantity": 2
+}
+
+### 2-2
+POST http://localhost:8080/api/cart/add
+content-type: application/json
+
+{
+    "productId": 1, 
+    "quantity": 2
+}
+
+### 2-3
+POST http://localhost:8080/api/cart/add
+content-type: application/json
+
+{
+    "productId": 2, 
+    "quantity": 1
+}
+
+### 2-4　×
+POST http://localhost:8080/api/cart/update
+content-type: application/json
+
+{
+    "productId": 1, 
+    "quantity": 5
+}
+
+### 2-5
+DELETE http://localhost:8080/api/cart/remove/2
+content-type: application/json
+
+{
+    "productId": 2
+}
