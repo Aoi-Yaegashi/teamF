@@ -145,10 +145,10 @@ class ProductControllerTest {
         @DisplayName("存在するproductIdの場合、商品詳細(ProductDetail)を200 OKで返す")
         void getProductById_WhenProductExists_ShouldReturnProductDetail() throws Exception {
             // Arrange (setUpのデフォルトモックを使用 - ID:1)
-            Integer productId = 1;
+            Integer id = 1;
 
             // Act & Assert
-            mockMvc.perform(get("/api/products/{id}", productId)
+            mockMvc.perform(get("/api/products/{id}", id)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -160,7 +160,7 @@ class ProductControllerTest {
                     .andExpect(jsonPath("$.stockQuantity", is(productDetail1.getStockQuantity())))
                     .andExpect(jsonPath("$.imageUrl", is(productDetail1.getImageUrl())));
 
-            verify(productService, times(1)).findProductById(productId);
+            verify(productService, times(1)).findProductById(id);
             verifyNoMoreInteractions(productService);
         }
 
@@ -168,10 +168,10 @@ class ProductControllerTest {
         @DisplayName("存在するproductIdで、一部フィールドがnullの商品の場合、nullを含む商品詳細を200 OKで返す")
         void getProductById_WhenProductExistsWithNullFields_ShouldReturnProductDetailWithNulls() throws Exception {
             // Arrange (setUpのデフォルトモックを使用 - ID:3)
-            Integer productId = 3;
+            Integer id = 3;
 
             // Act & Assert
-            mockMvc.perform(get("/api/products/{id}", productId)
+            mockMvc.perform(get("/api/products/{id}", id)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -182,7 +182,7 @@ class ProductControllerTest {
                     .andExpect(jsonPath("$.stockQuantity", is(productDetailWithNulls.getStockQuantity())))
                     .andExpect(jsonPath("$.imageUrl", is(nullValue()))); // imageUrlがnull
 
-            verify(productService, times(1)).findProductById(productId);
+            verify(productService, times(1)).findProductById(id);
             verifyNoMoreInteractions(productService);
         }
 
@@ -190,14 +190,14 @@ class ProductControllerTest {
         @DisplayName("存在しないproductIdの場合、404 Not Foundを返す")
         void getProductById_WhenProductNotExists_ShouldReturnNotFound() throws Exception {
             // Arrange (setUpのデフォルトモックを使用 - ID:99)
-            Integer productId = 99;
+            Integer id = 99;
 
             // Act & Assert
-            mockMvc.perform(get("/api/products/{id}", productId)
+            mockMvc.perform(get("/api/products/{id}", id)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNotFound()); // ステータスコード404 Not Found
 
-            verify(productService, times(1)).findProductById(productId);
+            verify(productService, times(1)).findProductById(id);
             verifyNoMoreInteractions(productService);
         }
 
@@ -225,16 +225,16 @@ class ProductControllerTest {
 @DisplayName("ProductServiceが例外をスローした場合、500 Internal Server Errorを返す")
 void getProductById_WhenServiceThrowsException_ShouldReturnInternalServerError() throws Exception {
     // Arrange
-    Integer productId = 1;
-    when(productService.findProductById(productId)).thenThrow(new RuntimeException("サービスエラー"));
+    Integer id = 1;
+    when(productService.findProductById(id)).thenThrow(new RuntimeException("サービスエラー"));
 
     // Act & Assert
-    mockMvc.perform(get("/api/products/{id}", productId)
+    mockMvc.perform(get("/api/products/{id}", id)
                     .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isInternalServerError())
             .andExpect(jsonPath("$.message", containsString("サービスエラー")));
 
-    verify(productService, times(1)).findProductById(productId);
+    verify(productService, times(1)).findProductById(id);
     verifyNoMoreInteractions(productService);
 }
 }

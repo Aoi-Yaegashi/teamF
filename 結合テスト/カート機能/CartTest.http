@@ -1,0 +1,143 @@
+## カート機能のテスト
+### 2-1 
+POST http://localhost:8080/api/cart/add
+content-type: application/json
+
+{
+    "productId": 1, 
+    "quantity": 2
+}
+
+### 2-2
+POST http://localhost:8080/api/cart/add
+content-type: application/json
+
+{
+    "productId": 1, 
+    "quantity": 3
+}
+
+### 2-3
+POST http://localhost:8080/api/cart/add
+content-type: application/json
+
+{
+    "productId": 2, 
+    "quantity": 1
+}
+
+### 2-4
+PUT http://localhost:8080/api/cart/update
+content-type: application/json
+
+{
+    "productId": 1, 
+    "quantity": 4
+}
+
+### 2-5
+DELETE http://localhost:8080/api/cart/remove/2
+content-type: application/json
+
+{
+    "productId": 2
+}
+
+### 2-6
+DELETE http://localhost:8080/api/cart/clear
+
+### 2-7
+GET http://localhost:8080/api/cart
+
+### 2-8
+GET http://localhost:8080/api/cart
+
+### 2-9
+POST http://localhost:8080/api/cart/add
+content-type: application/json
+
+{
+    "productId": 999, 
+    "quantity": 2
+}
+
+### 2-10
+POST http://localhost:8080/api/cart/add
+content-type: application/json
+
+{
+    "productId": 1, 
+    "quantity": 0
+}
+
+### 2-11
+POST http://localhost:8080/api/cart/add
+content-type: application/json
+
+{
+    "productId": 1, 
+    "quantity": -1
+}
+
+### 2-12
+POST http://localhost:8080/api/cart/add
+content-type: application/json
+
+{
+    "productId": 1, 
+    "quantity": null
+}
+
+### 2-13
+POST http://localhost:8080/api/cart/add
+content-type: application/json
+
+{
+    "productId": null, 
+    "quantity": 1
+}
+
+### 2-14
+PUT http://localhost:8080/api/cart/update
+content-type: application/json
+
+{
+    "productId": 1, 
+    "quantity": 0
+}
+
+### 2-15
+PUT http://localhost:8080/api/cart/update
+content-type: application/json
+
+{
+    "productId": 1, 
+    "quantity": -1
+}
+
+### 2-16
+PUT http://localhost:8080/api/cart/update
+content-type: application/json
+
+{
+    "productId": 1, 
+    "quantity": null
+}
+
+### 2-17
+PUT http://localhost:8080/api/cart/update
+content-type: application/json
+
+{
+    "productId": 999, 
+    "quantity": 5
+}
+
+### 2-18
+
+DELETE http://localhost:8080/api/cart/remove/999
+content-type: application/json
+
+{
+    "productId": 999
+}
