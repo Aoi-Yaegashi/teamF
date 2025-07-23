@@ -63,7 +63,6 @@ public class OrderService {
 
         // 注文エンティティ作成
         Order order = new Order();
-        OrderCreateDTO customerInfo = orderCreateDTO.getCustomerInfo();
         order.setOrderDate(LocalDateTime.now());
         order.setTotalAmount(cart.getTotalPrice());
         order.setCustomerName(orderCreateDTO.getCustomerName());
