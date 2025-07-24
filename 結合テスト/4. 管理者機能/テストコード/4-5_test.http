@@ -1,0 +1,10 @@
+### 商品編集
+PUT http://localhost:8080/api/admin/1
+content-type: application/json
+
+{   "name": "更新商品",
+    "description": "更新説明",
+    "price": 900,
+    "salePrice": 800,
+    "stockQuantity":5,
+    "imageUrl":"/imgD.png"}

@@ -1,0 +1,10 @@
+### 商品登録
+POST http://localhost:8080/api/admin
+content-type: application/json
+
+{   "name": "商品E",
+    "price": 500,
+    "salePrice": 400,
+    "description": "説明E",
+    "stockQuantity":"5",
+    "imageUrl":"/imgD.png"}
