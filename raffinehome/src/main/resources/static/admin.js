@@ -94,14 +94,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <img src="${product.imageUrl || 'https://via.placeholder.com/400x300'}" class="img-fluid" alt="${product.name}">
             </div>
             <div class="col-md-6">
-                <p class="fs-4">¥${product.price.toLocaleString()}</p>
-                <p class="fs-4">¥${product.salePrice.toLocaleString()}</p>
+                <p class="fs-4">通常価格：¥${product.price.toLocaleString()}</p>
+                <p class="fs-4">セール価格：¥${product.salePrice.toLocaleString()}</p>
                 <p>${product.description}</p>
                 <p>在庫: ${product.stockQuantity} 個</p>
-                <div class="d-flex align-items-center mb-3">
-                    <label for="quantity" class="me-2">数量:</label>
-                    <input type="number" id="quantity" class="form-control w-25" value="1" min="1" max="${product.stockQuantity}">
-                </div>
 
         <!-- 商品情報編集フォーム -->
         <form class="form-area" id=update-form>
