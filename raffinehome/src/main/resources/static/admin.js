@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // 追加：全商品リストを保存
+    let allProducts = []; 
   // モーダル要素の取得
     const productModal = new bootstrap.Modal(document.getElementById('productModal'));
     const createModal = new bootstrap.Modal(document.getElementById('createModal'));
@@ -26,6 +28,59 @@ document.addEventListener('DOMContentLoaded', function() {
     // 商品削除ボタンクリックイベント
     deleteProduct();
 
+    // 検索イベントの設定
+            document.getElementById('search-btn').addEventListener('click', function () {
+            const keyword = document.getElementById('search-input').value.trim().toLowerCase();
+            searchProducts(keyword);
+        });
+
+            document.getElementById('search-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+            document.getElementById('search-btn').click();
+            }
+        });
+
+        // 2%20AdminProductList.htmlの処理
+        if (window.location.pathname === '/2%20AdminProductList.html' ) {
+            const params = new URLSearchParams(window.location.search);
+            const keyword = params.get('keyword');
+            
+            //このあたり修正
+            //fetchProductsしてからsearchする
+            fetchProducts().then(() => {
+                if (keyword) {
+                    searchProducts(keyword);
+                }
+            });
+
+            // if (keyword) {
+            // // 検索処理を呼び出す（例: fetch API などでバックエンド検索）
+            //     console.log("検索キーワード:", keyword);
+            //     searchProducts(keyword);
+            // }
+        }else{
+            fetchProducts();
+        }
+
+    // 検索処理（商品名と説明の両方対象）
+    function searchProducts(keyword) {
+    if (!keyword) {
+            displayProducts(allProducts);
+            return;
+        }
+
+        const filtered = allProducts.filter(product =>
+            product.name.toLowerCase().includes(keyword) ||
+            product.description.toLowerCase().includes(keyword)
+        );
+        displayProducts(filtered);
+
+        if (filtered.length === 0) {
+            document.getElementById('products-container').innerHTML =
+                '<p class="text-center">検索結果が見つかりませんでした。</p>';
+        }
+    }
+
   //商品一覧を取得して表示する関数
   async function fetchProducts() {
     try {
@@ -34,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         throw new Error('商品取得失敗');
       }
       const products = await response.json();
+      allProducts = products;
       displayProducts(products);
     } catch (error) {
           console.error('Error:', error);
@@ -122,8 +178,12 @@ document.addEventListener('DOMContentLoaded', function() {
               <input type="number" id="product-stockquantity" class="form-input" placeholder="例: 10" min="0" />
             </div>
             <div class="form-group">
-              <span class="form-file-label">商品の新しい画像ファイル</span>
-              <input type="file" id="product-image" class="form-file" accept="image/*" />
+                <span class="form-file-label">商品の新しい画像ファイル</span>
+                <div class="current-image mb-2">
+                    <small class="text-muted">現在の画像: <span id="current-image-url">${product.imageUrl || '設定なし'}</span></small>
+                </div>
+                <input type="file" id="product-image" class="form-file" accept="image/*" />
+                <small class="form-text text-muted">新しい画像を選択しない場合、現在の画像が保持されます</small>
             </div>
         </form>
                 <button class="btn btn-primary update-product" id=update-product data-id="${product.id}">確定</button>
@@ -163,6 +223,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
+    const currentImageUrl = document.getElementById('current-image-url').textContent;
+
     const updateData = {
       //formInfo: {
         name: document.getElementById('product-name').value,
@@ -170,7 +232,9 @@ document.addEventListener('DOMContentLoaded', function() {
         price: document.getElementById('product-price').value,
         salePrice: document.getElementById('product-saleprice').value,
         stockQuantity: document.getElementById('product-stockquantity').value,
-        imageUrl: document.getElementById('product-image').value
+        imageUrl: document.getElementById('product-image').files.length > 0 
+            ? document.getElementById('product-image').value 
+            : (currentImageUrl === '設定なし' ? '' : currentImageUrl)
       //}
     };
 
