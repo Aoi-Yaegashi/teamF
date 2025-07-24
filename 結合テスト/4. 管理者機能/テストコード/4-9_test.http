@@ -1,0 +1,5 @@
+### 4-9
+DELETE http://localhost:8080/api/admin/999
+content-type: application/json
+
+{   "isDeleted": true}

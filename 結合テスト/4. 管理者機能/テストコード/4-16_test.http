@@ -1,0 +1,10 @@
+### 4-16
+PUT http://localhost:8080/api/admin/1
+content-type: application/json
+
+{   "name": null,
+    "description": "あああ",
+    "price": "6",
+    "salePrice": "4",
+    "stockQuantity":"1",
+    "imageUrl":"a.png"}
