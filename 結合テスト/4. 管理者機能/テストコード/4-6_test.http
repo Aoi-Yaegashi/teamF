@@ -1,0 +1,5 @@
+### 削除
+DELETE http://localhost:8080/api/admin/1
+content-type: application/json
+
+{   "isDeleted": true}
