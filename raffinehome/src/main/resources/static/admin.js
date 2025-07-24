@@ -136,6 +136,13 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     `;
 
+    //フォームの初期値として、既存情報が入力されているようにしたい
+    document.getElementById('product-name').value = product.name || '';
+    document.getElementById('product-description').value = product.description || '';
+    document.getElementById('product-price').value = product.price || '';
+    document.getElementById('product-saleprice').value = product.salePrice || '';
+    document.getElementById('product-stockquantity').value = product.stockQuantity || '';
+
       // 更新確定ボタンのイベント設定
       modalBody.querySelector('.update-product').addEventListener('click', function() {
           /*const quantity = parseInt(document.getElementById('quantity').value);*/

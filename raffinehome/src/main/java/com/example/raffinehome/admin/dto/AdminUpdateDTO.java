@@ -3,6 +3,9 @@ package com.example.raffinehome.admin.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -10,11 +13,20 @@ import lombok.NoArgsConstructor;
 public class AdminUpdateDTO{
 
     private int id;
+
+    @NotBlank(message = "商品名は必須です")
     private String name;
+
     private String description;
-    private int price;
-    private int salePrice;
-    private int stockQuantity;
+
+    @NotNull(message = "商品価格は必須です")
+    @Min(value = 1, message = "価格は1以上である必要があります")
+    private Integer price;
+
+    private Integer salePrice;
+    @NotNull(message = "stockQuantityは正しい数値で指定してください")
+    private Integer stockQuantity;
+
     private String imageUrl;
 
 }

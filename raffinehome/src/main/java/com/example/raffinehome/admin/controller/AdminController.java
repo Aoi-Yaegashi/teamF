@@ -58,13 +58,13 @@ public ResponseEntity<AdminProductDto> getProductById(@PathVariable Integer id){
 }
 
 @PostMapping
-public ResponseEntity<String> createProduct(@RequestBody AdminCreateDTO dto) {
+public ResponseEntity<String> createProduct(@Valid @RequestBody AdminCreateDTO dto) {
     adminService.createProduct(dto);
     return ResponseEntity.ok("商品登録が完了しました");
 }
 
 @PutMapping("/{id}")
-public ResponseEntity<String> updateProduct(@PathVariable("id")int id, @RequestBody AdminUpdateDTO dto){
+public ResponseEntity<String> updateProduct(@PathVariable("id")int id, @Valid @RequestBody AdminUpdateDTO dto){
     adminService.updateProduct(id, dto);
     return ResponseEntity.ok("商品情報を更新しました");
 }

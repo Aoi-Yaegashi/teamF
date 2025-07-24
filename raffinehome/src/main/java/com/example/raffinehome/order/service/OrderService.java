@@ -63,7 +63,6 @@ public class OrderService {
 
         // 注文エンティティ作成
         Order order = new Order();
-        OrderCreateDTO customerInfo = orderCreateDTO.getCustomerInfo();
         order.setOrderDate(LocalDateTime.now());
         order.setTotalAmount(cart.getTotalPrice());
         order.setCustomerName(orderCreateDTO.getCustomerName());
@@ -86,6 +85,11 @@ public class OrderService {
 
             order.addOrderDetail(orderDetail);
 
+            //  結合テスト用　エラー発生させるコード 
+            //  在庫数が注文数以下
+            //product.setStockQuantity(-100);
+
+
             // 在庫減算処理と結果のチェック
             int updatedRows = productRepository.decreaseStock(product.getId(), cartItem.getQuantity());
 
@@ -101,12 +105,43 @@ public class OrderService {
             }
         }
 
+
+
+    //  結合テスト用　エラー発生させるコード  
+    //　不正な顧客情報      
+    //order.setCustomerName(null);
+
+
         // 注文保存
         Order savedOrder = orderRepository.save(order);
 
         // カートクリア
+
+        //  結合テスト用　エラー発生させるコード
+        //cartService.clearCart(null);
+
         cartService.clearCart(session);
 
-        return new OrderDTO(savedOrder.getId(),savedOrder.getOrderDate());
+        // OrderDTOへ必要なフィールドをセット
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setId(savedOrder.getId());
+        orderDTO.setOrderDate(savedOrder.getOrderDate());
+        orderDTO.setCustomerName(savedOrder.getCustomerName());
+        orderDTO.setCustomerEmail(savedOrder.getCustomerEmail());
+        orderDTO.setShippingAddress(savedOrder.getShippingAddress());
+        orderDTO.setPhoneNumber(savedOrder.getPhoneNumber());
+        orderDTO.setTotalAmount(savedOrder.getTotalAmount());
+        orderDTO.setOrderStatus(savedOrder.getOrderStatus());
+        
+        int subtotal = 0;
+        for (OrderItem item : savedOrder.getOrderDetails()) {
+            subtotal += item.getUnitPrice() * item.getQuantity();
+        }
+        orderDTO.setSubtotal(subtotal);
+
+        orderDTO.setCanCancel(true); 
+        orderDTO.setCanShip(false);  
+
+        return orderDTO;
     }
 }

@@ -1,0 +1,10 @@
+### 4-15
+POST http://localhost:8080/api/admin
+content-type: application/json
+
+{   "name": "テスト",
+    "price": "6",
+    "salePrice": "4",
+    "description": "あああ",
+    "stockQuantity":"aaa",
+    "imageUrl":"a.png"}

@@ -1,0 +1,11 @@
+### 3-4
+POST http://localhost:8080/api/orders
+content-type: application/json
+
+{
+    "customerName": "顧客一郎",
+    "customerEmail": "ichiro@test.com",
+    "shippingAddress": "東京都千代田区テスト1-1",
+    "phoneNumber": "03-1234-5678"
+
+}

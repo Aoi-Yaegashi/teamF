@@ -1,0 +1,2 @@
+### 商品一覧（管理者）
+GET http://localhost:8080/api/admin
