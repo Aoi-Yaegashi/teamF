@@ -52,8 +52,8 @@ class ProductControllerTest {
         productListItem1 = new ProductListDTO(1, "リスト商品1", 100, 90, "説明A", 3, "/list1.png");
         productListItem2 = new ProductListDTO(2, "リスト商品2", 200, 180, "説明B", 0, "/list2.png");
 
-        productDetail1 = new ProductDTO (1, "詳細商品1", 100, 90, "詳細説明1", 10,  "/detail1.png", true);
-        productDetailWithNulls = new ProductDTO(3, "詳細商品3", 300, 280, null, 5, null, true); // descriptionとimageUrlがnull
+        productDetail1 = new ProductDTO (1, "詳細商品1", 100, 90, "詳細説明1", 10,  "/detail1.png", true, false);
+        productDetailWithNulls = new ProductDTO(3, "詳細商品3", 300, 280, null, 5, null, true, false); // descriptionとimageUrlがnull
 
         // --- Serviceメソッドのデフォルトモック設定 (lenient) ---
         // デフォルトではfindAllProductsは2つのアイテムを返す
