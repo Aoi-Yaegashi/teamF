@@ -87,3 +87,7 @@ content-type: application/json
 ###
 GET http://localhost:8080/api/products/1
 
+### No. 1-7 論理削除された商品の詳細表示
+GET http://localhost:8080/api/products/3
+
+
