@@ -40,6 +40,7 @@ class ProductServiceTest {
         product1.setId(1);
         product1.setName("商品1");
         product1.setPrice(100);
+        product1.setSalePrice(90);
         product1.setImageUrl("/img1.png");
         product1.setDescription("説明1");
         product1.setStockQuantity(10);
@@ -49,6 +50,7 @@ class ProductServiceTest {
         product2.setId(2);
         product2.setName("商品2");
         product2.setPrice(200);
+        product2.setSalePrice(180);
         product2.setImageUrl("/img2.png");
         product2.setDescription("説明2");
         product2.setStockQuantity(5);
@@ -57,6 +59,7 @@ class ProductServiceTest {
         productWithNullFields.setId(3);
         productWithNullFields.setName("商品3（Nullあり）");
         productWithNullFields.setPrice(300);
+        productWithNullFields.setSalePrice(270);
         productWithNullFields.setStockQuantity(8);
         productWithNullFields.setDescription(null); // descriptionがnull
         productWithNullFields.setImageUrl(null);    // imageUrlがnull
@@ -78,10 +81,10 @@ class ProductServiceTest {
         assertThat(result).hasSize(2);
         // 各要素の全フィールドが正しくマッピングされているか検証 (tupleを使うと便利)
         assertThat(result)
-            .extracting(ProductListDTO::getId, ProductListDTO::getName, ProductListDTO::getPrice, ProductListDTO::getImageUrl)
+            .extracting(ProductListDTO::getId, ProductListDTO::getName, ProductListDTO::getPrice, ProductListDTO::getSalePrice, ProductListDTO::getImageUrl)
             .containsExactlyInAnyOrder(
-                tuple(product1.getId(), product1.getName(), product1.getPrice(), product1.getImageUrl()),
-                tuple(product2.getId(), product2.getName(), product2.getPrice(), product2.getImageUrl())
+                tuple(product1.getId(), product1.getName(), product1.getPrice(), product1.getSalePrice(), product1.getImageUrl()),
+                tuple(product2.getId(), product2.getName(), product2.getPrice(), product2.getSalePrice(), product2.getImageUrl())
             );
 
         // Verify: メソッド呼び出し検証
