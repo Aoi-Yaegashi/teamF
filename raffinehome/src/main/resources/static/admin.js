@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
   // 追加：全商品リストを保存
-    let allProducts = []; 
+    //let allProducts = []; 
   // モーダル要素の取得
     const productModal = new bootstrap.Modal(document.getElementById('productModal'));
     const createModal = new bootstrap.Modal(document.getElementById('createModal'));
