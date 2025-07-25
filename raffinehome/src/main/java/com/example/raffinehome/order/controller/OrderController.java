@@ -30,7 +30,7 @@ public class OrderController {
     
     @PostMapping
     public ResponseEntity<OrderDTO> placeOrder(
-            @Valid @RequestBody OrderCreateDTO orederCreateDTO,
+            @Valid @RequestBody OrderCreateDTO orderCreateDTO,
             HttpSession session) {
 
         
@@ -45,7 +45,7 @@ System.out.println("カートが空");
         }
 System.out.println("カートの中身あり");
         try {
-            OrderDTO orderDTO = orderService.placeOrder(cart, orederCreateDTO, session);
+            OrderDTO orderDTO = orderService.placeOrder(cart, orderCreateDTO, session);
             return ResponseEntity.status(HttpStatus.CREATED).body(orderDTO);
         } catch (Exception e) {
 System.out.println("注文失敗");             
