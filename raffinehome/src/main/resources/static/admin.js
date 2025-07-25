@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // 追加：全商品リストを保存
+    //let allProducts = []; 
   // モーダル要素の取得
     const productModal = new bootstrap.Modal(document.getElementById('productModal'));
     const createModal = new bootstrap.Modal(document.getElementById('createModal'));
@@ -26,6 +28,59 @@ document.addEventListener('DOMContentLoaded', function() {
     // 商品削除ボタンクリックイベント
     deleteProduct();
 
+    // 検索イベントの設定
+            document.getElementById('search-btn').addEventListener('click', function () {
+            const keyword = document.getElementById('search-input').value.trim().toLowerCase();
+            searchProducts(keyword);
+        });
+
+            document.getElementById('search-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+            document.getElementById('search-btn').click();
+            }
+        });
+
+        // 2%20AdminProductList.htmlの処理
+        if (window.location.pathname === '/2%20AdminProductList.html' ) {
+            const params = new URLSearchParams(window.location.search);
+            const keyword = params.get('keyword');
+            
+            //このあたり修正
+            //fetchProductsしてからsearchする
+            fetchProducts().then(() => {
+                if (keyword) {
+                    searchProducts(keyword);
+                }
+            });
+
+            // if (keyword) {
+            // // 検索処理を呼び出す（例: fetch API などでバックエンド検索）
+            //     console.log("検索キーワード:", keyword);
+            //     searchProducts(keyword);
+            // }
+        }else{
+            fetchProducts();
+        }
+
+    // 検索処理（商品名と説明の両方対象）
+    function searchProducts(keyword) {
+    if (!keyword) {
+            displayProducts(allProducts);
+            return;
+        }
+
+        const filtered = allProducts.filter(product =>
+            product.name.toLowerCase().includes(keyword) ||
+            product.description.toLowerCase().includes(keyword)
+        );
+        displayProducts(filtered);
+
+        if (filtered.length === 0) {
+            document.getElementById('products-container').innerHTML =
+                '<p class="text-center">検索結果が見つかりませんでした。</p>';
+        }
+    }
+
   //商品一覧を取得して表示する関数
   async function fetchProducts() {
     try {
@@ -34,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         throw new Error('商品取得失敗');
       }
       const products = await response.json();
+      allProducts = products;
       displayProducts(products);
     } catch (error) {
           console.error('Error:', error);
@@ -94,14 +150,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <img src="${product.imageUrl || 'https://via.placeholder.com/400x300'}" class="img-fluid" alt="${product.name}">
             </div>
             <div class="col-md-6">
-                <p class="fs-4">¥${product.price.toLocaleString()}</p>
-                <p class="fs-4">¥${product.salePrice.toLocaleString()}</p>
+                <p class="fs-4">通常価格：¥${product.price.toLocaleString()}</p>
+                <p class="fs-4">セール価格：¥${product.salePrice.toLocaleString()}</p>
                 <p>${product.description}</p>
                 <p>在庫: ${product.stockQuantity} 個</p>
-                <div class="d-flex align-items-center mb-3">
-                    <label for="quantity" class="me-2">数量:</label>
-                    <input type="number" id="quantity" class="form-control w-25" value="1" min="1" max="${product.stockQuantity}">
-                </div>
 
         <!-- 商品情報編集フォーム -->
         <form class="form-area" id=update-form>
@@ -126,8 +178,8 @@ document.addEventListener('DOMContentLoaded', function() {
               <input type="number" id="product-stockquantity" class="form-input" placeholder="例: 10" min="0" />
             </div>
             <div class="form-group">
-              <span class="form-file-label">商品の新しい画像ファイル</span>
-              <input type="file" id="product-image" class="form-file" accept="image/*" />
+                <label for="product-image" class="form-label">商品の新しい画像パス</label>
+                <input type="text" id="product-image" class="form-input" placeholder="新しい画像のパスを入力" />
             </div>
         </form>
                 <button class="btn btn-primary update-product" id=update-product data-id="${product.id}">確定</button>
@@ -142,6 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('product-price').value = product.price || '';
     document.getElementById('product-saleprice').value = product.salePrice || '';
     document.getElementById('product-stockquantity').value = product.stockQuantity || '';
+    document.getElementById('product-image').value = product.imageUrl || '';
 
       // 更新確定ボタンのイベント設定
       modalBody.querySelector('.update-product').addEventListener('click', function() {
