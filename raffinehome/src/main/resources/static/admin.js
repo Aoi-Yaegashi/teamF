@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
     modalBody.innerHTML = `
         <div class="row">
             <div class="col-md-6">
-                <img src="${product.imageUrl || 'https://via.placeholder.com/400x300'}" class="img-fluid" alt="${product.name}">
+                <img src="${product.imageUrl}" class="img-fluid" alt="${product.name}">
             </div>
             <div class="col-md-6">
                 <p class="fs-4">通常価格：¥${product.price.toLocaleString()}</p>
