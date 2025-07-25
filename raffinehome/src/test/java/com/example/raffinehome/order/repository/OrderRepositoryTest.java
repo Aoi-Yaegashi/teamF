@@ -45,6 +45,7 @@ class OrderRepositoryTest {
         Product p = new Product();
         p.setName(name);
         p.setPrice(price);
+        p.setSalePrice(price);
         p.setStockQuantity(100);
         return productRepository.save(p);
     }
@@ -55,12 +56,14 @@ class OrderRepositoryTest {
         product1 = new Product();
         product1.setName("商品A");
         product1.setPrice(1000);
+        product1.setSalePrice(900);
         product1.setStockQuantity(10);
         product1 = productRepository.save(product1);
 
         product2 = new Product();
         product2.setName("商品B");
         product2.setPrice(2000);
+        product2.setSalePrice(1800);
         product2.setStockQuantity(5);
         product2 = productRepository.save(product2);
     }
@@ -337,6 +340,7 @@ class OrderRepositoryTest {
         item.setProduct(product);
         item.setProductName(product.getName());
         item.setUnitPrice(product.getPrice());
+        item.setSalePrice(product.getSalePrice());
         item.setQuantity(2);
         item.setSubtotal(2400);
         order.setOrderDetails(List.of(item));
