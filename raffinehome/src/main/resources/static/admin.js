@@ -178,12 +178,8 @@ document.addEventListener('DOMContentLoaded', function() {
               <input type="number" id="product-stockquantity" class="form-input" placeholder="例: 10" min="0" />
             </div>
             <div class="form-group">
-                <span class="form-file-label">商品の新しい画像ファイル</span>
-                <div class="current-image mb-2">
-                    <small class="text-muted">現在の画像: <span id="current-image-url">${product.imageUrl || '設定なし'}</span></small>
-                </div>
-                <input type="file" id="product-image" class="form-file" accept="image/*" />
-                <small class="form-text text-muted">新しい画像を選択しない場合、現在の画像が保持されます</small>
+                <label for="product-image" class="form-label">商品の新しい画像パス</label>
+                <input type="text" id="product-image" class="form-input" placeholder="新しい画像のパスを入力" />
             </div>
         </form>
                 <button class="btn btn-primary update-product" id=update-product data-id="${product.id}">確定</button>
@@ -198,6 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('product-price').value = product.price || '';
     document.getElementById('product-saleprice').value = product.salePrice || '';
     document.getElementById('product-stockquantity').value = product.stockQuantity || '';
+    document.getElementById('product-image').value = product.imageUrl || '';
 
       // 更新確定ボタンのイベント設定
       modalBody.querySelector('.update-product').addEventListener('click', function() {
@@ -223,8 +220,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    const currentImageUrl = document.getElementById('current-image-url').textContent;
-
     const updateData = {
       //formInfo: {
         name: document.getElementById('product-name').value,
@@ -232,9 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
         price: document.getElementById('product-price').value,
         salePrice: document.getElementById('product-saleprice').value,
         stockQuantity: document.getElementById('product-stockquantity').value,
-        imageUrl: document.getElementById('product-image').files.length > 0 
-            ? document.getElementById('product-image').value 
-            : (currentImageUrl === '設定なし' ? '' : currentImageUrl)
+        imageUrl: document.getElementById('product-image').value
       //}
     };
 
