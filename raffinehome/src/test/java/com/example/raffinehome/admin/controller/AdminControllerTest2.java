@@ -439,7 +439,7 @@ class AdminControllerTest2 {
 
     @Test
     @DisplayName("PUT /api/admin/{id} 名前が空の時エラー返却")
-    void updateProduct_WhenNameEmpty_ShouldReturnError() throws Exception {
+    void updateProduct_WhenNameEmpty_ShouldBadRequest() throws Exception {
         int id = 5;
         String requestJson = """
             {
