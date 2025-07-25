@@ -73,7 +73,7 @@ class ProductControllerTest {
 
         @Test
         @DisplayName("商品が存在する場合、商品リスト(ProductListItem)を200 OKで返す")
-        void getAllProducts_WhenProductsExist_ShouldReturnProductList() throws Exception {
+        void getAllActiveProducts_WhenProductsExist_ShouldReturnProductList() throws Exception {
             // Arrange (setUpのデフォルトモックを使用)
 
             // Act & Assert
@@ -103,7 +103,7 @@ class ProductControllerTest {
 
         @Test
         @DisplayName("商品が存在しない場合、空のリストを200 OKで返す")
-        void getAllProducts_WhenNoProductsExist_ShouldReturnEmptyList() throws Exception {
+        void getAllActiveProducts_WhenNoProductsExist_ShouldReturnEmptyList() throws Exception {
             // Arrange
             when(productService.findAllActiveProducts()).thenReturn(Collections.emptyList()); // 空リストを返すように設定
 
@@ -120,7 +120,7 @@ class ProductControllerTest {
 
         @Test
         @DisplayName("ProductServiceが例外をスローした場合、500 Internal Server Errorを返す")
-        void getAllProducts_WhenServiceThrowsException_ShouldReturnInternalServerError() throws Exception {
+        void getAllActiveProducts_WhenServiceThrowsException_ShouldReturnInternalServerError() throws Exception {
             // Arrange
             when(productService.findAllActiveProducts()).thenThrow(new RuntimeException("サービスエラー"));
 
@@ -203,7 +203,7 @@ class ProductControllerTest {
 
         @Test
         @DisplayName("Idが数値でない場合、500 Internal Server Errorを返す (現在のGlobalExceptionHandlerの実装による)") // DisplayName を変更
-        void getProductById_WithInvalidIdFormat_ShouldReturnInternalServerError_DueToExceptionHandler() throws Exception { // メソッド名を変更
+        void getProductById_WithInvalidProductIdFormat_ShouldReturnInternalServerError_DueToExceptionHandler() throws Exception { // メソッド名を変更
             // Arrange
             String invalidId = "abc"; // 数値でないパスパラメータ
 
