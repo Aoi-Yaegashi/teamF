@@ -408,7 +408,7 @@ class CartControllerTest {
     class RemoveItemTests {
         @Test
         @DisplayName("存在するproductIdの場合、カートから商品を削除し更新されたカートを200 OKで返す")
-        void removeItem_WhenItemExists_ShouldReturnUpdatedCartWithStatusOk() throws Exception {
+        void removeFromCart_WhenItemExists_ShouldReturnUpdatedCartWithStatusOk() throws Exception {
             // Arrange
             String productId = "1";
             // 削除後のカート（空）
@@ -431,7 +431,7 @@ class CartControllerTest {
 
          @Test
         @DisplayName("存在しないproductIdの場合でも、サービスがカートを返し、それを200 OKで返す")
-        void removeItem_WhenItemNotExists_ShouldReturnCartFromServiceWithStatusOk() throws Exception {
+        void removeFromCart_WhenItemNotExists_ShouldReturnCartFromServiceWithStatusOk() throws Exception {
             // Arrange
             String nonExistingItemId = "99";
             // 存在しないIDで削除しても、サービスは現在の（変化しない）カートを返す想定
