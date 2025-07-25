@@ -31,6 +31,9 @@ public class OrderItem {
     
     @Column(nullable = false)
     private  int unitPrice;
+
+    @Column(nullable = false)
+    private int salePrice;
     
     @Column(nullable = false)
     private int quantity;
