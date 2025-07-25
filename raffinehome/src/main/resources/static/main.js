@@ -178,6 +178,18 @@ alert('商品の取得に失敗しました');
                 </div>
             </div>
         `;
+
+    // ユーザーが上下矢印操作のみ数量選択を許可
+        const quantityInput = document.getElementById("quantity");
+          if (quantityInput) {
+              quantityInput.addEventListener("keydown", function(e) {
+                  const allowedKeys = ["ArrowUp", "ArrowDown", "Tab"];
+                  if (!allowedKeys.includes(e.key)) {
+                      e.preventDefault();
+            }
+        });
+    }
+
         
         // カートに追加ボタンのイベント設定
         modalBody.querySelector('.add-to-cart').addEventListener('click', function() {
@@ -303,6 +315,15 @@ alert('商品の取得に失敗しました');
             
             // 数量更新イベントの設定
             document.querySelectorAll('.update-quantity').forEach(input => {
+                // ユーザーが上下矢印操作のみ数量選択を許可
+                input.addEventListener('keydown', function(e) {
+                    const allowedKeys = ["ArrowUp", "ArrowDowm", "Tab"];
+                    if (!allowedKeys.includes(e.key)) {
+                        e.preventDefault();
+                    }
+                });
+
+                // 変更時にサーバ送信
                 input.addEventListener('change', function() {
                     updateItemQuantity(this.dataset.id, this.value);
                 });

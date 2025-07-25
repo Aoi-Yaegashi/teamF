@@ -1,0 +1,32 @@
+### 商品一覧取得
+GET http://localhost:8080/api/products
+
+### 商品詳細取得
+GET http://localhost:8080/api/products/1
+
+### カートに追加
+POST http://localhost:8080/api/cart/add
+content-type: application/json
+
+{
+    "productId": 1, 
+    "quantity": 2
+}
+
+### カート取得
+GET http://localhost:8080/api/cart
+
+
+
+//ここからOrder
+### 3-7
+POST http://localhost:8080/api/orders
+content-type: application/json
+
+{
+    "customerName": "",
+    "customerEmail": "ichiro@test.com",
+    "shippingAddress": "東京都千代田区テスト1-1",
+    "phoneNumber": "03-1234-5678"
+
+}
