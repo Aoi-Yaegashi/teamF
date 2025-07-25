@@ -245,7 +245,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void placeOrder_Fail_WhenOrderRequestIsNull_ShouldThrowNPE() {
+    void placeOrder_Fail_WhenOrederCreateDTOIsNull_ShouldThrowNPE() {
     // 正しいカート（空じゃない）とnullのorderCreateDTOを渡す
     CartDTO cart = new CartDTO();
     // 商品を追加してカートを非空に
