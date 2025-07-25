@@ -54,6 +54,7 @@ public class ProductService {
             product.getStockQuantity(),
             product.getImageUrl(),
             product.getStockQuantity() > 0
+            , product.isDeleted()  // 論理削除フラグを追加
         );
     }
     
