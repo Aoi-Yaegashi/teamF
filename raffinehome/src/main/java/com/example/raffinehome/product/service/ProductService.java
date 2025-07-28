@@ -1,16 +1,20 @@
 package com.example.raffinehome.product.service;
 
+import java.io.IOException;
+
 import com.example.raffinehome.product.dto.ProductDTO;
 import com.example.raffinehome.product.dto.ProductListDTO;
 import com.example.raffinehome.product.dto.ProductUpdateDTO;
 import com.example.raffinehome.product.entity.Product;
 import com.example.raffinehome.product.repository.ProductRepository;
+import com.opencsv.CSVWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,4 +74,30 @@ public class ProductService {
         ) ;
     }
     
+    //Productを全件検索してCSV出力する
+    public byte[] exportProductsToCsv() throws IOException {
+        List<ProductListDTO> products = findAllActiveProducts(); // 既存の取得ロジックを活用
+
+        StringWriter writer = new StringWriter();
+        CSVWriter csvWriter = new CSVWriter(
+            writer,
+            CSVWriter.DEFAULT_SEPARATOR,           // 区切り文字（通常はカンマ）
+            CSVWriter.NO_QUOTE_CHARACTER,          // クォート文字を無効化
+            CSVWriter.DEFAULT_ESCAPE_CHARACTER,    // エスケープ文字
+            CSVWriter.DEFAULT_LINE_END             // 改行コード
+        );
+
+        csvWriter.writeNext(new String[]{"ID", "Name", "Price", "Stock"});
+        for (ProductListDTO product : products) {
+            csvWriter.writeNext(new String[]{
+                String.valueOf(product.getId()),
+                product.getName(),
+                String.valueOf(product.getPrice()),
+                String.valueOf(product.getStockQuantity())
+            });
+        }
+        csvWriter.close();
+        return writer.toString().getBytes("MS932");
+    }
+
 }
