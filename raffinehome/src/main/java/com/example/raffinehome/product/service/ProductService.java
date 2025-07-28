@@ -87,12 +87,14 @@ public class ProductService {
             CSVWriter.DEFAULT_LINE_END             // 改行コード
         );
 
-        csvWriter.writeNext(new String[]{"ID", "Name", "Price", "Stock"});
+        csvWriter.writeNext(new String[]{"ID", "Name", "Price", "salePrice", "description", "Stock"});
         for (ProductListDTO product : products) {
             csvWriter.writeNext(new String[]{
                 String.valueOf(product.getId()),
                 product.getName(),
                 String.valueOf(product.getPrice()),
+                String.valueOf(product.getSalePrice()),
+                product.getDescription(),
                 String.valueOf(product.getStockQuantity())
             });
         }
