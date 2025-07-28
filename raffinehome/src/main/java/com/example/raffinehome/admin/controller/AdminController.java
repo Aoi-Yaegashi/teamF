@@ -1,5 +1,7 @@
 package com.example.raffinehome.admin.controller;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpStatus;
+
 
 import com.example.raffinehome.product.dto.ProductDTO;
 import com.example.raffinehome.product.entity.Product;
@@ -57,6 +64,20 @@ public ResponseEntity<AdminProductDto> getProductById(@PathVariable Integer id){
     return ResponseEntity.ok(product);
 }
 
+//CSVファイル出力する処理
+@GetMapping("/export")
+public ResponseEntity<byte[]> exportCsv() throws IOException {
+    byte[] csv = productService.exportProductsToCsv();
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+    headers.setContentDisposition(
+        ContentDisposition.attachment().filename("products.csv").build()
+    );
+
+    return new ResponseEntity<>(csv, headers, HttpStatus.OK);
+}
+
 @PostMapping
 public ResponseEntity<String> createProduct(@Valid @RequestBody AdminCreateDTO dto) {
     adminService.createProduct(dto);
@@ -73,5 +94,6 @@ public ResponseEntity<String> updateProduct(@PathVariable("id")int id, @Valid @R
 public ResponseEntity<String> deleteProduct(@PathVariable("id")int id) {
     adminService.deleteProduct(id);
     return ResponseEntity.ok("商品を削除しました");
+
 }
 }

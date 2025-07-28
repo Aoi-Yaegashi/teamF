@@ -28,6 +28,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // 商品削除ボタンクリックイベント
     deleteProduct();
 
+    //CSVボタンクリックイベント
+    document.getElementById('download-btn').addEventListener('click', function(){
+        exportProductsForCSV();
+    })
+
     // 検索イベントの設定
             document.getElementById('search-btn').addEventListener('click', function () {
             const keyword = document.getElementById('search-input').value.trim().toLowerCase();
@@ -355,4 +360,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('登録に失敗しました');
             }
   }
+  
+    //CSVファイルにエクスポートする関数
+    function exportProductsForCSV(){
+        fetch('/api/admin/export')
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'products.csv';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => console.error('CSVダウンロード失敗:', error));
+    }
 });
