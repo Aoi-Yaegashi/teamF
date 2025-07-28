@@ -253,7 +253,9 @@ class OrderServiceTest {
     cart.addItem(item); // addItemメソッドはあなたの実装次第
 
     assertThatThrownBy(() -> orderService.placeOrder(cart, null, session))
-        .isInstanceOf(NullPointerException.class);
+    .isInstanceOf(IllegalStateException.class)
+    .hasMessageContaining("商品価格が変更されています");
+
 }
 
     @Test
@@ -265,7 +267,7 @@ class OrderServiceTest {
         // Act & Assert
         assertThatThrownBy(() -> orderService.placeOrder(cart, orderCreateDTO, session))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage("在庫不足または商品未存在: " + "注文テスト商品2"); // サービス内のメッセージを確認
+                .hasMessage("在庫不足です: " + "注文テスト商品2"); // サービス内のメッセージを確認
 
         // 副作用がないこと（ロールバックされること）を確認
         verify(orderRepository, never()).save(any()); // Orderは保存されない
@@ -285,7 +287,7 @@ class OrderServiceTest {
         // Act & Assert
         assertThatThrownBy(() -> orderService.placeOrder(cart, orderCreateDTO, session))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("在庫不足または商品未存在: " + product1.getName()); // 例外メッセージを確認
+                .hasMessageContaining("在庫不足です: " + product1.getName()); // 例外メッセージを確認
 
         // 副作用がないこと（ロールバックされること）を確認
         verify(orderRepository, never()).save(any());
