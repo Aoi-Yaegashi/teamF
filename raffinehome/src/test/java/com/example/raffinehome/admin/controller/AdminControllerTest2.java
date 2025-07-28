@@ -437,9 +437,9 @@ class AdminControllerTest2 {
     }
 
 
-        @Test
+    @Test
     @DisplayName("PUT /api/admin/{id} 名前が空の時エラー返却")
-    void updateProduct_WhenNameEmpty_ShouldReturnError() throws Exception {
+    void updateProduct_WhenNameEmpty_ShouldBadRequest() throws Exception {
         int id = 5;
         String requestJson = """
             {
@@ -460,6 +460,6 @@ class AdminControllerTest2 {
         mockMvc.perform(put("/api/admin/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJson))
-            .andExpect(status().isInternalServerError());
+            .andExpect(status().isBadRequest());
     }
 }

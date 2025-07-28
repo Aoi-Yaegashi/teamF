@@ -73,17 +73,33 @@ GET http://localhost:8080/api/products
 
 
 ### No.1-6 商品詳細表示（descriptionやimageUrlがnullの商品)
-PUT http://localhost:8080/api/admin/1
+POST http://localhost:8080/api/admin
 content-type: application/json
 
 {  
     "name": "テスト",
     "price": "3500",
-    "saleprice": "12",
-    "description": null,
+    "salePrice": "12",
+    "description": "",
     "stockQuantity":"1",
-    "imageUrl": null
+    "imageUrl": ""
 }
+
 ###
-GET http://localhost:8080/api/products/1
+GET http://localhost:8080/api/products/14
+
+
+### No.1-7 商品詳細表示（論理削除された商品を指定）
+
+### 削除
+DELETE http://localhost:8080/api/admin/4
+content-type: application/json
+
+{   "isDeleted": true}
+
+### ここから
+GET http://localhost:8080/api/products/4
+
+
+/api/products/{deleted_id}
 

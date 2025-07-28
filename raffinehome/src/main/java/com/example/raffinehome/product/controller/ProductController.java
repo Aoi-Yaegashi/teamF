@@ -34,7 +34,8 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable int id) {
         ProductDTO product = productService.findProductById(id);
-        if (product == null) {
+        if (product == null || product.isDeleted() == true) {
+            // 商品が存在しない、または削除されている場合は404を返す
            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(product);

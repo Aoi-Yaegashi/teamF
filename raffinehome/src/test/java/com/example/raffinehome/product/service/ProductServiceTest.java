@@ -40,6 +40,7 @@ class ProductServiceTest {
         product1.setId(1);
         product1.setName("商品1");
         product1.setPrice(100);
+        product1.setSalePrice(90);
         product1.setImageUrl("/img1.png");
         product1.setDescription("説明1");
         product1.setStockQuantity(10);
@@ -49,6 +50,7 @@ class ProductServiceTest {
         product2.setId(2);
         product2.setName("商品2");
         product2.setPrice(200);
+        product2.setSalePrice(180);
         product2.setImageUrl("/img2.png");
         product2.setDescription("説明2");
         product2.setStockQuantity(5);
@@ -57,6 +59,7 @@ class ProductServiceTest {
         productWithNullFields.setId(3);
         productWithNullFields.setName("商品3（Nullあり）");
         productWithNullFields.setPrice(300);
+        productWithNullFields.setSalePrice(270);
         productWithNullFields.setStockQuantity(8);
         productWithNullFields.setDescription(null); // descriptionがnull
         productWithNullFields.setImageUrl(null);    // imageUrlがnull
@@ -69,23 +72,30 @@ class ProductServiceTest {
     void findAllProducts_ShouldReturnListOfProductListItems() {
         // Arrange: モックの設定
         List<Product> productsFromRepo = Arrays.asList(product1, product2);
-        when(productRepository.findAll()).thenReturn(productsFromRepo);
+        when(productRepository.findAllActiveProducts()).thenReturn(productsFromRepo);
 
         // Act: テスト対象メソッドの実行
-        List<ProductListDTO> result = productService.findAllProducts();
+        List<ProductListDTO> result = productService.findAllActiveProducts();
 
         // Assert: 結果の検証
         assertThat(result).hasSize(2);
         // 各要素の全フィールドが正しくマッピングされているか検証 (tupleを使うと便利)
         assertThat(result)
-            .extracting(ProductListDTO::getId, ProductListDTO::getName, ProductListDTO::getPrice, ProductListDTO::getImageUrl)
-            .containsExactlyInAnyOrder(
-                tuple(product1.getId(), product1.getName(), product1.getPrice(), product1.getImageUrl()),
-                tuple(product2.getId(), product2.getName(), product2.getPrice(), product2.getImageUrl())
-            );
+
+    .extracting(ProductListDTO::getId,
+                ProductListDTO::getName,
+                ProductListDTO::getPrice,
+                ProductListDTO::getSalePrice,
+                ProductListDTO::getDescription,
+                ProductListDTO::getStockQuantity,
+                ProductListDTO::getImageUrl)
+    .containsExactlyInAnyOrder(
+        tuple(product1.getId(), product1.getName(), product1.getPrice(), product1.getSalePrice(), product1.getDescription(), product1.getStockQuantity(), product1.getImageUrl()),
+        tuple(product2.getId(), product2.getName(), product2.getPrice(), product2.getSalePrice(), product2.getDescription(), product2.getStockQuantity(), product2.getImageUrl())
+    );
 
         // Verify: メソッド呼び出し検証
-        verify(productRepository, times(1)).findAll();
+        verify(productRepository, times(1)).findAllActiveProducts();
         verifyNoMoreInteractions(productRepository); // 他のメソッドが呼ばれていないこと
     }
 
@@ -106,28 +116,28 @@ class ProductServiceTest {
         verifyNoMoreInteractions(productRepository);
     }
 
-    @Test
-    @DisplayName("findAllProducts: 商品エンティティにnullフィールドが含まれる場合、DTOにもnullがマッピングされる")
-    void findAllProducts_WhenProductHasNullFields_ShouldMapNullToDto() {
-        // Arrange
-        List<Product> productsFromRepo = List.of(productWithNullFields);
-        when(productRepository.findAll()).thenReturn(productsFromRepo);
+@Test
+@DisplayName("findAllProducts: 商品エンティティにnullフィールドが含まれる場合、DTOにもnullがマッピングされる")
+void findAllProducts_WhenProductHasNullFields_ShouldMapNullToDto() {
+    // Arrange
+    List<Product> productsFromRepo = List.of(productWithNullFields);
+    when(productRepository.findAllActiveProducts()).thenReturn(productsFromRepo);
 
-        // Act
-        List<ProductListDTO> result = productService.findAllProducts();
+    // Act
+    List<ProductListDTO> result = productService.findAllActiveProducts();
 
-        // Assert
-        assertThat(result).hasSize(1);
-        ProductListDTO dto = result.get(0);
-        assertThat(dto.getId()).isEqualTo(productWithNullFields.getId());
-        assertThat(dto.getName()).isEqualTo(productWithNullFields.getName());
-        assertThat(dto.getPrice()).isEqualTo(productWithNullFields.getPrice());
-        assertThat(dto.getImageUrl()).isNull(); // imageUrlがnullであることを確認
+    // Assert
+    assertThat(result).hasSize(1);
+    ProductListDTO dto = result.get(0);
+    assertThat(dto.getId()).isEqualTo(productWithNullFields.getId());
+    assertThat(dto.getName()).isEqualTo(productWithNullFields.getName());
+    assertThat(dto.getPrice()).isEqualTo(productWithNullFields.getPrice());
+    assertThat(dto.getImageUrl()).isNull(); // imageUrlがnullであることを確認
 
-        // Verify
-        verify(productRepository, times(1)).findAll();
-        verifyNoMoreInteractions(productRepository);
-    }
+    // Verify
+    verify(productRepository, times(1)).findAllActiveProducts();
+    verifyNoMoreInteractions(productRepository);
+}
 
     // === findProductById のテスト ===
 
@@ -135,11 +145,11 @@ class ProductServiceTest {
     @DisplayName("findProductById: 存在するIDで検索した場合、ProductDetailを返す")
     void findProductById_WhenProductExists_ShouldReturnProductDetail() {
         // Arrange
-        Integer productId = 1;
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product1));
+        int id = 1;
+        when(productRepository.findById(id)).thenReturn(Optional.of(product1));
 
         // Act
-        ProductDTO result = productService.findProductById(productId);
+        ProductDTO result = productService.findProductById(id);
 
         // Assert
         assertThat(result).isNotNull();
@@ -150,9 +160,9 @@ class ProductServiceTest {
         assertThat(result.getDescription()).isEqualTo(product1.getDescription());
         assertThat(result.getStockQuantity()).isEqualTo(product1.getStockQuantity());
         assertThat(result.getImageUrl()).isEqualTo(product1.getImageUrl());
-
+        
         // Verify
-        verify(productRepository, times(1)).findById(productId);
+        verify(productRepository, times(1)).findById(id);
         verifyNoMoreInteractions(productRepository);
     }
 

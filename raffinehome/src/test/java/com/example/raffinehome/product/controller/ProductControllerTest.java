@@ -52,8 +52,8 @@ class ProductControllerTest {
         productListItem1 = new ProductListDTO(1, "リスト商品1", 100, 90, "説明A", 3, "/list1.png");
         productListItem2 = new ProductListDTO(2, "リスト商品2", 200, 180, "説明B", 0, "/list2.png");
 
-        productDetail1 = new ProductDTO (1, "詳細商品1", 100, 90, "詳細説明1", 10,  "/detail1.png", true);
-        productDetailWithNulls = new ProductDTO(3, "詳細商品3", 300, 280, null, 5, null, true); // descriptionとimageUrlがnull
+        productDetail1 = new ProductDTO (1, "詳細商品1", 100, 90, "詳細説明1", 10,  "/detail1.png", true, false);
+        productDetailWithNulls = new ProductDTO(3, "詳細商品3", 300, 280, null, 5, null, true, false); // descriptionとimageUrlがnull
 
         // --- Serviceメソッドのデフォルトモック設定 (lenient) ---
         // デフォルトではfindAllProductsは2つのアイテムを返す
@@ -73,7 +73,7 @@ class ProductControllerTest {
 
         @Test
         @DisplayName("商品が存在する場合、商品リスト(ProductListItem)を200 OKで返す")
-        void getAllProducts_WhenProductsExist_ShouldReturnProductList() throws Exception {
+        void getAllActiveProducts_WhenProductsExist_ShouldReturnProductList() throws Exception {
             // Arrange (setUpのデフォルトモックを使用)
 
             // Act & Assert
@@ -103,7 +103,7 @@ class ProductControllerTest {
 
         @Test
         @DisplayName("商品が存在しない場合、空のリストを200 OKで返す")
-        void getAllProducts_WhenNoProductsExist_ShouldReturnEmptyList() throws Exception {
+        void getAllActiveProducts_WhenNoProductsExist_ShouldReturnEmptyList() throws Exception {
             // Arrange
             when(productService.findAllActiveProducts()).thenReturn(Collections.emptyList()); // 空リストを返すように設定
 
@@ -120,7 +120,7 @@ class ProductControllerTest {
 
         @Test
         @DisplayName("ProductServiceが例外をスローした場合、500 Internal Server Errorを返す")
-        void getAllProducts_WhenServiceThrowsException_ShouldReturnInternalServerError() throws Exception {
+        void getAllActiveProducts_WhenServiceThrowsException_ShouldReturnInternalServerError() throws Exception {
             // Arrange
             when(productService.findAllActiveProducts()).thenThrow(new RuntimeException("サービスエラー"));
 
@@ -203,7 +203,7 @@ class ProductControllerTest {
 
         @Test
         @DisplayName("Idが数値でない場合、500 Internal Server Errorを返す (現在のGlobalExceptionHandlerの実装による)") // DisplayName を変更
-        void getProductById_WithInvalidIdFormat_ShouldReturnInternalServerError_DueToExceptionHandler() throws Exception { // メソッド名を変更
+        void getProductById_WithInvalidProductIdFormat_ShouldReturnInternalServerError_DueToExceptionHandler() throws Exception { // メソッド名を変更
             // Arrange
             String invalidId = "abc"; // 数値でないパスパラメータ
 

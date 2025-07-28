@@ -57,9 +57,21 @@ public class OrderService {
 
             Optional<Product> productOpt = productRepository.findById(cartItem.getProductId());
             if (productOpt.isEmpty() || productOpt.get().getStockQuantity() < cartItem.getQuantity()) {
-                throw new RuntimeException("在庫不足または商品未存在: " + cartItem.getName());
+                throw new RuntimeException("在庫不足です: " + cartItem.getName());
             }
-        }
+            
+                Product product = productOpt.get();
+                
+                if (product.isDeleted()) {
+                        throw new IllegalStateException("この商品は現在購入できません（削除済）: " + product.getName());
+                }
+                
+                if (!product.getPrice().equals(cartItem.getPrice())) {
+                    throw new IllegalStateException("商品価格が変更されています: " + product.getName());
+                }
+            }
+
+
 
         // 注文エンティティ作成
         Order order = new Order();
