@@ -25,6 +25,14 @@
                         </button>
                     </div>
                 </div>
+                <nav class="desktop d-flex px-5 border-top py-2" style="width: 100%;"></nav>
+                <div class="search-form">
+                     <input type="search" id="search-input" placeholder="キーワードを入力">
+                     <button id="search-btn">検索</button>
+                    </div>
+                   </nav>
+                </div>
+            </nav>
         </header>
 
         <div id="main-content">
@@ -81,8 +89,8 @@
                             <input type="number" id="product-stockquantity" class="form-input" placeholder="例: 10" min="0" />
                         </div>
                         <div class="form-group">
-                            <span class="form-file-label">商品の新しい画像ファイル</span>
-                            <input type="file" id="product-image" class="form-file" accept="image/*" />
+                            <label for="product-image" class="form-label">商品の新しい画像ファイル</label>
+                            <input type="text" id="product-image" class="form-input" placeholder="新しい画像のURLを入力" />
                         </div>
                     </form>
                     <button class="btn btn-primary create-product-btn" id=create-product data-id="${product.id}">確定</button>

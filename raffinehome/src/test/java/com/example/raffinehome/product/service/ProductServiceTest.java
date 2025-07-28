@@ -81,6 +81,7 @@ class ProductServiceTest {
         assertThat(result).hasSize(2);
         // 各要素の全フィールドが正しくマッピングされているか検証 (tupleを使うと便利)
         assertThat(result)
+
     .extracting(ProductListDTO::getId,
                 ProductListDTO::getName,
                 ProductListDTO::getPrice,
