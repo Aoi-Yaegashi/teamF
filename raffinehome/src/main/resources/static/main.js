@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const productList = document.getElementById('product-list');
 
     // APIのベースURL
-    const API_BASE = '35.77.82.210:8080/api';
+    const API_BASE = '/api';
     
     // 商品一覧の取得と表示
     if (window.location.pathname !== '/products.html' ) {
