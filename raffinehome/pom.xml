@@ -74,6 +74,10 @@
 			<artifactId>commons-text</artifactId>
 			<version>1.10.0</version>
 		</dependency>
+        <groupId>com.opencsv</groupId>
+        <artifactId>opencsv</artifactId>
+        <version>5.7.1</version>
+    	</dependency>
 	</dependencies>
 
 	<build>
@@ -100,6 +104,7 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+					<executable>true</executable>
 				</configuration>
 			</plugin>
 		</plugins>
