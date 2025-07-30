@@ -4,36 +4,30 @@
 <div class="mermaid">
 erDiagram
     PRODUCT {
-        int product_id PK "商品ID"
+        int id PK "商品ID"
         string name "商品名"
         string description "商品の詳細説明"
-        int category_id FK "紐づくカテゴリID"
-        decimal price "販売価格"
-        int stock_quantity "在庫数"
+        int price "販売価格"
+        int salePrice "セール価格"
+        int stockQuantity "在庫数"
         string image_url "商品画像のパスまたはURL"
-    }
-
-    CATEGORY {
-        int category_id PK "カテゴリID"
-        string name "カテゴリ名"
-        string description "カテゴリの説明"
-    }
-
-    CUSTOMER {
-        int customer_id PK "顧客ID"
-        string name "氏名"
-        string email "メールアドレス"
-        string phone_number "電話番号"
-        datetime created_at "登録日時"
+        boolean isInStock "在庫の有無"
+        boolean isDeleted "論理削除の有無"
     }
 
     ORDER {
-        int order_id PK "注文ID"
-        int customer_id FK "顧客ID"
-        string order_number "注文番号（表示用）"
-        datetime order_date "注文日時"
-        string status "注文ステータス"
-        decimal total_amount "合計金額"
+            int id "注文ID"
+            String customerName "顧客名"
+            String customerEmail "顧客のeメール"
+            String shippingAddress "出荷先住所"
+            String postalCode "郵便番号"
+            String phoneNumber "顧客の電話番号"
+            int subtotal "小計"
+            int totalAmount "合計"
+            String orderStatus "注文完了の有無"
+            LocalDateTime orderDate "注文日"
+            Boolean canCancel "キャンセルの有無"
+            Boolean canShip "出荷完了の有無"
     }
 
     ORDER_ITEM {
@@ -42,6 +36,21 @@ erDiagram
         int product_id FK "商品ID"
         int quantity "数量"
         decimal unit_price "単価"
+    }
+
+    ORDER_CREATE{
+      String customerName;
+    
+    @NotBlank(message = "メールアドレスは必須です")
+    @Email(message = "有効なメールアドレスを入力してください")
+    private String customerEmail;
+    
+    @NotBlank(message = "住所は必須です")
+    private String shippingAddress;
+    
+    @NotBlank(message = "電話番号は必須です")
+    private String phoneNumber
+
     }
 
     SHIPPING_INFO {
@@ -61,12 +70,6 @@ erDiagram
         datetime payment_date "支払い日時"
     }
 
-    ORDER_STATUS_HISTORY {
-        int history_id PK "履歴ID"
-        int order_id FK "注文ID"
-        string status "注文ステータス"
-        datetime changed_at "変更日時"
-    }
 
     CART {
         int cart_id PK "カートID"
@@ -116,9 +119,9 @@ erDiagram
     CATEGORY ||--o{ PRODUCT : includes
     PRODUCT ||--o{ ORDER_ITEM : included_in
     ORDER ||--o{ ORDER_ITEM : contains
+    ORDER_ITEM ||--o{ ORDER_CREATE : contains
     ORDER ||--|| SHIPPING_INFO : has
     ORDER ||--|| PAYMENT_INFO : has
-    ORDER ||--o{ ORDER_STATUS_HISTORY : status_tracked_by
     CUSTOMER ||--o{ ORDER : places
     PRODUCT ||--o{ CART_ITEM : added_to
     CART ||--o{ CART_ITEM : contains
