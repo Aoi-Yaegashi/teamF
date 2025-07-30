@@ -3,6 +3,7 @@ package com.example.raffinehome.order.controller;
 import com.example.raffinehome.cart.dto.CartDTO;
 import com.example.raffinehome.order.dto.OrderCreateDTO;
 import com.example.raffinehome.order.dto.OrderDTO;
+import com.example.raffinehome.order.dto.OrderItemDTO;
 import com.example.raffinehome.cart.service.CartService;
 import com.example.raffinehome.order.service.OrderService;
 import jakarta.servlet.http.HttpSession;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.apache.commons.text.StringEscapeUtils;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -45,6 +47,12 @@ System.out.println("カートが空");
         }
 System.out.println("カートの中身あり");
         try {
+           
+            orderCreateDTO.setCustomerName(StringEscapeUtils.escapeHtml4(orderCreateDTO.getCustomerName()));
+            orderCreateDTO.setCustomerEmail(StringEscapeUtils.escapeHtml4(orderCreateDTO.getCustomerEmail()));
+            orderCreateDTO.setShippingAddress(StringEscapeUtils.escapeHtml4(orderCreateDTO.getShippingAddress()));
+            orderCreateDTO.setPhoneNumber(StringEscapeUtils.escapeHtml4(orderCreateDTO.getPhoneNumber()));
+
             OrderDTO orderDTO = orderService.placeOrder(cart, orderCreateDTO, session);
             return ResponseEntity.status(HttpStatus.CREATED).body(orderDTO);
         } catch (Exception e) {
